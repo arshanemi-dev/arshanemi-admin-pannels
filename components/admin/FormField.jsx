@@ -1,0 +1,94 @@
+'use client'
+
+export default function FormField({
+  label,
+  name,
+  type = 'text',
+  value,
+  onChange,
+  error,
+  required,
+  placeholder,
+  hint,
+  rows,
+  options,
+  min,
+  max,
+  step,
+  disabled,
+  className = '',
+}) {
+  const base =
+    'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors disabled:bg-gray-50 disabled:text-gray-500'
+
+  return (
+    <div className={`flex flex-col gap-1.5 ${className}`}>
+      {label && (
+        <label className="text-sm font-medium text-gray-700">
+          {label}
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+      )}
+
+      {type === 'textarea' ? (
+        <textarea
+          name={name}
+          value={value ?? ''}
+          onChange={onChange}
+          placeholder={placeholder}
+          rows={rows || 4}
+          disabled={disabled}
+          className={`${base} resize-none ${error ? 'border-red-400 focus:ring-red-400' : ''}`}
+        />
+      ) : type === 'select' ? (
+        <select
+          name={name}
+          value={value ?? ''}
+          onChange={onChange}
+          disabled={disabled}
+          className={`${base} ${error ? 'border-red-400 focus:ring-red-400' : ''}`}
+        >
+          {options?.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      ) : type === 'toggle' ? (
+        <button
+          type="button"
+          role="switch"
+          aria-checked={!!value}
+          onClick={() => onChange({ target: { name, value: !value } })}
+          disabled={disabled}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+            value ? 'bg-indigo-600' : 'bg-gray-200'
+          } disabled:opacity-60`}
+        >
+          <span
+            className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
+              value ? 'translate-x-6' : 'translate-x-1'
+            }`}
+          />
+        </button>
+      ) : (
+        <input
+          type={type}
+          name={name}
+          value={value ?? ''}
+          onChange={onChange}
+          placeholder={placeholder}
+          required={required}
+          disabled={disabled}
+          min={min}
+          max={max}
+          step={step}
+          className={`${base} ${error ? 'border-red-400 focus:ring-red-400' : ''}`}
+        />
+      )}
+
+      {error && <p className="text-xs text-red-500">{error}</p>}
+      {hint && !error && <p className="text-xs text-gray-400">{hint}</p>}
+    </div>
+  )
+}
