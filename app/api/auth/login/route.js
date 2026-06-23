@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import { signToken, makeAuthCookie } from '@/lib/auth'
+import { signToken, signRefreshToken, makeAuthCookie } from '@/lib/auth'
 import { getUserByEmail, getUserByMobile } from '@/lib/db'
 
 export async function POST(req) {
@@ -14,7 +14,6 @@ export async function POST(req) {
   }
 
   try {
-    // Look up user by email or mobile
     const isEmail = id.includes('@')
     const user = isEmail
       ? await getUserByEmail(id.toLowerCase().trim())
@@ -29,13 +28,23 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
     }
 
-    const token = await signToken({ userId: user.id, email: user.email, role: user.role, name: user.name })
-    const cookie = makeAuthCookie(token)
+    const tokenPayload = { userId: user.id, email: user.email, role: user.role, name: user.name }
 
-    const res = NextResponse.json({ ok: true, role: user.role, name: user.name })
+    // Short-lived access token (15 min) + long-lived refresh token (7 days)
+    const accessToken  = await signToken(tokenPayload, '15m')
+    const refreshToken = await signRefreshToken({ userId: user.id, role: user.role })
+
+    const cookie = makeAuthCookie(accessToken)
+
+    const res = NextResponse.json({
+      ok: true,
+      accessToken,
+      refreshToken,
+      expiresIn: 900, // seconds (15 min)
+      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+    })
+
     res.cookies.set(cookie)
-
-    // Also set admin-token cookie for admin panel compatibility
     if (user.role === 'admin') {
       res.cookies.set({ ...cookie, name: 'admin-token' })
     }

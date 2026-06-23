@@ -1,5 +1,7 @@
 import { COMPANY_WHATSAPP } from './company.js';
 import { tools, toolCategories } from './tools.js';
+import { services as defaultServices } from './services.js';
+import { industries as defaultIndustries } from './industries.js';
 
 const RESOURCES_DROPDOWN = [
   { label: 'Case Studies',  href: '/case-studies' },
@@ -49,19 +51,23 @@ export function buildNavLinks(toolsArr = tools) {
 /**
  * Build footer link lists.
  */
-export function buildFooterLinks(toolsArr = tools) {
+export function buildFooterLinks(servicesArr = defaultServices, industriesArr = defaultIndustries) {
   return {
     company: COMPANY_LINKS,
-    tools: [
-      ...toolsArr.map((t) => ({ label: t.title, href: `/tools/${t.slug}` })),
-      { label: 'All Tools →', href: '/tools' },
+    services: [
+      ...servicesArr.slice(0, 7).map((s) => ({ label: s.title, href: `/services/${s.slug}` })),
+      { label: 'All Services →', href: '/services' },
+    ],
+    industries: [
+      ...industriesArr.slice(0, 6).map((ind) => ({ label: ind.name, href: `/industries/${ind.slug}` })),
+      { label: 'All Industries →', href: '/industries' },
     ],
   };
 }
 
 // Static defaults
 export const navLinks    = buildNavLinks(tools);
-export const footerLinks = buildFooterLinks(tools);
+export const footerLinks = buildFooterLinks();
 
 export const socialLinks = [
   { label: 'Facebook',  href: 'https://facebook.com/arshanemi',  icon: 'Facebook' },
