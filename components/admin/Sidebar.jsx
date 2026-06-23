@@ -6,7 +6,7 @@ import {
   Users, MessageSquare, Handshake, BarChart2, HelpCircle, Shield,
   Cog, Package, Heart, Phone, Map, Settings, ChevronRight,
   Layers, ExternalLink, Images, TrendingUp, UserCheck, Palette,
-  Megaphone,
+  Megaphone, Building2,
 } from 'lucide-react'
 
 const groups = [
@@ -34,6 +34,12 @@ const groups = [
       { label: 'Blog Categories', href: '/admin/blog-categories', icon: Tag },
       { label: 'Case Studies',    href: '/admin/case-studies',    icon: BookOpen },
       { label: 'Media Library',   href: '/admin/media',           icon: Images },
+    ],
+  },
+  {
+    label: 'COMPANIES & USERS',
+    items: [
+      { label: 'Companies',     href: '/admin/companies', icon: Building2 },
     ],
   },
   {

@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
+import { nanoid } from 'nanoid'
 import { signToken, makeAuthCookie } from '@/lib/auth'
-import { getUserByEmail, getUserByMobile, createUser } from '@/lib/db'
+import { getUserByEmail, getUserByMobile, createUser, getCompanyByEmail, createCompany } from '@/lib/db'
+import { initCompanyFolders } from '@/lib/media'
 
 function validatePassword(pw) {
   if (!pw || pw.length < 8)       return 'Password must be at least 8 characters'
@@ -12,7 +14,8 @@ function validatePassword(pw) {
 }
 
 export async function POST(req) {
-  const { name, email, mobile, password, confirm } = await req.json()
+  const body = await req.json()
+  const { name, email, mobile, password, confirm, company: companyInput } = body
 
   if (!name?.trim()) return NextResponse.json({ error: 'Name is required' }, { status: 400 })
   if (!email && !mobile) return NextResponse.json({ error: 'Provide at least an email or mobile number' }, { status: 400 })
@@ -21,8 +24,13 @@ export async function POST(req) {
   const pwError = validatePassword(password)
   if (pwError) return NextResponse.json({ error: pwError }, { status: 400 })
 
+  // Company email is required
+  if (!companyInput?.email?.trim()) {
+    return NextResponse.json({ error: 'Company email is required' }, { status: 400 })
+  }
+
   try {
-    // Check duplicates
+    // Check user duplicates
     if (email) {
       const existing = await getUserByEmail(email.toLowerCase().trim())
       if (existing) return NextResponse.json({ error: 'An account with this email already exists' }, { status: 409 })
@@ -32,6 +40,42 @@ export async function POST(req) {
       if (existing) return NextResponse.json({ error: 'An account with this mobile number already exists' }, { status: 409 })
     }
 
+    // Check company email uniqueness
+    const existingCompany = await getCompanyByEmail(companyInput.email)
+    if (existingCompany) {
+      return NextResponse.json({ error: 'A company with this email already exists' }, { status: 409 })
+    }
+
+    // Derive folder_id: use slug if company name provided, else random
+    let folderId
+    if (companyInput.name?.trim()) {
+      folderId = companyInput.name
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s]/g, '')
+        .replace(/\s+/g, '_')
+        .replace(/_+/g, '_')
+        .replace(/^_|_$/g, '')
+      // guard against empty result
+      if (!folderId) folderId = `co_${nanoid(8)}`
+    } else {
+      folderId = `co_${nanoid(8)}`
+    }
+
+    // Create company row
+    const company = await createCompany({
+      name: companyInput.name?.trim() || null,
+      email: companyInput.email,
+      phone: companyInput.phone?.trim() || null,
+      website: companyInput.website?.trim() || null,
+      address: companyInput.address?.trim() || null,
+      folderId,
+    })
+
+    // Initialise blob folders: companies/<folderId>/ + tools/<folderId>/
+    await initCompanyFolders(folderId)
+
+    // Create user linked to company
     const passwordHash = await bcrypt.hash(password, 10)
     const user = await createUser({
       name: name.trim(),
@@ -39,11 +83,22 @@ export async function POST(req) {
       mobile: mobile ? mobile.trim() : null,
       passwordHash,
       role: 'user',
+      companyId: company.id,
     })
 
-    const token = await signToken({ userId: user.id, email: user.email, role: user.role, name: user.name })
+    const token = await signToken({
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
+      companyId: company.id,
+      folderId: company.folder_id,
+    })
     const cookie = makeAuthCookie(token)
-    const res = NextResponse.json({ ok: true, role: user.role, name: user.name }, { status: 201 })
+    const res = NextResponse.json(
+      { ok: true, role: user.role, name: user.name, companyId: company.id },
+      { status: 201 }
+    )
     res.cookies.set(cookie)
     return res
   } catch (err) {

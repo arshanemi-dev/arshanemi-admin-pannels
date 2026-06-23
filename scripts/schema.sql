@@ -3,6 +3,27 @@
 -- Run this in your Supabase SQL Editor to set up all tables.
 -- ══════════════════════════════════════════════════════════════════════════════
 
+-- 0. companies — one row per tenant; created at signup before users row
+-- ──────────────────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS companies (
+  id          UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+  name        VARCHAR(255),                         -- filled later if not given at signup
+  slug        VARCHAR(255) UNIQUE,                  -- snake_case derived from name; null until name set
+  email       VARCHAR(255) UNIQUE NOT NULL,         -- must be unique across all companies
+  phone       VARCHAR(50),
+  website     VARCHAR(500),
+  address     TEXT,
+  -- blob storage prefix segment: starts as "co_<nanoid>" then becomes slug once name is set
+  folder_id   VARCHAR(255) UNIQUE NOT NULL,
+  is_active   BOOLEAN      NOT NULL DEFAULT TRUE,
+  created_at  TIMESTAMPTZ  DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ  DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_companies_email     ON companies(email);
+CREATE INDEX IF NOT EXISTS idx_companies_slug      ON companies(slug);
+CREATE INDEX IF NOT EXISTS idx_companies_folder_id ON companies(folder_id);
+
 -- 1. layout_settings — key/value JSON store for all site content & settings
 -- ──────────────────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS layout_settings (
@@ -23,14 +44,16 @@ CREATE TABLE IF NOT EXISTS users (
   mobile        VARCHAR(20)  UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
   role          VARCHAR(50)  NOT NULL DEFAULT 'user',   -- 'admin' | 'user'
+  company_id    UUID REFERENCES companies(id) ON DELETE SET NULL,
   is_active     BOOLEAN      NOT NULL DEFAULT TRUE,
   created_at    TIMESTAMPTZ  DEFAULT NOW(),
   updated_at    TIMESTAMPTZ  DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_users_email  ON users(email);
-CREATE INDEX IF NOT EXISTS idx_users_mobile ON users(mobile);
-CREATE INDEX IF NOT EXISTS idx_users_role   ON users(role);
+CREATE INDEX IF NOT EXISTS idx_users_email      ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_mobile     ON users(mobile);
+CREATE INDEX IF NOT EXISTS idx_users_role       ON users(role);
+CREATE INDEX IF NOT EXISTS idx_users_company_id ON users(company_id);
 
 -- 3. user_otp — one-time passwords for password reset (60 s TTL)
 -- ──────────────────────────────────────────────────────────────────────────────
@@ -72,6 +95,12 @@ CREATE POLICY "Public can read layout_settings"
 
 CREATE POLICY "Service role can write layout_settings"
   ON layout_settings FOR ALL
+  USING (auth.role() = 'service_role');
+
+-- companies: service-role full access only
+ALTER TABLE companies ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Service role manages companies"
+  ON companies FOR ALL
   USING (auth.role() = 'service_role');
 
 -- users: service-role full access only (sensitive data)
