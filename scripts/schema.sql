@@ -113,6 +113,23 @@ CREATE POLICY "Service role manages user_otp"
   ON user_otp FOR ALL
   USING (auth.role() = 'service_role');
 
+-- 4. files_expiry — named file records with expiry tracking
+-- ──────────────────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS files_expiry (
+  id         TEXT        PRIMARY KEY,
+  name       TEXT        NOT NULL UNIQUE,
+  expiry_at  TIMESTAMPTZ NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_files_expiry_name      ON files_expiry(name);
+CREATE INDEX IF NOT EXISTS idx_files_expiry_expiry_at ON files_expiry(expiry_at);
+
+ALTER TABLE files_expiry ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Service role manages files_expiry"
+  ON files_expiry FOR ALL
+  USING (auth.role() = 'service_role');
+
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Seed default admin user (password: Admin@1234  — change after first login)
 -- Run: SELECT crypt('Admin@1234', gen_salt('bf')) to get the hash, then insert.
