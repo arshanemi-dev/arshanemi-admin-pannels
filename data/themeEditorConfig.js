@@ -44,6 +44,7 @@ export const COLOR_LABELS = {
 }
 
 export const FONT_OPTIONS = [
+  { value: 'System',            label: 'System (Apple)',      weights: null },
   { value: 'Inter',             label: 'Inter',              weights: '300;400;500;600;700;800' },
   { value: 'Poppins',           label: 'Poppins',            weights: '300;400;500;600;700;800' },
   { value: 'Plus Jakarta Sans', label: 'Plus Jakarta Sans',  weights: '300;400;500;600;700;800' },

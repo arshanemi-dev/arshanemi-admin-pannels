@@ -36,8 +36,8 @@
   --color-accent-vivid-rgb: 249, 115, 22;
   --color-cyan-rgb:         251, 191, 36;
 
-  /* Font */
-  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* Font — Apple system stack (default; overridden at runtime by ThemeContext) */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
 
   /* Named animations */
   --animate-ticker: ticker 30s linear infinite;
@@ -187,6 +187,11 @@ body {
     padding-top: 8rem;
     padding-bottom: 8rem;
   }
+}
+
+/* Lucide icons scale with font-scale */
+svg.lucide {
+  zoom: var(--si-font-scale, 1);
 }
 
 /* Custom scrollbar */

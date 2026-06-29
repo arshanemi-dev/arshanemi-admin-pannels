@@ -23,8 +23,10 @@ function luminance(hex) {
   return 0.299 * r + 0.587 * g + 0.114 * b
 }
 
+const SYSTEM_FONT_STACK = '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif'
+
 function loadGoogleFont(fontFamily) {
-  if (fontFamily === 'Inter') return
+  if (fontFamily === 'Inter' || fontFamily === 'System') return
   const id = `gf-${fontFamily.replace(/\s+/g, '-').toLowerCase()}`
   if (document.getElementById(id)) return
   const link = document.createElement('link')
@@ -139,7 +141,10 @@ export default function ThemePage() {
     loadGoogleFont(fontFamily)
     setTheme(prev => ({ ...prev, typography: { ...prev.typography, fontFamily } }))
     document.documentElement.style.setProperty(
-      '--font-sans', `${fontFamily}, ui-sans-serif, system-ui, sans-serif`
+      '--font-sans',
+      fontFamily === 'System'
+        ? SYSTEM_FONT_STACK
+        : `${fontFamily}, ui-sans-serif, system-ui, sans-serif`
     )
     setFontDropOpen(false)
     setDirty(true)
@@ -192,7 +197,7 @@ export default function ThemePage() {
     // Re-apply defaults to document
     Object.entries(defaultTheme[mode]).forEach(([k, v]) => applyColorVar(k, v))
     document.documentElement.style.setProperty('--si-font-scale', '1')
-    document.documentElement.style.setProperty('--font-sans', 'Inter, ui-sans-serif, system-ui, sans-serif')
+    document.documentElement.style.setProperty('--font-sans', SYSTEM_FONT_STACK)
     await fetch('/api/admin/theme', { method: 'DELETE' })
     localStorage.removeItem('si-theme-config')
     toast('Reset to defaults', 'info')
@@ -202,7 +207,8 @@ export default function ThemePage() {
   const colors = theme[mode] || {}
   const { typography = {}, borderRadius = {} } = theme
   const scale = typography.scale ?? 1.0
-  const fontFamily = typography.fontFamily || 'Inter'
+  const fontFamily = typography.fontFamily || 'System'
+  const fontFamilyCSS = fontFamily === 'System' ? SYSTEM_FONT_STACK : `${fontFamily}, sans-serif`
 
   if (loading) {
     return (
@@ -314,7 +320,7 @@ export default function ThemePage() {
                   <button
                     onClick={() => setFontDropOpen(o => !o)}
                     className="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg border border-gray-200 bg-white hover:border-gray-300 text-sm font-medium text-gray-800 transition-colors"
-                    style={{ fontFamily: `${fontFamily}, sans-serif` }}>
+                    style={{ fontFamily: fontFamilyCSS }}>
                     {fontFamily}
                     <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${fontDropOpen ? 'rotate-180' : ''}`} />
                   </button>
@@ -323,7 +329,7 @@ export default function ThemePage() {
                       {FONT_OPTIONS.map(f => (
                         <button key={f.value} onClick={() => updateFont(f.value)}
                           className="w-full flex items-center justify-between px-3 py-2 hover:bg-gray-50 text-sm text-gray-700 transition-colors"
-                          style={{ fontFamily: `${f.value}, sans-serif` }}>
+                          style={{ fontFamily: f.value === 'System' ? SYSTEM_FONT_STACK : `${f.value}, sans-serif` }}>
                           <span>{f.label}</span>
                           {fontFamily === f.value && <Check className="w-4 h-4 text-indigo-600" />}
                         </button>
@@ -363,7 +369,7 @@ export default function ThemePage() {
             </div>
 
             {/* Font preview strip */}
-            <div className="mt-4 p-3 rounded-lg bg-gray-50 border border-gray-100" style={{ fontFamily: `${fontFamily}, sans-serif` }}>
+            <div className="mt-4 p-3 rounded-lg bg-gray-50 border border-gray-100" style={{ fontFamily: fontFamilyCSS }}>
               <p className="text-xs text-gray-400 mb-2 uppercase tracking-wider">Preview — {fontFamily}</p>
               <p className="text-2xl font-bold text-gray-900 leading-tight">Heading Bold 700</p>
               <p className="text-base font-medium text-gray-700">Semibold 600 — subheading text</p>
@@ -465,7 +471,7 @@ export default function ThemePage() {
                 { size: `${(24 * scale).toFixed(1)}px`, label: 'text-2xl', sample: 'Heading' },
               ].map(r => (
                 <div key={r.label} className="flex items-center justify-between">
-                  <span className="text-gray-700 font-medium" style={{ fontSize: r.size, fontFamily: `${fontFamily}, sans-serif`, lineHeight: 1.2 }}>
+                  <span className="text-gray-700 font-medium" style={{ fontSize: r.size, fontFamily: fontFamilyCSS, lineHeight: 1.2 }}>
                     {r.sample}
                   </span>
                   <span className="text-[10px] text-gray-400 font-mono">{r.label} · {r.size}</span>

@@ -1,5 +1,5 @@
 export const defaultTheme = {
-  mode: 'dark',
+  mode: 'light',
   dark: {
     background:      '#0a0a0a',
     surface:         '#111111',
@@ -43,7 +43,7 @@ export const defaultTheme = {
     'code-bg':       '#f8fafc',
   },
   typography: {
-    fontFamily: 'Inter',
+    fontFamily: 'System',
     scale: 1.0,
   },
   borderRadius: {
