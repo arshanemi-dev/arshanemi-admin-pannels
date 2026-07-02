@@ -6,7 +6,7 @@ import {
   Users, MessageSquare, Handshake, BarChart2, HelpCircle, Shield,
   Cog, Package, Heart, Phone, Map, Settings, ChevronRight,
   Layers, ExternalLink, Images, TrendingUp, UserCheck, Palette,
-  Megaphone, Building2,
+  Megaphone, Building2, LayoutGrid,
 } from 'lucide-react'
 
 const groups = [
@@ -60,6 +60,7 @@ const groups = [
   {
     label: 'SITE CONFIG',
     items: [
+      { label: 'Tool Hub',       href: '/admin/tool-hub',   icon: LayoutGrid },
       { label: 'Stats',          href: '/admin/stats',      icon: BarChart2 },
       { label: 'FAQs',           href: '/admin/faqs',       icon: HelpCircle },
       { label: 'Trust Badges',   href: '/admin/badges',     icon: Shield },

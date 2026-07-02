@@ -6,6 +6,7 @@ export default function FormField({
   type = 'text',
   value,
   onChange,
+  onBlur,
   error,
   required,
   placeholder,
@@ -35,6 +36,7 @@ export default function FormField({
           name={name}
           value={value ?? ''}
           onChange={onChange}
+          onBlur={onBlur}
           placeholder={placeholder}
           rows={rows || 4}
           disabled={disabled}
@@ -45,6 +47,7 @@ export default function FormField({
           name={name}
           value={value ?? ''}
           onChange={onChange}
+          onBlur={onBlur}
           disabled={disabled}
           className={`${base} ${error ? 'border-red-400 focus:ring-red-400' : ''}`}
         >
@@ -77,6 +80,7 @@ export default function FormField({
           name={name}
           value={value ?? ''}
           onChange={onChange}
+          onBlur={onBlur}
           placeholder={placeholder}
           required={required}
           disabled={disabled}
