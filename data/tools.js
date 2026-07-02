@@ -2,6 +2,7 @@ export const toolCategories = [
   { id: 'research',    label: 'Research Tools' },
   { id: 'analytics',  label: 'Analytics Tools' },
   { id: 'listing',    label: 'Listing Tools' },
+  { id: 'embedded',   label: 'Embedded Tools' },
 ];
 
 export const tools = [

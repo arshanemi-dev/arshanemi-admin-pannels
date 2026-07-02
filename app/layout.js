@@ -10,6 +10,7 @@ import { COMPANY_EMAIL, COMPANY_PHONE_PRIMARY, COMPANY_PHONE_SECONDARY, COMPANY_
 import { getCachedSingleton, getCachedCollection } from '@/lib/db';
 import { buildNavLinks } from '@/data/navigation';
 import { defaultTheme } from '@/data/defaultTheme';
+import { tools as staticTools } from '@/data/tools';
 
 const SITE_URL = 'https://www.arshanemi.com';
 const SITE_NAME = 'Arshanemi';
@@ -170,7 +171,8 @@ export default async function RootLayout({ children }) {
   ])
   const siteTheme = (savedTheme?.mode) ? savedTheme : defaultTheme
 
-  const dynamicNavLinks = buildNavLinks(blobTools);
+  const liveTools = blobTools.length ? blobTools : staticTools;
+  const dynamicNavLinks = buildNavLinks(liveTools);
 
   return (
     <html lang="en-IN" suppressHydrationWarning>
@@ -197,7 +199,7 @@ export default async function RootLayout({ children }) {
           children
         ) : (
           <ThemeProvider>
-            <Header navLinks={dynamicNavLinks} />
+            <Header navLinks={dynamicNavLinks} tools={liveTools} />
             <main className="flex-1">{children}</main>
             <Footer
               socialLinks={navigation?.socialLinks}

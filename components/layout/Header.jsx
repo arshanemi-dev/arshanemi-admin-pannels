@@ -4,11 +4,12 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronDown, Menu, ArrowRight } from 'lucide-react';
-import { navLinks } from '@/data/navigation';
+import { navLinks as defaultNavLinks } from '@/data/navigation';
 import { useScrollHeader } from '@/hooks/useScrollHeader';
 import { useTheme } from '@/context/ThemeContext';
 import { cn } from '@/lib/utils';
 import MobileMenu from './MobileMenu';
+import ToolsLauncher from './ToolsLauncher';
 import Button from '@/components/ui/Button';
 
 function DropdownMenu({ items }) {
@@ -114,7 +115,8 @@ function NavItem({ link }) {
   );
 }
 
-export default function Header() {
+export default function Header({ navLinks: navLinksProp, tools = [] }) {
+  const navLinks = navLinksProp || defaultNavLinks;
   const isScrolled = useScrollHeader(50);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { theme } = useTheme();
@@ -152,9 +154,10 @@ export default function Header() {
               ))}
             </nav>
 
-            {/* CTA + Theme toggle + Mobile toggle */}
+            {/* Tools launcher + CTA + Theme toggle + Mobile toggle */}
             <div className="flex items-center gap-2">
-            
+              <ToolsLauncher tools={tools} />
+
               <Button href="/contact" size="sm" className="hidden sm:inline-flex">
                 Get Free Audit
               </Button>
@@ -170,7 +173,7 @@ export default function Header() {
         </div>
       </header>
 
-      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} navLinks={navLinks} />
     </>
   );
 }

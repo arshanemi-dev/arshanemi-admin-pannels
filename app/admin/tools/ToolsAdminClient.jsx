@@ -1,12 +1,13 @@
 'use client'
 import { useState } from 'react'
-import { Plus, Pencil, Trash2, Loader2, Search, ExternalLink, ArrowLeft } from 'lucide-react'
+import { Plus, Pencil, Trash2, Loader2, Search, ExternalLink, ArrowLeft, Link2, Lock } from 'lucide-react'
 import Link from 'next/link'
 
 const TOOL_CATEGORIES = [
   { id: 'research',   label: 'Research Tools' },
   { id: 'analytics',  label: 'Analytics Tools' },
   { id: 'listing',    label: 'Listing Tools' },
+  { id: 'embedded',   label: 'Embedded Tools' },
 ]
 
 const ICON_OPTIONS = [
@@ -17,6 +18,17 @@ const ICON_OPTIONS = [
 
 const EMPTY_FORM = {
   slug: '', title: '', icon: 'Search', shortDesc: '', category: 'research', badge: '',
+  toolUrl: '', requiresLogin: false,
+}
+
+function isValidUrl(value) {
+  if (!value) return true // optional field
+  try {
+    const u = new URL(value)
+    return u.protocol === 'http:' || u.protocol === 'https:'
+  } catch {
+    return false
+  }
 }
 
 export default function ToolsAdminClient({ initialTools }) {
@@ -28,6 +40,7 @@ export default function ToolsAdminClient({ initialTools }) {
   const [loading, setLoading]     = useState(false)
   const [deletingId, setDeletingId] = useState(null)
   const [toast, setToast]         = useState(null)
+  const [urlError, setUrlError]   = useState('')
 
   function showToast(msg, type = 'success') {
     setToast({ msg, type })
@@ -37,6 +50,7 @@ export default function ToolsAdminClient({ initialTools }) {
   function openNew() {
     setEditing(null)
     setForm(EMPTY_FORM)
+    setUrlError('')
     setShowForm(true)
   }
 
@@ -49,7 +63,10 @@ export default function ToolsAdminClient({ initialTools }) {
       shortDesc: tool.shortDesc || '',
       category: tool.category || 'research',
       badge: tool.badge || '',
+      toolUrl: tool.toolUrl || '',
+      requiresLogin: !!tool.requiresLogin,
     })
+    setUrlError('')
     setShowForm(true)
   }
 
@@ -60,6 +77,10 @@ export default function ToolsAdminClient({ initialTools }) {
   async function handleSave() {
     if (!form.title.trim() || !form.slug.trim()) {
       showToast('Title and slug are required', 'error'); return
+    }
+    if (!isValidUrl(form.toolUrl)) {
+      setUrlError('Enter a valid http:// or https:// URL')
+      return
     }
     setLoading(true)
     try {
@@ -178,7 +199,19 @@ export default function ToolsAdminClient({ initialTools }) {
                         <span className="text-orange-600 text-xs font-bold">{tool.icon?.[0] || 'T'}</span>
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900">{tool.title}</p>
+                        <div className="flex items-center gap-1.5">
+                          <p className="font-semibold text-gray-900">{tool.title}</p>
+                          {tool.toolUrl && (
+                            <span title="Embeddable — has a Use Tool link">
+                              <Link2 className="w-3 h-3 text-orange-500" />
+                            </span>
+                          )}
+                          {tool.requiresLogin && (
+                            <span title="Requires login">
+                              <Lock className="w-3 h-3 text-amber-500" />
+                            </span>
+                          )}
+                        </div>
                         <p className="text-gray-400 text-xs line-clamp-1 max-w-xs">{tool.shortDesc}</p>
                       </div>
                     </div>
@@ -298,6 +331,45 @@ export default function ToolsAdminClient({ initialTools }) {
                   className="admin-input"
                 />
               </FormField>
+
+              <FormField label="Tool URL (optional — embeds this tool in an iframe)">
+                <input
+                  value={form.toolUrl}
+                  onChange={(e) => setForm((f) => ({ ...f, toolUrl: e.target.value }))}
+                  onBlur={() => setUrlError(isValidUrl(form.toolUrl) ? '' : 'Enter a valid http:// or https:// URL')}
+                  placeholder="https://your-tool-app.example.com"
+                  className="admin-input"
+                />
+                {urlError ? (
+                  <p className="text-xs text-red-500 mt-1">{urlError}</p>
+                ) : (
+                  <p className="text-xs text-gray-400 mt-1">
+                    When set, a "Use Tool" button appears on the tools grid and detail page, opening this URL in an iframe. The target site must allow iframe embedding.
+                  </p>
+                )}
+              </FormField>
+
+              <div className="flex items-center justify-between rounded-xl border border-gray-200 px-4 py-3">
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Require Login</p>
+                  <p className="text-xs text-gray-400">Visitors must sign in before the embedded tool loads.</p>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={form.requiresLogin}
+                  onClick={() => setForm((f) => ({ ...f, requiresLogin: !f.requiresLogin }))}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0 ${
+                    form.requiresLogin ? 'bg-orange-600' : 'bg-gray-200'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
+                      form.requiresLogin ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
 
             <div className="flex gap-3 px-6 pb-6">

@@ -10,7 +10,7 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const url = new URL(window.location.href)
-    const next = url.searchParams.get('next') || '/tool-hub'
+    const next = url.searchParams.get('next') || '/tools'
 
     getSupabaseBrowserClient().auth
       .exchangeCodeForSession(window.location.href)
@@ -31,8 +31,8 @@ export default function AuthCallbackPage() {
           <AlertCircle className="w-8 h-8 text-accent mx-auto mb-3" />
           <p className="text-foreground font-medium mb-1">Sign-in failed</p>
           <p className="text-muted text-sm mb-4">Something went wrong completing your sign-in.</p>
-          <a href="/tool-hub" className="text-accent text-sm font-semibold hover:underline">
-            Back to Tool Hub
+          <a href="/tools" className="text-accent text-sm font-semibold hover:underline">
+            Back to Tools
           </a>
         </div>
       ) : (

@@ -12,7 +12,8 @@ const GoogleIcon = (props) => (
   </svg>
 )
 
-export default function AuthPanel({ toolName, onAuthenticated }) {
+// nextPath — where to land after a Google OAuth redirect completes (defaults to the current page)
+export default function AuthPanel({ toolName, onAuthenticated, nextPath }) {
   const [mode, setMode] = useState('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -54,9 +55,10 @@ export default function AuthPanel({ toolName, onAuthenticated }) {
     setError('')
     setGoogleLoading(true)
     const supabase = getSupabaseBrowserClient()
+    const next = nextPath || window.location.pathname
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=/tool-hub` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}` },
     })
     if (oauthError) {
       setError(oauthError.message)

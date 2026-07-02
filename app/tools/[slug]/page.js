@@ -1,31 +1,17 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, CheckCircle2, Lock } from 'lucide-react'
-import { getCachedCollection } from '@/lib/db'
-import { tools as staticTools } from '@/data/tools'
+import { getAllTools, getTool } from '@/lib/tools'
 import * as LucideIcons from 'lucide-react'
 
 export async function generateMetadata({ params }) {
-  const tool = await getTool(params.slug)
+  const { slug } = await params
+  const tool = await getTool(slug)
   if (!tool) return {}
   return {
     title: tool.title,
     description: tool.hero?.subtext || tool.shortDesc,
   }
-}
-
-async function getAllTools() {
-  try {
-    const db = await getCachedCollection('tools')
-    return db.length ? db : staticTools
-  } catch {
-    return staticTools
-  }
-}
-
-async function getTool(slug) {
-  const all = await getAllTools()
-  return all.find((t) => t.slug === slug) ?? null
 }
 
 function Icon({ name, size = 20 }) {
@@ -34,7 +20,8 @@ function Icon({ name, size = 20 }) {
 }
 
 export default async function ToolDetailPage({ params }) {
-  const tool = await getTool(params.slug)
+  const { slug } = await params
+  const tool = await getTool(slug)
   if (!tool) notFound()
 
   const allTools = await getAllTools()
@@ -74,9 +61,10 @@ export default async function ToolDetailPage({ params }) {
 
               <div className="flex flex-wrap gap-4">
                 <Link
-                  href="/login"
+                  href={`/tools/${tool.slug}/use`}
                   className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white font-semibold px-6 py-3 rounded-xl transition-colors"
                 >
+                  {tool.requiresLogin && <Lock size={14} />}
                   Start Using This Tool <ArrowRight size={16} />
                 </Link>
                 <Link
