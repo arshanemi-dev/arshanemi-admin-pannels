@@ -17,24 +17,19 @@ export default async function ToolUsePage({ params }) {
   if (!tool) notFound()
 
   return (
-    <div className="min-h-screen bg-background section-pad">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link
-          href={`/tools/${tool.slug}`}
-          className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground mb-6 transition-colors"
-        >
-          <ArrowLeft size={15} /> Back to {tool.title}
-        </Link>
+    <div className="min-h-screen bg-background pt-24 pb-10">
+      
 
-        {tool.toolUrl ? (
-          <ToolUseClient tool={tool} />
-        ) : (
+      {tool.toolUrl ? (
+        <ToolUseClient tool={tool} />
+      ) : (
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center py-16 bg-card border border-divider rounded-2xl">
             <p className="text-foreground font-medium mb-1">This tool isn&apos;t available yet</p>
             <p className="text-muted text-sm">Check back soon, or explore the tool details in the meantime.</p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

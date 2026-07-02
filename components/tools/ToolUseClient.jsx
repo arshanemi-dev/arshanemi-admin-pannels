@@ -30,16 +30,17 @@ export default function ToolUseClient({ tool }) {
 
   if (locked) {
     return (
-      <div className="py-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <AuthPanel toolName={tool.title} onAuthenticated={() => setSession(true)} />
       </div>
     )
   }
 
   return (
-    <div className="relative rounded-2xl border border-divider overflow-hidden bg-white h-[80vh]">
+    // Full-bleed: breaks out of the max-w-5xl page container to span the full viewport width.
+    <div className="relative w-screen left-1/2 -translate-x-1/2 bg-white">
       {iframeLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-card">
+        <div className="absolute inset-0 flex items-center justify-center bg-card min-h-[70vh] h-full">
           <Loader2 className="w-6 h-6 text-accent animate-spin" />
         </div>
       )}
@@ -50,7 +51,7 @@ export default function ToolUseClient({ tool }) {
         referrerPolicy="no-referrer"
         loading="lazy"
         onLoad={() => setIframeLoading(false)}
-        className="w-full h-full border-0"
+        className="block w-full h-max min-h-[70vh] h-full border-0"
       />
     </div>
   )
