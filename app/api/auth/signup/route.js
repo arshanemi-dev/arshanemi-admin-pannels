@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { nanoid } from 'nanoid'
 import { signToken, makeAuthCookie } from '@/lib/auth'
-import { getUserByEmail, getUserByMobile, createUser, getCompanyByEmail, createCompany } from '@/lib/db'
+import { getUserByEmail, getUserByMobile, createUser, getCompanyByEmail, createCompany, getCollection, grantAllToolsAccess } from '@/lib/db'
 import { initCompanyFolders } from '@/lib/media'
+import { tools as staticTools } from '@/data/tools'
 
 function validatePassword(pw) {
   if (!pw || pw.length < 8)       return 'Password must be at least 8 characters'
@@ -85,6 +86,15 @@ export async function POST(req) {
       role: 'user',
       companyId: company.id,
     })
+
+    // Default every new user to full tools access — admin can restrict later from Settings.
+    try {
+      const dbTools = await getCollection('tools')
+      const toolSlugs = (dbTools.length ? dbTools : staticTools).map((t) => t.slug)
+      await grantAllToolsAccess(user.id, toolSlugs)
+    } catch (err) {
+      console.error('Failed to grant default tools access:', err)
+    }
 
     const token = await signToken({
       userId: user.id,

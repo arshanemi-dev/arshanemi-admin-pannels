@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Loader2, Zap } from 'lucide-react'
+import { saveAuthTokens } from '@/lib/tokenStore'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -23,7 +24,13 @@ export default function LoginPage() {
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Invalid credentials'); return }
-      router.push(data.role === 'admin' ? '/admin' : '/tools')
+      saveAuthTokens({
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        expiresIn: data.expiresIn,
+        user: data.user,
+      })
+      router.push(data.user?.role === 'admin' ? '/admin' : '/tools')
       router.refresh()
     } catch {
       setError('Network error — please try again')

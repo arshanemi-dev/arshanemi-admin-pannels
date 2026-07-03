@@ -40,6 +40,7 @@ const groups = [
     label: 'COMPANIES & USERS',
     items: [
       { label: 'Companies',     href: '/admin/companies', icon: Building2 },
+      { label: 'Tools Access',  href: '/admin/settings',  icon: Settings },
     ],
   },
   {

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { LogOut, User, ChevronRight } from 'lucide-react'
 import { useToast } from './Toast'
+import { clearAuthTokens } from '@/lib/tokenStore'
 
 function buildBreadcrumb(pathname) {
   const parts = pathname.replace('/admin', '').split('/').filter(Boolean)
@@ -27,6 +28,7 @@ export default function Topbar({ username }) {
   async function handleLogout() {
     setLoading(true)
     await fetch('/api/auth/logout', { method: 'POST' })
+    clearAuthTokens()
     addToast('Logged out successfully')
     router.push('/admin/login')
     router.refresh()
