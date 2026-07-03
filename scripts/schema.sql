@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS users (
   email         VARCHAR(255) UNIQUE,
   mobile        VARCHAR(20)  UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
-  role          VARCHAR(50)  NOT NULL DEFAULT 'user',   -- 'admin' | 'user'
+  role          VARCHAR(50)  NOT NULL DEFAULT 'user',   -- 'master_admin' | 'user'
   company_id    UUID REFERENCES companies(id) ON DELETE SET NULL,
   is_active     BOOLEAN      NOT NULL DEFAULT TRUE,
   created_at    TIMESTAMPTZ  DEFAULT NOW(),
@@ -54,6 +54,19 @@ CREATE INDEX IF NOT EXISTS idx_users_email      ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_mobile     ON users(mobile);
 CREATE INDEX IF NOT EXISTS idx_users_role       ON users(role);
 CREATE INDEX IF NOT EXISTS idx_users_company_id ON users(company_id);
+
+-- 2b. user_settings — one row per user; tools_access is the JSON list of tool
+--     slugs that user can open. Room for more per-user settings later.
+-- ──────────────────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS user_settings (
+  id           UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id      UUID        UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  tools_access JSONB       NOT NULL DEFAULT '[]',
+  created_at   TIMESTAMPTZ DEFAULT NOW(),
+  updated_at   TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_settings_user_id ON user_settings(user_id);
 
 -- 3. user_otp — one-time passwords for password reset (60 s TTL)
 -- ──────────────────────────────────────────────────────────────────────────────
@@ -106,6 +119,12 @@ CREATE POLICY "Service role manages companies"
 -- users: service-role full access only (sensitive data)
 CREATE POLICY "Service role manages users"
   ON users FOR ALL
+  USING (auth.role() = 'service_role');
+
+-- user_settings: service-role full access only
+ALTER TABLE user_settings ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Service role manages user_settings"
+  ON user_settings FOR ALL
   USING (auth.role() = 'service_role');
 
 -- user_otp: service-role full access only

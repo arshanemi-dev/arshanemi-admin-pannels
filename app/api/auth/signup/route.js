@@ -2,9 +2,8 @@ import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { nanoid } from 'nanoid'
 import { signToken, makeAuthCookie } from '@/lib/auth'
-import { getUserByEmail, getUserByMobile, createUser, getCompanyByEmail, createCompany, getCollection, grantAllToolsAccess } from '@/lib/db'
+import { getUserByEmail, getUserByMobile, createUser, getCompanyByEmail, createCompany, createUserSettings } from '@/lib/db'
 import { initCompanyFolders } from '@/lib/media'
-import { tools as staticTools } from '@/data/tools'
 
 function validatePassword(pw) {
   if (!pw || pw.length < 8)       return 'Password must be at least 8 characters'
@@ -87,13 +86,12 @@ export async function POST(req) {
       companyId: company.id,
     })
 
-    // Default every new user to full tools access — admin can restrict later from Settings.
+    // Create the default user_settings row — every new user gets full tools
+    // access for their role; admin can restrict individual users later.
     try {
-      const dbTools = await getCollection('tools')
-      const toolSlugs = (dbTools.length ? dbTools : staticTools).map((t) => t.slug)
-      await grantAllToolsAccess(user.id, toolSlugs)
+      await createUserSettings(user.id, user.role)
     } catch (err) {
-      console.error('Failed to grant default tools access:', err)
+      console.error('Failed to create default user_settings:', err)
     }
 
     const token = await signToken({

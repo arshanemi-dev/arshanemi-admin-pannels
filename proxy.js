@@ -38,7 +38,10 @@ export async function proxy(req) {
     return NextResponse.next()
   }
 
-  const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p))
+  // Theme is read by the public site (ThemeContext) for every visitor, so GET
+  // must be readable without an admin session — PUT/DELETE still require auth.
+  const isPublicThemeGet = pathname === '/api/admin/theme' && req.method === 'GET'
+  const isPublic = isPublicThemeGet || PUBLIC_PATHS.some((p) => pathname.startsWith(p))
   if (isPublic) {
     const res = NextResponse.next()
     res.headers.set('x-pathname', pathname)

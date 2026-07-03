@@ -141,7 +141,7 @@ export default function CompanyDetailPage() {
                   <td className="px-4 py-3 text-gray-600">{u.email || u.mobile}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex text-xs rounded-full px-2 py-0.5 font-medium ${
-                      u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+                      u.role === 'master_admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
                     }`}>
                       {u.role}
                     </span>

@@ -21,7 +21,7 @@ export default function SettingsPage() {
     Promise.all([
       fetch('/api/admin/users').then((r) => { if (!r.ok) throw new Error(); return r.json() }),
       fetch('/api/admin/tools').then((r) => { if (!r.ok) throw new Error(); return r.json() }),
-      fetch('/api/admin/singleton/toolsAccess').then((r) => { if (!r.ok) throw new Error(); return r.json() }),
+      fetch('/api/admin/user-settings').then((r) => { if (!r.ok) throw new Error(); return r.json() }),
     ])
       .then(([usersData, toolsData, accessMap]) => {
         setUsers(usersData)
@@ -73,7 +73,7 @@ export default function SettingsPage() {
       rows.forEach((r) => {
         access[r.id] = tools.filter((t) => r[t.slug]).map((t) => t.slug)
       })
-      const res = await fetch('/api/admin/singleton/toolsAccess', {
+      const res = await fetch('/api/admin/user-settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(access),
@@ -104,7 +104,7 @@ export default function SettingsPage() {
       key: 'role', label: 'Role', sortable: true,
       render: (v) => (
         <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-          v === 'admin' ? 'bg-indigo-50 text-indigo-700' : 'bg-gray-100 text-gray-600'
+          v === 'master_admin' ? 'bg-indigo-50 text-indigo-700' : 'bg-gray-100 text-gray-600'
         }`}>
           {v}
         </span>

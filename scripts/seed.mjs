@@ -86,6 +86,7 @@ async function main() {
   const { processSteps, seoProcess }                      = await imp('data/process.js')
   const { aboutValues, aboutServices, whyUs, aboutStats } = await imp('data/about.js')
   const { navLinks, footerLinks, socialLinks }            = await imp('data/navigation.js')
+  const { defaultToolsAccessByRole }                      = await imp('data/tools.js')
 
   // ── List collections ────────────────────────────────────────────────────────
   console.log('📦  Seeding list collections...\n')
@@ -173,40 +174,43 @@ async function main() {
     socialLinks: socialLinks || [],
   })
 
-  // ── Default users ───────────────────────────────────────────────────────────
-  console.log('\n👤  Seeding default users...\n')
+  // ── Default master admin ────────────────────────────────────────────────────
+  // Only the master admin is seeded by default — no demo 'admin'/'user' accounts.
+  // Regular users are created through /signup instead.
+  console.log('\n👤  Seeding default master admin...\n')
 
   const SALT_ROUNDS = 10
-  const adminHash = await bcrypt.hash('Admin@1234', SALT_ROUNDS)
-  const userHash  = await bcrypt.hash('User@1234',  SALT_ROUNDS)
+  const masterAdminHash = await bcrypt.hash('Admin@1234', SALT_ROUNDS)
 
-  const { error: adminErr } = await supabase.from('users').upsert(
+  const { data: masterAdmin, error: masterAdminErr } = await supabase.from('users').upsert(
     {
-      name: 'Admin',
+      name: 'Master Admin',
       email: 'admin@arshanemi.com',
       mobile: null,
-      password_hash: adminHash,
-      role: 'admin',
+      password_hash: masterAdminHash,
+      role: 'master_admin',
       is_active: true,
     },
     { onConflict: 'email', ignoreDuplicates: false }
-  )
-  if (adminErr) console.warn('  ⚠ Admin user:', adminErr.message)
+  ).select().single()
+  if (masterAdminErr) console.warn('  ⚠ Master admin:', masterAdminErr.message)
   else console.log('  ✓ admin@arshanemi.com  (Admin@1234)')
 
-  const { error: userErr } = await supabase.from('users').upsert(
-    {
-      name: 'Demo User',
-      email: 'user@arshanemi.com',
-      mobile: null,
-      password_hash: userHash,
-      role: 'user',
-      is_active: true,
-    },
-    { onConflict: 'email', ignoreDuplicates: false }
-  )
-  if (userErr) console.warn('  ⚠ Demo user:', userErr.message)
-  else console.log('  ✓ user@arshanemi.com   (User@1234)')
+  // ── Default user_settings (tools access) ───────────────────────────────────
+  console.log('\n🔧  Seeding default user_settings...\n')
+
+  async function seedUserSettings(user, role) {
+    if (!user) return
+    const toolsAccess = defaultToolsAccessByRole[role] || defaultToolsAccessByRole.user
+    const { error } = await supabase.from('user_settings').upsert(
+      { user_id: user.id, tools_access: toolsAccess, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id' }
+    )
+    if (error) console.warn(`  ⚠ user_settings for ${user.email}:`, error.message)
+    else console.log(`  ✓ user_settings for ${user.email} (${toolsAccess.length} tools)`)
+  }
+
+  await seedUserSettings(masterAdmin, 'master_admin')
 
   console.log('\n✅  Seed complete — all data is live in PostgreSQL!\n')
 }

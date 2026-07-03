@@ -32,7 +32,7 @@ export async function POST(req) {
     })
 
     res.cookies.set(cookie)
-    if (payload.role === 'admin') {
+    if (payload.role === 'master_admin') {
       res.cookies.set({ ...cookie, name: 'admin-token' })
     }
 
