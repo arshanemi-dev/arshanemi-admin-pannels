@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server'
 import { revalidateTag, revalidatePath } from 'next/cache'
-import { getAdminFromRequest } from '@/lib/auth'
+import { getAdminFromRequest, getStaffFromRequest } from '@/lib/auth'
 import { getCollection, createItem } from '@/lib/db'
 
+// Read is shared with the company-scoped 'admin' role (needed for the Tools
+// Access grid); creating/editing the tool catalog itself stays master-only.
 export async function GET(req) {
-  const admin = await getAdminFromRequest(req)
-  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const staff = await getStaffFromRequest(req)
+  if (!staff) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const tools = await getCollection('tools')
   return NextResponse.json(tools)
 }

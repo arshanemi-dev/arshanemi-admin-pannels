@@ -185,7 +185,7 @@ async function main() {
   const { data: masterAdmin, error: masterAdminErr } = await supabase.from('users').upsert(
     {
       name: 'Master Admin',
-      email: 'admin@arshanemi.com',
+      email: 'arshanemi@gmail.com',
       mobile: null,
       password_hash: masterAdminHash,
       role: 'master_admin',
@@ -194,7 +194,7 @@ async function main() {
     { onConflict: 'email', ignoreDuplicates: false }
   ).select().single()
   if (masterAdminErr) console.warn('  ⚠ Master admin:', masterAdminErr.message)
-  else console.log('  ✓ admin@arshanemi.com  (Admin@1234)')
+  else console.log('  ✓ arshanemi@gmail.com  (Admin@1234)')
 
   // ── Default user_settings (tools access) ───────────────────────────────────
   console.log('\n🔧  Seeding default user_settings...\n')

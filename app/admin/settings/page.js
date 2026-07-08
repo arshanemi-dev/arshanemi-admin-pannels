@@ -104,7 +104,7 @@ export default function SettingsPage() {
       key: 'role', label: 'Role', sortable: true,
       render: (v) => (
         <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-          v === 'master_admin' ? 'bg-indigo-50 text-indigo-700' : 'bg-gray-100 text-gray-600'
+          v === 'admin' ? 'bg-indigo-50 text-indigo-700' : 'bg-gray-100 text-gray-600'
         }`}>
           {v}
         </span>

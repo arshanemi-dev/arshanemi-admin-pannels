@@ -507,5 +507,6 @@ export const tools = [
 // individual users later from Admin → Settings.
 export const defaultToolsAccessByRole = {
   master_admin: tools.map((t) => t.slug),
+  admin: tools.map((t) => t.slug),
   user: tools.map((t) => t.slug),
 };

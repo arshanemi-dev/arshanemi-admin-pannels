@@ -2,8 +2,11 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  Building2, Plus, Pencil, Trash2, Loader2, X, Users, FolderOpen, CheckCircle, XCircle,
+  Building2, Plus, Pencil, Trash2, Loader2, Users, FolderOpen, CheckCircle, XCircle,
 } from 'lucide-react'
+import Modal from '@/components/admin/Modal'
+import ConfirmDialog from '@/components/admin/ConfirmDialog'
+import FormField from '@/components/admin/FormField'
 
 function Badge({ active }) {
   return active
@@ -11,7 +14,7 @@ function Badge({ active }) {
     : <span className="inline-flex items-center gap-1 text-xs bg-red-100 text-red-700 rounded-full px-2 py-0.5"><XCircle className="w-3 h-3" />Inactive</span>
 }
 
-const EMPTY_FORM = { name: '', email: '', phone: '', website: '', address: '' }
+const EMPTY_FORM = { name: '', email: '', phone: '', website: '', address: '', is_active: true }
 
 export default function CompaniesPage() {
   const router = useRouter()
@@ -22,7 +25,8 @@ export default function CompaniesPage() {
   const [form, setForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [deleting, setDeleting] = useState(null)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [deleting, setDeleting] = useState(false)
 
   async function load() {
     setLoading(true)
@@ -43,7 +47,10 @@ export default function CompaniesPage() {
 
   function openEdit(c) {
     setSelected(c)
-    setForm({ name: c.name ?? '', email: c.email ?? '', phone: c.phone ?? '', website: c.website ?? '', address: c.address ?? '' })
+    setForm({
+      name: c.name ?? '', email: c.email ?? '', phone: c.phone ?? '',
+      website: c.website ?? '', address: c.address ?? '', is_active: c.is_active ?? true,
+    })
     setError('')
     setModal('edit')
   }
@@ -73,14 +80,15 @@ export default function CompaniesPage() {
     }
   }
 
-  async function handleDelete(c) {
-    if (!confirm(`Delete company "${c.name || c.email}"? Users linked to it will lose their company association.`)) return
-    setDeleting(c.id)
+  async function handleDelete() {
+    if (!deleteTarget) return
+    setDeleting(true)
     try {
-      await fetch(`/api/admin/companies/${c.id}`, { method: 'DELETE' })
+      await fetch(`/api/admin/companies/${deleteTarget.id}`, { method: 'DELETE' })
+      setDeleteTarget(null)
       load()
     } finally {
-      setDeleting(null)
+      setDeleting(false)
     }
   }
 
@@ -169,12 +177,11 @@ export default function CompaniesPage() {
                         <Pencil className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleDelete(c)}
-                        disabled={deleting === c.id}
-                        className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-40"
+                        onClick={() => setDeleteTarget(c)}
+                        className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Delete"
                       >
-                        {deleting === c.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </td>
@@ -186,78 +193,77 @@ export default function CompaniesPage() {
       )}
 
       {/* Modal — create / edit */}
-      {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <h2 className="font-bold text-gray-900">{modal === 'create' ? 'New Company' : 'Edit Company'}</h2>
-              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      <Modal
+        open={!!modal}
+        onClose={closeModal}
+        title={modal === 'create' ? 'New Company' : 'Edit Company'}
+        footer={(
+          <>
+            <button
+              onClick={closeModal}
+              className="flex-1 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 py-2.5 hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex-1 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2.5 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+            >
+              {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</> : 'Save'}
+            </button>
+          </>
+        )}
+      >
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">{error}</div>
+        )}
 
-            <div className="px-6 py-5 flex flex-col gap-4">
-              {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">{error}</div>
-              )}
+        <FormField
+          label="Company Name" name="name" value={form.name} placeholder="Acme Corp"
+          onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+        />
+        <FormField
+          label="Company Email" name="email" type="email" required value={form.email} placeholder="contact@acme.com"
+          onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+        />
+        <FormField
+          label="Phone" name="phone" value={form.phone} placeholder="+91 98765 43210"
+          onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+        />
+        <FormField
+          label="Website" name="website" value={form.website} placeholder="https://acme.com"
+          onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))}
+        />
+        <FormField
+          label="Address" name="address" type="textarea" rows={2} value={form.address} placeholder="123 Main St, City, State"
+          onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
+        />
 
-              {[
-                { key: 'name', label: 'Company Name', placeholder: 'Acme Corp', required: false },
-                { key: 'email', label: 'Company Email', placeholder: 'contact@acme.com', required: true, type: 'email' },
-                { key: 'phone', label: 'Phone', placeholder: '+91 98765 43210' },
-                { key: 'website', label: 'Website', placeholder: 'https://acme.com' },
-              ].map(({ key, label, placeholder, required, type = 'text' }) => (
-                <div key={key} className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-gray-700">
-                    {label} {required && <span className="text-red-500">*</span>}
-                  </label>
-                  <input
-                    type={type}
-                    value={form[key]}
-                    onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
-                    placeholder={placeholder}
-                    className="rounded-xl border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-              ))}
-
-              <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700">Address</label>
-                <textarea
-                  value={form.address}
-                  onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
-                  placeholder="123 Main St, City, State"
-                  rows={2}
-                  className="rounded-xl border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
-                />
-              </div>
-
-              {modal === 'edit' && selected && (
-                <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-xs text-amber-700">
-                  Changing the company name will update the blob folder path to match the new slug.
-                  Existing files remain at the old path — they are still accessible via their URLs.
-                </div>
-              )}
-            </div>
-
-            <div className="flex gap-3 px-6 pb-6">
-              <button
-                onClick={closeModal}
-                className="flex-1 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 py-2.5 hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="flex-1 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2.5 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
-              >
-                {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</> : 'Save'}
-              </button>
-            </div>
-          </div>
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium text-gray-700">Active</label>
+          <FormField
+            name="is_active" type="toggle" value={form.is_active}
+            onChange={(e) => setForm((f) => ({ ...f, is_active: e.target.value }))}
+          />
         </div>
-      )}
+
+        {modal === 'edit' && selected && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-xs text-amber-700">
+            Changing the company name will update the blob folder path to match the new slug.
+            Existing files remain at the old path — they are still accessible via their URLs.
+          </div>
+        )}
+      </Modal>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete company?"
+        description={deleteTarget ? `Delete company "${deleteTarget.name || deleteTarget.email}"? Users linked to it will lose their company association.` : ''}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+        loading={deleting}
+      />
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation'
+import { redirect, notFound } from 'next/navigation'
 import { headers, cookies } from 'next/headers'
 import { verifyToken } from '@/lib/auth'
 import Sidebar from '@/components/admin/Sidebar'
@@ -8,6 +8,17 @@ import { ToastProvider } from '@/components/admin/Toast'
 export const metadata = {
   title: 'Admin — Santhya Infotech',
   robots: { index: false },
+}
+
+// master_admin has no entry here — unrestricted access to every /admin/* path.
+const ALLOWED_PREFIXES = {
+  admin: ['/admin/users', '/admin/settings', '/admin/profile'],
+  user: ['/admin/profile'],
+}
+
+const LANDING_PAGE = {
+  admin: '/admin/users',
+  user: '/admin/profile',
 }
 
 export default async function AdminLayout({ children }) {
@@ -20,18 +31,44 @@ export default async function AdminLayout({ children }) {
   }
 
   const cookieStore = await cookies()
-  const token = cookieStore.get('admin-token')?.value
+  const token = cookieStore.get('admin-token')?.value || cookieStore.get('arshanemi-token')?.value
   const payload = token ? await verifyToken(token) : null
 
   if (!payload) redirect('/admin/login')
+
+  const role = payload.role
+
+  // Every role below master_admin only gets a fixed slice of the panel.
+  // Landing on the bare dashboard sends them to their own home page; any
+  // other page outside their allowlist is a 404 — they're logged in, just
+  // not permitted here, so a login redirect would be the wrong signal.
+  if (role !== 'master_admin') {
+    if (pathname === '/admin') redirect(LANDING_PAGE[role] || '/admin/profile')
+    const allowed = ALLOWED_PREFIXES[role] || []
+    if (!allowed.some((prefix) => pathname.startsWith(prefix))) notFound()
+  }
+
+  // Plain 'user' role has exactly one page — no sidebar to navigate with.
+  if (role === 'user') {
+    return (
+      <ToastProvider>
+        <div className="flex flex-col h-screen overflow-hidden bg-gray-50">
+          <Topbar username={payload.name} />
+          <main className="flex-1 overflow-y-auto flex justify-center">
+            <div className="p-6 lg:p-8 w-full max-w-2xl">{children}</div>
+          </main>
+        </div>
+      </ToastProvider>
+    )
+  }
 
   return (
     <ToastProvider>
       {/* Fixed full-viewport shell — nothing outside this scrolls */}
       <div className="flex h-screen overflow-hidden bg-gray-50">
-        <Sidebar />
+        <Sidebar role={role} />
         <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-          <Topbar username={payload.username} />
+          <Topbar username={payload.name} />
           <main className="flex-1 overflow-y-auto">
             <div className="p-6 lg:p-8 max-w-screen-2xl">{children}</div>
           </main>

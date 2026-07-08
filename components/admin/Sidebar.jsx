@@ -6,10 +6,10 @@ import {
   Users, MessageSquare, Handshake, BarChart2, HelpCircle, Shield,
   Cog, Package, Heart, Phone, Map, Settings, ChevronRight,
   Layers, ExternalLink, Images, TrendingUp, UserCheck, Palette,
-  Megaphone, Building2,
+  Megaphone, Building2, UserCircle,
 } from 'lucide-react'
 
-const groups = [
+const masterAdminGroups = [
   {
     label: null,
     items: [{ label: 'Dashboard', href: '/admin', icon: LayoutDashboard }],
@@ -40,6 +40,7 @@ const groups = [
     label: 'COMPANIES & USERS',
     items: [
       { label: 'Companies',     href: '/admin/companies', icon: Building2 },
+      { label: 'Users',         href: '/admin/users',     icon: Users },
       { label: 'Tools Access',  href: '/admin/settings',  icon: Settings },
     ],
   },
@@ -75,18 +76,36 @@ const groups = [
     items: [
       { label: 'About Page',     href: '/admin/about',            icon: Layers },
       { label: 'Process Steps',  href: '/admin/process',          icon: Settings },
-     
+
       { label: 'Careers',        href: '/admin/careers',          icon: Briefcase },
       { label: 'Life at Santhya',href: '/admin/life-at-santhya',  icon: Heart },
       { label: 'Contact Page',   href: '/admin/contact',          icon: Phone },
       { label: 'Navigation',     href: '/admin/navigation',       icon: Map },
-     
+
+    ],
+  },
+  {
+    label: 'ACCOUNT',
+    items: [
+      { label: 'My Profile', href: '/admin/profile', icon: UserCircle },
     ],
   },
 ]
 
-export default function Sidebar() {
+const adminGroups = [
+  {
+    label: null,
+    items: [
+      { label: 'Users',        href: '/admin/users',    icon: Users },
+      { label: 'Tools Access', href: '/admin/settings', icon: Settings },
+      { label: 'My Profile',   href: '/admin/profile',  icon: UserCircle },
+    ],
+  },
+]
+
+export default function Sidebar({ role = 'master_admin' }) {
   const pathname = usePathname()
+  const groups = role === 'admin' ? adminGroups : masterAdminGroups
 
   const isActive = (href) => {
     if (href === '/admin') return pathname === '/admin'

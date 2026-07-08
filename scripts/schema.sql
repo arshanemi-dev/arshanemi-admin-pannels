@@ -43,9 +43,10 @@ CREATE TABLE IF NOT EXISTS users (
   email         VARCHAR(255) UNIQUE,
   mobile        VARCHAR(20)  UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
-  role          VARCHAR(50)  NOT NULL DEFAULT 'user',   -- 'master_admin' | 'user'
+  role          VARCHAR(50)  NOT NULL DEFAULT 'user',   -- 'master_admin' | 'admin' | 'user'
   company_id    UUID REFERENCES companies(id) ON DELETE SET NULL,
   is_active     BOOLEAN      NOT NULL DEFAULT TRUE,
+  otp_enabled   BOOLEAN      NOT NULL DEFAULT FALSE,     -- require login OTP for this user
   created_at    TIMESTAMPTZ  DEFAULT NOW(),
   updated_at    TIMESTAMPTZ  DEFAULT NOW()
 );

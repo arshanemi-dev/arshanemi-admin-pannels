@@ -1,4 +1,6 @@
 'use client'
+import { useState } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function FormField({
   label,
@@ -21,6 +23,8 @@ export default function FormField({
 }) {
   const base =
     'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors disabled:bg-gray-50 disabled:text-gray-500'
+
+  const [showPassword, setShowPassword] = useState(false)
 
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
@@ -74,6 +78,29 @@ export default function FormField({
             }`}
           />
         </button>
+      ) : type === 'password' ? (
+        <div className="relative">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            name={name}
+            value={value ?? ''}
+            onChange={onChange}
+            onBlur={onBlur}
+            placeholder={placeholder}
+            required={required}
+            disabled={disabled}
+            autoComplete="new-password"
+            className={`${base} pr-10 ${error ? 'border-red-400 focus:ring-red-400' : ''}`}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((s) => !s)}
+            tabIndex={-1}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          >
+            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          </button>
+        </div>
       ) : (
         <input
           type={type}

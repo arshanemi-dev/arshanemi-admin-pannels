@@ -28,9 +28,12 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
     }
 
+    // OTP-gated login: always required for master_admin, optional per-user otherwise
+    const otpRequired = user.role === 'master_admin' || !!user.otp_enabled
+
     if (otpCode) {
-      // Step 2: verifying the login OTP — only applies to master_admin accounts
-      if (user.role !== 'master_admin') {
+      // Step 2: verifying the login OTP
+      if (!otpRequired) {
         return NextResponse.json({ error: 'OTP not applicable for this account' }, { status: 400 })
       }
       const valid = await verifyOTP({ identifier: user.email, otpCode, purpose: 'login_otp' })
@@ -44,9 +47,9 @@ export async function POST(req) {
         return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
       }
 
-      if (user.role === 'master_admin') {
+      if (otpRequired) {
         if (!user.email) {
-          return NextResponse.json({ error: 'Master admin account has no email on file for OTP' }, { status: 500 })
+          return NextResponse.json({ error: 'Account has no email on file for OTP' }, { status: 500 })
         }
         const otp = generateOTP()
         await createOTP({ identifier: user.email, type: 'email', otpCode: otp, purpose: 'login_otp' })
@@ -55,11 +58,13 @@ export async function POST(req) {
       }
     }
 
-    const tokenPayload = { userId: user.id, email: user.email, role: user.role, name: user.name }
+    const tokenPayload = { userId: user.id, email: user.email, role: user.role, name: user.name, companyId: user.company_id ?? null }
 
-    // Short-lived access token (15 min) + long-lived refresh token (7 days)
+    // Short-lived access token (15 min) + long-lived refresh token (7 days).
+    // Refresh token carries the same identity fields so a silent refresh
+    // doesn't drop email/name/companyId from the re-signed access token.
     const accessToken  = await signToken(tokenPayload, '15m')
-    const refreshToken = await signRefreshToken({ userId: user.id, role: user.role })
+    const refreshToken = await signRefreshToken(tokenPayload)
 
     const cookie = makeAuthCookie(accessToken)
 

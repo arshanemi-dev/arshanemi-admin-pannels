@@ -49,7 +49,12 @@ export async function proxy(req) {
     return res
   }
 
-  const token = req.cookies.get('admin-token')?.value
+  // Any authenticated role (master_admin / admin / user) gets an
+  // 'arshanemi-token' cookie on login; only master_admin additionally gets
+  // 'admin-token'. Structural access to /admin is granted to any logged-in
+  // role here — the layout and API routes below decide what each role can
+  // actually see/do, same defense-in-depth pattern already used elsewhere.
+  const token = req.cookies.get('admin-token')?.value || req.cookies.get('arshanemi-token')?.value
   if (!token) {
     if (pathname.startsWith('/api/')) {
       const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -63,7 +68,7 @@ export async function proxy(req) {
   try {
     const { payload } = await jwtVerify(token, SECRET)
     const res = NextResponse.next()
-    res.headers.set('X-Admin-User', payload.username ?? '')
+    res.headers.set('X-Admin-User', payload.name ?? '')
     res.headers.set('x-pathname', pathname)
     setCorsHeaders(res, origin)
     return res

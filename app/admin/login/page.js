@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Loader2, ShieldCheck } from 'lucide-react'
 import { saveAuthTokens } from '@/lib/tokenStore'
+import OtpPasswordResetModal from '@/components/admin/OtpPasswordResetModal'
 
 const OTP_SECONDS = 60
 
@@ -15,6 +16,7 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [timer, setTimer] = useState(0)
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
   const intervalRef = useRef(null)
   const inputRefs = useRef([])
 
@@ -195,6 +197,13 @@ export default function LoginPage() {
                       {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowForgotPassword(true)}
+                    className="self-end text-xs font-medium text-orange-600 hover:underline"
+                  >
+                    Forgot password?
+                  </button>
                 </div>
 
                 <button
@@ -275,6 +284,11 @@ export default function LoginPage() {
           )}
         </div>
       </div>
+
+      <OtpPasswordResetModal
+        open={showForgotPassword}
+        onClose={() => setShowForgotPassword(false)}
+      />
     </div>
   )
 }

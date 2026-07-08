@@ -20,6 +20,7 @@ export async function POST(req) {
       // re-use fields that were in original token
       ...(payload.email ? { email: payload.email } : {}),
       ...(payload.name  ? { name:  payload.name  } : {}),
+      ...(payload.companyId !== undefined ? { companyId: payload.companyId } : {}),
     }
 
     const accessToken = await signToken(tokenPayload, '15m')
