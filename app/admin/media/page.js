@@ -387,10 +387,10 @@ export default function MediaPage() {
       onDrop={onDrop}
     >
       {isDraggingOver && (
-        <div className="absolute inset-0 z-40 bg-indigo-600/10 border-4 border-dashed border-indigo-400 rounded-xl flex items-center justify-center pointer-events-none">
-          <div className="bg-white rounded-2xl px-8 py-6 shadow-xl flex flex-col items-center gap-3">
-            <Upload className="w-10 h-10 text-indigo-500" />
-            <p className="text-base font-semibold text-gray-700">
+        <div className="absolute inset-0 z-40 bg-accent/10 border-4 border-dashed border-accent rounded-xl flex items-center justify-center pointer-events-none">
+          <div className="bg-card rounded-2xl px-8 py-6 shadow-xl flex flex-col items-center gap-3">
+            <Upload className="w-10 h-10 text-accent" />
+            <p className="text-base font-semibold text-muted">
               Drop to upload → <strong>santhya-media/{uploadSubfolder()}</strong>
             </p>
           </div>
@@ -398,24 +398,24 @@ export default function MediaPage() {
       )}
 
       {/* ── Sidebar ──────────────────────────────────────────────────────── */}
-      <div className="w-64 flex-shrink-0 border-r border-gray-200 bg-white flex flex-col overflow-hidden">
+      <div className="w-64 flex-shrink-0 border-r border-divider bg-card flex flex-col overflow-hidden">
 
         {/* Search + select-all + refresh */}
-        <div className="px-3 pt-3 pb-2 flex-shrink-0 border-b border-gray-100 space-y-2">
+        <div className="px-3 pt-3 pb-2 flex-shrink-0 border-b border-divider space-y-2">
           <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-subtle pointer-events-none" />
             <input
               type="text"
               placeholder="Search folders…"
               value={folderSearch}
               onChange={(e) => setFolderSearch(e.target.value)}
-              className="w-full pl-8 pr-7 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="w-full pl-8 pr-7 py-1.5 text-xs border border-divider rounded-lg focus:outline-none focus:ring-1 focus:ring-accent"
             />
             {folderSearch && (
               <button
                 type="button"
                 onClick={() => setFolderSearch('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-subtle hover:text-muted"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -426,10 +426,10 @@ export default function MediaPage() {
             <button
               type="button"
               onClick={toggleSelectAll}
-              className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
+              className="flex items-center gap-1.5 text-xs text-subtle hover:text-muted transition-colors"
             >
               {allFoldersSelected
-                ? <CheckSquare className="w-3.5 h-3.5 text-indigo-600" />
+                ? <CheckSquare className="w-3.5 h-3.5 text-accent" />
                 : <Square className="w-3.5 h-3.5" />
               }
               Select all
@@ -450,7 +450,7 @@ export default function MediaPage() {
                 onClick={loadAll}
                 disabled={loading}
                 title="Refresh folders"
-                className="p-1 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors disabled:opacity-40"
+                className="p-1 rounded text-subtle hover:text-muted hover:bg-surface transition-colors disabled:opacity-40"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
               </button>
@@ -465,26 +465,26 @@ export default function MediaPage() {
             onClick={() => setActiveFolder('')}
             className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
               activeFolder === ''
-                ? 'bg-indigo-50 text-indigo-700 font-semibold'
-                : 'text-gray-600 hover:bg-gray-50'
+                ? 'bg-accent/10 text-accent-hover font-semibold'
+                : 'text-muted hover:bg-surface'
             }`}
           >
             <Images className="w-4 h-4 flex-shrink-0" />
             <span className="flex-1">All Media</span>
-            <span className="text-[11px] text-gray-400">{totalFileCount}</span>
+            <span className="text-[11px] text-subtle">{totalFileCount}</span>
           </button>
         </div>
 
         {/* Folder tree */}
         <nav className="flex-1 overflow-y-auto pb-3
           [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:transparent
-          [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
+          [&::-webkit-scrollbar-thumb]:bg-divider-light [&::-webkit-scrollbar-thumb]:rounded-full">
           {loading ? (
             <div className="flex justify-center py-8">
-              <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
+              <Loader2 className="w-5 h-5 text-subtle animate-spin" />
             </div>
           ) : filteredTree.length === 0 ? (
-            <p className="text-xs text-gray-400 italic px-4 py-3">
+            <p className="text-xs text-subtle italic px-4 py-3">
               {folderSearch ? 'No matching folders' : 'No files yet'}
             </p>
           ) : (
@@ -520,12 +520,12 @@ export default function MediaPage() {
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 bg-white flex-shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-divider bg-card flex-shrink-0">
           <div>
-            <h1 className="text-base font-semibold text-gray-900 capitalize">{activeFolderLabel}</h1>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <h1 className="text-base font-semibold text-foreground capitalize">{activeFolderLabel}</h1>
+            <p className="text-xs text-subtle mt-0.5">
               {visibleBlobs.length} file{visibleBlobs.length !== 1 ? 's' : ''}
-              {activeFolder && <> · <code className="text-[11px] text-gray-500">{activeFolder}/</code></>}
+              {activeFolder && <> · <code className="text-[11px] text-subtle">{activeFolder}/</code></>}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -533,7 +533,7 @@ export default function MediaPage() {
               type="button"
               onClick={loadAll}
               disabled={loading}
-              className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors disabled:opacity-40"
+              className="p-2 rounded-lg text-subtle hover:bg-surface transition-colors disabled:opacity-40"
               title="Refresh"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -542,7 +542,7 @@ export default function MediaPage() {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-60"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-accent text-white hover:bg-accent-hover disabled:opacity-60"
             >
               {uploading
                 ? <><Loader2 className="w-4 h-4 animate-spin" />{uploadProgress}</>
@@ -621,7 +621,7 @@ function TreeNode({
       {/* Row */}
       <div
         className={`group flex items-center transition-colors ${
-          isActive ? 'bg-indigo-50' : isAncestor ? 'bg-indigo-50/30' : 'hover:bg-gray-50'
+          isActive ? 'bg-accent/10' : isAncestor ? 'bg-accent/5' : 'hover:bg-surface'
         }`}
         style={{ paddingLeft: `${indent}px` }}
       >
@@ -634,7 +634,7 @@ function TreeNode({
           }`}
         >
           <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center transition-all ${
-            isSelected ? 'bg-indigo-600 border-indigo-600' : 'border-gray-300 bg-white'
+            isSelected ? 'bg-accent border-accent' : 'border-divider-light bg-card'
           }`}>
             {isSelected && <Check className="w-2.5 h-2.5 text-white" />}
           </div>
@@ -646,7 +646,7 @@ function TreeNode({
           onClick={() => onToggle(node.path)}
           className={`flex-shrink-0 w-5 h-8 flex items-center justify-center ${
             hasChildren
-              ? 'text-gray-400 hover:text-gray-700'
+              ? 'text-subtle hover:text-muted'
               : 'text-transparent pointer-events-none'
           }`}
         >
@@ -658,7 +658,7 @@ function TreeNode({
         {/* Rename inline input */}
         {isRenaming ? (
           <div className="flex-1 flex items-center gap-1 py-1 min-w-0 pr-1">
-            <FolderOpen className="w-4 h-4 flex-shrink-0 text-indigo-400" />
+            <FolderOpen className="w-4 h-4 flex-shrink-0 text-accent" />
             <input
               ref={renameInputRef}
               type="text"
@@ -668,13 +668,13 @@ function TreeNode({
                 if (e.key === 'Enter') onRenameCommit()
                 if (e.key === 'Escape') onRenameCancel()
               }}
-              className="flex-1 text-xs border border-indigo-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500 min-w-0"
+              className="flex-1 text-xs border border-accent/50 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-accent min-w-0"
             />
             <button
               type="button"
               onClick={onRenameCommit}
               disabled={renamingInProgress || !renameValue.trim()}
-              className="flex-shrink-0 p-1 rounded text-indigo-600 hover:bg-indigo-50 disabled:opacity-40"
+              className="flex-shrink-0 p-1 rounded text-accent hover:bg-accent/10 disabled:opacity-40"
             >
               {renamingInProgress
                 ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -684,7 +684,7 @@ function TreeNode({
             <button
               type="button"
               onClick={onRenameCancel}
-              className="flex-shrink-0 p-1 rounded text-gray-400 hover:bg-gray-100"
+              className="flex-shrink-0 p-1 rounded text-subtle hover:bg-surface"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -699,15 +699,15 @@ function TreeNode({
                 if (hasChildren && !isExpanded) onToggle(node.path)
               }}
               className={`flex-1 flex items-center gap-2 py-1.5 text-[13px] min-w-0 transition-colors ${
-                isActive ? 'text-indigo-700 font-semibold' : 'text-gray-700'
+                isActive ? 'text-accent-hover font-semibold' : 'text-muted'
               }`}
             >
               {isActive || isExpanded
-                ? <FolderOpen className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-indigo-500' : 'text-amber-400'}`} />
-                : <Folder    className={`w-4 h-4 flex-shrink-0 ${isAncestor ? 'text-amber-400' : 'text-gray-400'}`} />
+                ? <FolderOpen className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-accent' : 'text-amber-400'}`} />
+                : <Folder    className={`w-4 h-4 flex-shrink-0 ${isAncestor ? 'text-amber-400' : 'text-subtle'}`} />
               }
               <span className="flex-1 truncate">{node.name}</span>
-              <span className={`text-[11px] flex-shrink-0 ${isActive ? 'text-indigo-400' : 'text-gray-400'}`}>
+              <span className={`text-[11px] flex-shrink-0 ${isActive ? 'text-accent' : 'text-subtle'}`}>
                 {node.count}
               </span>
             </button>
@@ -718,7 +718,7 @@ function TreeNode({
                 type="button"
                 title="Rename"
                 onClick={(e) => { e.stopPropagation(); onRename(node) }}
-                className="p-1 rounded text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                className="p-1 rounded text-subtle hover:text-accent hover:bg-accent/10 transition-colors"
               >
                 <Pencil className="w-3.5 h-3.5" />
               </button>
@@ -726,7 +726,7 @@ function TreeNode({
                 type="button"
                 title="Delete"
                 onClick={(e) => { e.stopPropagation(); onDelete(node) }}
-                className="p-1 rounded text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                className="p-1 rounded text-subtle hover:text-red-500 hover:bg-red-50 transition-colors"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
@@ -739,7 +739,7 @@ function TreeNode({
       {isExpanded && (
         <div className="relative">
           <div
-            className="absolute top-0 bottom-0 border-l border-gray-100"
+            className="absolute top-0 bottom-0 border-l border-divider"
             style={{ left: `${indent + 14}px` }}
           />
 
@@ -776,7 +776,7 @@ function TreeNode({
               type="button"
               onClick={(e) => { e.stopPropagation(); onAutoCreate(node) }}
               disabled={autoCreating}
-              className="flex items-center gap-1.5 text-[11px] text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded px-2 py-1 transition-colors disabled:opacity-40 w-full"
+              className="flex items-center gap-1.5 text-[11px] text-subtle hover:text-accent hover:bg-accent/10 rounded px-2 py-1 transition-colors disabled:opacity-40 w-full"
             >
               {autoCreating
                 ? <Loader2 className="w-3 h-3 animate-spin" />

@@ -15,7 +15,7 @@ export default function LifeAtSanthyaPage() {
     fetch('/api/admin/singleton/life-at-santhya').then((r) => r.json()).then(setForm)
   }, [])
 
-  if (!form) return <div className="text-gray-400 text-sm">Loading…</div>
+  if (!form) return <div className="text-subtle text-sm">Loading…</div>
 
   async function save(e) {
     e.preventDefault()
@@ -39,18 +39,18 @@ export default function LifeAtSanthyaPage() {
     <form onSubmit={save} className="max-w-2xl mx-auto flex flex-col gap-5">
       <PageHeader title="Life at Santhya" />
 
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex flex-col gap-4">
+      <div className="bg-card rounded-2xl border border-divider shadow-sm p-5 flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-gray-700">Company Values</h3>
+          <h3 className="text-sm font-semibold text-muted">Company Values</h3>
           <button type="button" onClick={() => setForm((f) => ({ ...f, companyValues: [...f.companyValues, { icon: '', title: '', desc: '' }] }))}
-            className="text-xs text-indigo-600 font-medium flex items-center gap-1"><Plus className="w-3 h-3" /> Add</button>
+            className="text-xs text-accent font-medium flex items-center gap-1"><Plus className="w-3 h-3" /> Add</button>
         </div>
         {(form.companyValues || []).map((v, i) => (
-          <div key={i} className="border border-gray-100 rounded-xl p-4 flex flex-col gap-3">
+          <div key={i} className="border border-divider rounded-xl p-4 flex flex-col gap-3">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-gray-500">Value {i + 1}</span>
+              <span className="text-xs text-subtle">Value {i + 1}</span>
               <button type="button" onClick={() => setForm((f) => ({ ...f, companyValues: f.companyValues.filter((_, idx) => idx !== i) }))}
-                className="p-1 text-gray-400 hover:text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
+                className="p-1 text-subtle hover:text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
             </div>
             <IconPicker label="Icon" value={v.icon} onChange={(val) => updateVal(i, { icon: val })} />
             <FormField label="Title" value={v.title || ''} onChange={(e) => updateVal(i, { title: e.target.value })} />
@@ -59,18 +59,18 @@ export default function LifeAtSanthyaPage() {
         ))}
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex flex-col gap-4">
+      <div className="bg-card rounded-2xl border border-divider shadow-sm p-5 flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-gray-700">Milestones</h3>
+          <h3 className="text-sm font-semibold text-muted">Milestones</h3>
           <button type="button" onClick={() => setForm((f) => ({ ...f, milestones: [...(f.milestones || []), { year: '', title: '', desc: '' }] }))}
-            className="text-xs text-indigo-600 font-medium flex items-center gap-1"><Plus className="w-3 h-3" /> Add</button>
+            className="text-xs text-accent font-medium flex items-center gap-1"><Plus className="w-3 h-3" /> Add</button>
         </div>
         {(form.milestones || []).map((m, i) => (
-          <div key={i} className="border border-gray-100 rounded-xl p-4 flex flex-col gap-3">
+          <div key={i} className="border border-divider rounded-xl p-4 flex flex-col gap-3">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-gray-500">Milestone {i + 1}</span>
+              <span className="text-xs text-subtle">Milestone {i + 1}</span>
               <button type="button" onClick={() => setForm((f) => ({ ...f, milestones: f.milestones.filter((_, idx) => idx !== i) }))}
-                className="p-1 text-gray-400 hover:text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
+                className="p-1 text-subtle hover:text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <FormField label="Year" value={m.year || ''} onChange={(e) => updateMilestone(i, { year: e.target.value })} />
@@ -82,7 +82,7 @@ export default function LifeAtSanthyaPage() {
       </div>
 
       <button type="submit" disabled={loading}
-        className="self-end px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold disabled:opacity-60">
+        className="self-end px-6 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold disabled:opacity-60">
         {loading ? 'Saving…' : 'Save'}
       </button>
     </form>

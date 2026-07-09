@@ -79,8 +79,8 @@ export default function UsersPage() {
       key: 'name', label: 'User', sortable: true,
       render: (v, row) => (
         <div>
-          <p className="font-medium text-gray-900">{v}</p>
-          <p className="text-xs text-gray-400">{row.email || row.mobile}</p>
+          <p className="font-medium text-foreground">{v}</p>
+          <p className="text-xs text-subtle">{row.email || row.mobile}</p>
         </div>
       ),
     },
@@ -88,7 +88,7 @@ export default function UsersPage() {
       key: 'role', label: 'Role', sortable: true,
       render: (v) => (
         <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-          v === 'admin' ? 'bg-indigo-50 text-indigo-700' : 'bg-gray-100 text-gray-600'
+          v === 'admin' ? 'bg-accent/10 text-accent-hover' : 'bg-surface text-muted'
         }`}>
           {v}
         </span>
@@ -96,13 +96,13 @@ export default function UsersPage() {
     },
     ...(isMaster ? [{
       key: 'company_id', label: 'Company',
-      render: (v) => <span className="text-sm text-gray-600">{companyLabel(v)}</span>,
+      render: (v) => <span className="text-sm text-muted">{companyLabel(v)}</span>,
     }] : []),
     {
       key: 'otp_enabled', label: 'OTP',
       render: (v) => v
         ? <span className="text-xs font-medium text-green-700 bg-green-50 rounded-full px-2 py-0.5">Enabled</span>
-        : <span className="text-xs text-gray-400">Off</span>,
+        : <span className="text-xs text-subtle">Off</span>,
     },
     {
       key: 'is_active', label: 'Status',
@@ -118,13 +118,13 @@ export default function UsersPage() {
       key: '_actions', label: '',
       render: (_v, row) => (
         <div className="flex items-center gap-1 justify-end">
-          <button onClick={() => openEdit(row)} title="Edit" className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+          <button onClick={() => openEdit(row)} title="Edit" className="p-1.5 text-subtle hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
             <Pencil className="w-4 h-4" />
           </button>
-          <button onClick={() => setPasswordTarget(row)} title="Change password" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+          <button onClick={() => setPasswordTarget(row)} title="Change password" className="p-1.5 text-subtle hover:text-accent hover:bg-accent/10 rounded-lg transition-colors">
             <KeyRound className="w-4 h-4" />
           </button>
-          <button onClick={() => setDeleteTarget(row)} title="Delete" className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+          <button onClick={() => setDeleteTarget(row)} title="Delete" className="p-1.5 text-subtle hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
             <Trash2 className="w-4 h-4" />
           </button>
         </div>
@@ -136,18 +136,18 @@ export default function UsersPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-indigo-100 flex items-center justify-center">
-            <UsersIcon className="w-5 h-5 text-indigo-600" />
+          <div className="w-9 h-9 rounded-xl bg-accent/10 flex items-center justify-center">
+            <UsersIcon className="w-5 h-5 text-accent" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Users</h1>
-            <p className="text-sm text-gray-500">{users.length} {isMaster ? 'registered' : 'in your company'}</p>
+            <h1 className="text-xl font-bold text-foreground">Users</h1>
+            <p className="text-sm text-subtle">{users.length} {isMaster ? 'registered' : 'in your company'}</p>
           </div>
         </div>
         <button
           onClick={openCreate}
           disabled={noCompanies}
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors"
+          className="flex items-center gap-2 bg-accent hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors"
         >
           <Plus className="w-4 h-4" /> New User
         </button>

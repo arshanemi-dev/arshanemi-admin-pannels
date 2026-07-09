@@ -32,8 +32,8 @@ const DEFAULTS = {
 
 function SectionCard({ title, children }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex flex-col gap-4">
-      <h3 className="text-sm font-semibold text-gray-700 border-b border-gray-100 pb-3">{title}</h3>
+    <div className="bg-card rounded-2xl border border-divider shadow-sm p-5 flex flex-col gap-4">
+      <h3 className="text-sm font-semibold text-muted border-b border-divider pb-3">{title}</h3>
       {children}
     </div>
   )
@@ -99,7 +99,7 @@ export default function CTABannerAdminPage() {
           placeholder="https://images.unsplash.com/photo-..."
         />
         {form.imageUrl && (
-          <div className="relative h-40 rounded-xl overflow-hidden border border-gray-200">
+          <div className="relative h-40 rounded-xl overflow-hidden border border-divider">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={form.imageUrl} alt="Preview" className="w-full h-full object-cover" />
           </div>
@@ -128,13 +128,13 @@ export default function CTABannerAdminPage() {
       {/* Trust Points */}
       <SectionCard title="Trust Points (left panel checkmarks)">
         {trustPoints.map((pt, i) => (
-          <div key={i} className="border border-gray-100 rounded-xl p-4 flex flex-col gap-3">
+          <div key={i} className="border border-divider rounded-xl p-4 flex flex-col gap-3">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-gray-500">Point #{i + 1}</span>
+              <span className="text-xs text-subtle">Point #{i + 1}</span>
               <button
                 type="button"
                 onClick={() => set('trustPoints', trustPoints.filter((_, idx) => idx !== i))}
-                className="p-1 text-gray-400 hover:text-red-500"
+                className="p-1 text-subtle hover:text-red-500"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
@@ -161,7 +161,7 @@ export default function CTABannerAdminPage() {
           <button
             type="button"
             onClick={() => set('trustPoints', [...trustPoints, { icon: 'CheckCircle', text: '' }])}
-            className="flex items-center gap-1.5 text-xs text-indigo-600 font-medium hover:text-indigo-800 self-start"
+            className="flex items-center gap-1.5 text-xs text-accent font-medium hover:text-accent-hover self-start"
           >
             <Plus className="w-3.5 h-3.5" /> Add Trust Point
           </button>
@@ -171,13 +171,13 @@ export default function CTABannerAdminPage() {
       {/* Metrics */}
       <SectionCard title="Stats Grid (4 metrics shown on left panel)">
         {metrics.map((m, i) => (
-          <div key={i} className="border border-gray-100 rounded-xl p-4 flex flex-col gap-3">
+          <div key={i} className="border border-divider rounded-xl p-4 flex flex-col gap-3">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-gray-500">Metric #{i + 1}</span>
+              <span className="text-xs text-subtle">Metric #{i + 1}</span>
               <button
                 type="button"
                 onClick={() => set('metrics', metrics.filter((_, idx) => idx !== i))}
-                className="p-1 text-gray-400 hover:text-red-500"
+                className="p-1 text-subtle hover:text-red-500"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
@@ -206,7 +206,7 @@ export default function CTABannerAdminPage() {
           <button
             type="button"
             onClick={() => set('metrics', [...metrics, { value: '', label: '', color: 'text-accent-light' }])}
-            className="flex items-center gap-1.5 text-xs text-indigo-600 font-medium hover:text-indigo-800 self-start"
+            className="flex items-center gap-1.5 text-xs text-accent font-medium hover:text-accent-hover self-start"
           >
             <Plus className="w-3.5 h-3.5" /> Add Metric
           </button>
@@ -217,7 +217,7 @@ export default function CTABannerAdminPage() {
         <button
           type="submit"
           disabled={loading}
-          className="px-8 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors disabled:opacity-60"
+          className="px-8 py-3 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-colors disabled:opacity-60"
         >
           {loading ? 'Saving…' : 'Save CTA Banner'}
         </button>

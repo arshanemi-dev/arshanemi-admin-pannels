@@ -30,8 +30,8 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-8">
       {/* Welcome */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Welcome back!</h2>
-        <p className="text-gray-500 mt-1 text-sm">
+        <h2 className="text-2xl font-bold text-foreground">Welcome back!</h2>
+        <p className="text-subtle mt-1 text-sm">
           Manage your website content from the sections below.
         </p>
       </div>
@@ -44,8 +44,8 @@ export default function DashboardPage() {
             href={link.href}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
               link.primary
-                ? 'bg-orange-600 hover:bg-orange-700 text-white'
-                : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200'
+                ? 'bg-accent hover:bg-accent-hover text-white'
+                : 'bg-card hover:bg-surface text-muted border border-divider'
             }`}
           >
             {link.label}
@@ -56,7 +56,7 @@ export default function DashboardPage() {
 
       {/* Section cards */}
       <div>
-        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+        <h3 className="text-sm font-semibold text-subtle uppercase tracking-wider mb-4">
           Content Sections
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -64,15 +64,15 @@ export default function DashboardPage() {
             <Link
               key={card.href}
               href={card.href}
-              className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md hover:border-orange-200 transition-all group"
+              className="bg-card rounded-xl border border-divider p-5 hover:shadow-md hover:border-accent/30 transition-all group"
             >
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${card.color}`}>
                 <card.icon className="w-5 h-5" />
               </div>
-              <p className="text-sm font-semibold text-gray-800 group-hover:text-orange-600 transition-colors">
+              <p className="text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
                 {card.label}
               </p>
-              <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
+              <p className="text-xs text-subtle mt-0.5 flex items-center gap-1">
                 Manage <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </p>
             </Link>
@@ -82,7 +82,7 @@ export default function DashboardPage() {
 
       {/* Singleton pages */}
       <div>
-        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+        <h3 className="text-sm font-semibold text-subtle uppercase tracking-wider mb-4">
           Page Settings
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -102,7 +102,7 @@ export default function DashboardPage() {
             <Link
               key={item.href}
               href={item.href}
-              className="bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-200 transition-colors"
+              className="bg-card border border-divider rounded-xl px-4 py-3 text-sm font-medium text-muted hover:bg-accent/10 hover:text-accent-hover hover:border-accent/30 transition-colors"
             >
               {item.label}
             </Link>

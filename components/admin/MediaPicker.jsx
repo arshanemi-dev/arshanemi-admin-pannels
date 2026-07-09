@@ -57,13 +57,13 @@ function TreeNode({ node, depth, expanded, activeFolder, onToggle, onSelect }) {
   return (
     <div>
       <div
-        className={`group flex items-center transition-colors ${isActive ? 'bg-indigo-50' : isAncestor ? 'bg-indigo-50/40' : ''}`}
+        className={`group flex items-center transition-colors ${isActive ? 'bg-accent/10' : isAncestor ? 'bg-accent/5' : ''}`}
         style={{ paddingLeft: `${depth * 14 + 4}px` }}
       >
         <button
           type="button"
           onClick={() => onToggle(node.path)}
-          className={`flex-shrink-0 w-6 h-8 flex items-center justify-center ${hasChildren ? 'text-gray-400 hover:text-gray-700' : 'text-transparent pointer-events-none'}`}
+          className={`flex-shrink-0 w-6 h-8 flex items-center justify-center ${hasChildren ? 'text-subtle hover:text-muted' : 'text-transparent pointer-events-none'}`}
         >
           <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-150 ${isExpanded ? 'rotate-90' : ''}`} />
         </button>
@@ -75,22 +75,22 @@ function TreeNode({ node, depth, expanded, activeFolder, onToggle, onSelect }) {
             if (hasChildren && !isExpanded) onToggle(node.path)
           }}
           className={`flex-1 flex items-center gap-2 py-1.5 pr-2 text-[13px] min-w-0 transition-colors ${
-            isActive ? 'text-indigo-700 font-semibold' : 'text-gray-700 hover:text-gray-900'
+            isActive ? 'text-accent-hover font-semibold' : 'text-muted hover:text-foreground'
           }`}
         >
           {isActive || isExpanded
-            ? <FolderOpen className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-indigo-500' : 'text-amber-400'}`} />
-            : <Folder className={`w-4 h-4 flex-shrink-0 ${isAncestor ? 'text-amber-400' : 'text-gray-400'}`} />
+            ? <FolderOpen className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-accent' : 'text-amber-400'}`} />
+            : <Folder className={`w-4 h-4 flex-shrink-0 ${isAncestor ? 'text-amber-400' : 'text-subtle'}`} />
           }
           <span className="flex-1 truncate">{node.name}</span>
-          <span className={`text-[11px] flex-shrink-0 ${isActive ? 'text-indigo-400' : 'text-gray-400'}`}>{node.count}</span>
+          <span className={`text-[11px] flex-shrink-0 ${isActive ? 'text-accent' : 'text-subtle'}`}>{node.count}</span>
         </button>
       </div>
 
       {isExpanded && hasChildren && (
         <div className="relative">
           <div
-            className="absolute top-0 bottom-0 border-l border-gray-100"
+            className="absolute top-0 bottom-0 border-l border-divider"
             style={{ left: `${depth * 14 + 14}px` }}
           />
           {node.children.map((child) => (
@@ -225,28 +225,28 @@ export default function MediaPicker({ open, onClose, onSelect }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl h-[82vh] flex flex-col overflow-hidden">
+      <div className="bg-card rounded-2xl shadow-2xl w-full max-w-5xl h-[82vh] flex flex-col overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 flex-shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-divider flex-shrink-0">
           <div>
-            <h2 className="text-base font-semibold text-gray-900">Media Library</h2>
-            <p className="text-xs text-gray-500 mt-0.5">Click any file to insert its URL</p>
+            <h2 className="text-base font-semibold text-foreground">Media Library</h2>
+            <p className="text-xs text-subtle mt-0.5">Click any file to insert its URL</p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex border border-gray-200 rounded-lg overflow-hidden text-sm">
+            <div className="flex border border-divider rounded-lg overflow-hidden text-sm">
               <button
                 type="button"
                 onClick={() => setTab('library')}
-                className={`px-3 py-1.5 transition-colors ${tab === 'library' ? 'bg-indigo-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+                className={`px-3 py-1.5 transition-colors ${tab === 'library' ? 'bg-accent text-white' : 'text-muted hover:bg-surface'}`}
               >Library</button>
               <button
                 type="button"
                 onClick={() => setTab('upload')}
-                className={`px-3 py-1.5 transition-colors ${tab === 'upload' ? 'bg-indigo-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+                className={`px-3 py-1.5 transition-colors ${tab === 'upload' ? 'bg-accent text-white' : 'text-muted hover:bg-surface'}`}
               >Upload</button>
             </div>
-            <button type="button" onClick={onClose} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100">
+            <button type="button" onClick={onClose} className="p-1.5 rounded-lg text-subtle hover:text-muted hover:bg-surface">
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -256,28 +256,28 @@ export default function MediaPicker({ open, onClose, onSelect }) {
         <div className="flex flex-1 overflow-hidden">
 
           {/* Sidebar */}
-          <div className="w-52 border-r border-gray-200 bg-gray-50 flex-shrink-0 flex flex-col overflow-hidden">
+          <div className="w-52 border-r border-divider bg-surface flex-shrink-0 flex flex-col overflow-hidden">
             <nav className="flex-1 overflow-y-auto pt-2 pb-2
               [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:transparent
-              [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
+              [&::-webkit-scrollbar-thumb]:bg-divider-light [&::-webkit-scrollbar-thumb]:rounded-full">
 
               {/* All Media */}
               <button
                 type="button"
                 onClick={() => setActiveFolder('')}
                 className={`w-full flex items-center gap-2 px-3 py-2 mx-1 rounded-lg text-sm transition-colors ${
-                  activeFolder === '' ? 'bg-indigo-50 text-indigo-700 font-semibold' : 'text-gray-600 hover:bg-gray-100'
+                  activeFolder === '' ? 'bg-accent/10 text-accent-hover font-semibold' : 'text-muted hover:bg-surface'
                 }`}
               >
                 <Images className="w-4 h-4 flex-shrink-0" />
                 <span className="flex-1">All Media</span>
-                <span className="text-[11px] text-gray-400">{allBlobs.length}</span>
+                <span className="text-[11px] text-subtle">{allBlobs.length}</span>
               </button>
 
               {/* Tree */}
               {loading ? (
                 <div className="flex justify-center py-6">
-                  <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />
+                  <Loader2 className="w-4 h-4 text-subtle animate-spin" />
                 </div>
               ) : (
                 tree.map((node) => (
@@ -312,18 +312,18 @@ export default function MediaPicker({ open, onClose, onSelect }) {
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => { e.preventDefault(); handleUpload([...e.dataTransfer.files]) }}
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full max-w-sm border-2 border-dashed border-gray-300 hover:border-indigo-400 rounded-2xl flex flex-col items-center justify-center py-14 cursor-pointer transition-colors hover:bg-indigo-50/40"
+                  className="w-full max-w-sm border-2 border-dashed border-divider-light hover:border-accent rounded-2xl flex flex-col items-center justify-center py-14 cursor-pointer transition-colors hover:bg-accent/5"
                 >
                   {uploading ? (
-                    <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+                    <Loader2 className="w-8 h-8 text-accent animate-spin" />
                   ) : (
                     <>
-                      <div className="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center mb-4">
-                        <Upload className="w-7 h-7 text-indigo-500" />
+                      <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mb-4">
+                        <Upload className="w-7 h-7 text-accent" />
                       </div>
-                      <p className="text-sm font-medium text-gray-700">Drop files or click to browse</p>
-                      <p className="text-xs text-gray-400 mt-1.5">PNG, JPG, WEBP, SVG — up to 10MB</p>
-                      <p className="text-xs text-indigo-500 mt-1.5">→ <strong>santhya-media/{uploadDest}</strong></p>
+                      <p className="text-sm font-medium text-muted">Drop files or click to browse</p>
+                      <p className="text-xs text-subtle mt-1.5">PNG, JPG, WEBP, SVG — up to 10MB</p>
+                      <p className="text-xs text-accent mt-1.5">→ <strong>santhya-media/{uploadDest}</strong></p>
                     </>
                   )}
                 </div>
@@ -357,7 +357,7 @@ function PickerTreeNode({
     <div>
       <div
         className={`group flex items-center transition-colors ${
-          isActive ? 'bg-indigo-50' : isAncestor ? 'bg-indigo-50/30' : 'hover:bg-gray-100'
+          isActive ? 'bg-accent/10' : isAncestor ? 'bg-accent/5' : 'hover:bg-surface'
         }`}
         style={{ paddingLeft: `${indent}px` }}
       >
@@ -366,7 +366,7 @@ function PickerTreeNode({
           type="button"
           onClick={() => onToggle(node.path)}
           className={`flex-shrink-0 w-6 h-8 flex items-center justify-center ${
-            hasChildren || isAddingHere ? 'text-gray-400 hover:text-gray-700' : 'text-transparent pointer-events-none'
+            hasChildren || isAddingHere ? 'text-subtle hover:text-muted' : 'text-transparent pointer-events-none'
           }`}
         >
           <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-150 ${isExpanded || isAddingHere ? 'rotate-90' : ''}`} />
@@ -380,15 +380,15 @@ function PickerTreeNode({
             if ((hasChildren || isAddingHere) && !isExpanded) onToggle(node.path)
           }}
           className={`flex-1 flex items-center gap-2 py-1.5 text-[13px] min-w-0 transition-colors ${
-            isActive ? 'text-indigo-700 font-semibold' : 'text-gray-700'
+            isActive ? 'text-accent-hover font-semibold' : 'text-muted'
           }`}
         >
           {isActive || isExpanded || isAddingHere
-            ? <FolderOpen className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-indigo-500' : 'text-amber-400'}`} />
-            : <Folder    className={`w-4 h-4 flex-shrink-0 ${isAncestor ? 'text-amber-400' : 'text-gray-400'}`} />
+            ? <FolderOpen className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-accent' : 'text-amber-400'}`} />
+            : <Folder    className={`w-4 h-4 flex-shrink-0 ${isAncestor ? 'text-amber-400' : 'text-subtle'}`} />
           }
           <span className="flex-1 truncate">{node.name}</span>
-          <span className={`text-[11px] flex-shrink-0 ${isActive ? 'text-indigo-400' : 'text-gray-400'}`}>{node.count}</span>
+          <span className={`text-[11px] flex-shrink-0 ${isActive ? 'text-accent' : 'text-subtle'}`}>{node.count}</span>
         </button>
 
         {/* Add icon only */}
@@ -396,7 +396,7 @@ function PickerTreeNode({
           type="button"
           title="Add folder"
           onClick={(e) => { e.stopPropagation(); onAdd(node.path) }}
-          className="flex-shrink-0 mr-1.5 p-1 rounded text-transparent group-hover:text-gray-400 hover:!text-indigo-600 hover:bg-indigo-50 transition-all opacity-0 group-hover:opacity-100"
+          className="flex-shrink-0 mr-1.5 p-1 rounded text-transparent group-hover:text-subtle hover:!text-accent hover:bg-accent/10 transition-all opacity-0 group-hover:opacity-100"
         >
           <FolderPlus className="w-3.5 h-3.5" />
         </button>
@@ -405,7 +405,7 @@ function PickerTreeNode({
       {/* Children + inline-add */}
       {(isExpanded || isAddingHere) && (
         <div className="relative">
-          <div className="absolute top-0 bottom-0 border-l border-gray-100" style={{ left: `${indent + 14}px` }} />
+          <div className="absolute top-0 bottom-0 border-l border-divider" style={{ left: `${indent + 14}px` }} />
           {hasChildren && node.children.map((child) => (
             <PickerTreeNode
               key={child.path}
@@ -429,7 +429,7 @@ function PickerTreeNode({
               className="flex items-center gap-1 py-1 pr-2"
               style={{ paddingLeft: `${(depth + 1) * 14 + 10}px` }}
             >
-              <FolderPlus className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" />
+              <FolderPlus className="w-3.5 h-3.5 text-accent flex-shrink-0" />
               <input
                 autoFocus
                 type="text"
@@ -437,14 +437,14 @@ function PickerTreeNode({
                 onChange={(e) => onNewFolderNameChange(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') onCreateFolder(); if (e.key === 'Escape') onCancelAdding() }}
                 placeholder="Folder name…"
-                className="flex-1 text-xs border border-indigo-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500 min-w-0"
+                className="flex-1 text-xs border border-accent/50 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-accent min-w-0"
               />
               <button type="button" onClick={onCreateFolder} disabled={creatingFolder || !newFolderName.trim()}
-                className="flex-shrink-0 p-1 rounded text-indigo-600 hover:bg-indigo-50 disabled:opacity-40">
+                className="flex-shrink-0 p-1 rounded text-accent hover:bg-accent/10 disabled:opacity-40">
                 {creatingFolder ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
               </button>
               <button type="button" onClick={onCancelAdding}
-                className="flex-shrink-0 p-1 rounded text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+                className="flex-shrink-0 p-1 rounded text-subtle hover:bg-surface hover:text-muted">
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>

@@ -97,17 +97,17 @@ export default function CompaniesPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-indigo-100 flex items-center justify-center">
-            <Building2 className="w-5 h-5 text-indigo-600" />
+          <div className="w-9 h-9 rounded-xl bg-accent/10 flex items-center justify-center">
+            <Building2 className="w-5 h-5 text-accent" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Companies</h1>
-            <p className="text-sm text-gray-500">{companies.length} registered</p>
+            <h1 className="text-xl font-bold text-foreground">Companies</h1>
+            <p className="text-sm text-subtle">{companies.length} registered</p>
           </div>
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors"
+          className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors"
         >
           <Plus className="w-4 h-4" /> New Company
         </button>
@@ -115,70 +115,70 @@ export default function CompaniesPage() {
 
       {/* Table */}
       {loading ? (
-        <div className="flex items-center justify-center py-20 text-gray-400">
+        <div className="flex items-center justify-center py-20 text-subtle">
           <Loader2 className="w-6 h-6 animate-spin mr-2" /> Loading…
         </div>
       ) : companies.length === 0 ? (
-        <div className="text-center py-20 text-gray-400">
+        <div className="text-center py-20 text-subtle">
           <Building2 className="w-10 h-10 mx-auto mb-3 opacity-40" />
           <p className="text-sm">No companies yet. Create the first one.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div className="bg-card rounded-2xl border border-divider overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-surface border-b border-divider">
               <tr>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Company</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Email</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Folder</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Created</th>
+                <th className="text-left px-4 py-3 font-medium text-muted">Company</th>
+                <th className="text-left px-4 py-3 font-medium text-muted">Email</th>
+                <th className="text-left px-4 py-3 font-medium text-muted">Folder</th>
+                <th className="text-left px-4 py-3 font-medium text-muted">Status</th>
+                <th className="text-left px-4 py-3 font-medium text-muted">Created</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-divider">
               {companies.map((c) => (
-                <tr key={c.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={c.id} className="hover:bg-surface transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                        <Building2 className="w-4 h-4 text-indigo-600" />
+                      <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
+                        <Building2 className="w-4 h-4 text-accent" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">{c.name || <span className="text-gray-400 italic">Unnamed</span>}</p>
-                        {c.slug && <p className="text-xs text-gray-400">{c.slug}</p>}
+                        <p className="font-medium text-foreground">{c.name || <span className="text-subtle italic">Unnamed</span>}</p>
+                        {c.slug && <p className="text-xs text-subtle">{c.slug}</p>}
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-gray-600">{c.email}</td>
+                  <td className="px-4 py-3 text-muted">{c.email}</td>
                   <td className="px-4 py-3">
-                    <span className="inline-flex items-center gap-1 text-xs bg-gray-100 text-gray-600 rounded-md px-2 py-0.5 font-mono">
+                    <span className="inline-flex items-center gap-1 text-xs bg-surface text-muted rounded-md px-2 py-0.5 font-mono">
                       <FolderOpen className="w-3 h-3" />{c.folder_id}
                     </span>
                   </td>
                   <td className="px-4 py-3"><Badge active={c.is_active} /></td>
-                  <td className="px-4 py-3 text-gray-500 text-xs">
+                  <td className="px-4 py-3 text-subtle text-xs">
                     {new Date(c.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2 justify-end">
                       <button
                         onClick={() => router.push(`/admin/companies/${c.id}`)}
-                        className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                        className="p-1.5 text-subtle hover:text-accent hover:bg-accent/10 rounded-lg transition-colors"
                         title="View users"
                       >
                         <Users className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => openEdit(c)}
-                        className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="p-1.5 text-subtle hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                         title="Edit"
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => setDeleteTarget(c)}
-                        className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-1.5 text-subtle hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -201,14 +201,14 @@ export default function CompaniesPage() {
           <>
             <button
               onClick={closeModal}
-              className="flex-1 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 py-2.5 hover:bg-gray-50 transition-colors"
+              className="flex-1 rounded-xl border border-divider-light text-sm font-medium text-muted py-2.5 hover:bg-surface transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2.5 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+              className="flex-1 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-medium py-2.5 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</> : 'Save'}
             </button>
@@ -241,7 +241,7 @@ export default function CompaniesPage() {
         />
 
         <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-gray-700">Active</label>
+          <label className="text-sm font-medium text-muted">Active</label>
           <FormField
             name="is_active" type="toggle" value={form.is_active}
             onChange={(e) => setForm((f) => ({ ...f, is_active: e.target.value }))}

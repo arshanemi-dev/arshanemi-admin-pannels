@@ -113,16 +113,16 @@ export default function Sidebar({ role = 'master_admin' }) {
   }
 
   return (
-    <aside className="w-60 flex-shrink-0 h-full bg-indigo-700 flex flex-col overflow-hidden">
+    <aside className="w-60 flex-shrink-0 h-full bg-accent flex flex-col overflow-hidden">
       {/* Logo */}
-      <div className="px-4 py-5 border-b border-indigo-600 flex-shrink-0">
+      <div className="px-4 py-5 border-b border-accent-hover flex-shrink-0">
         <Link href="/admin" className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
             <span className="text-white font-bold text-sm">S</span>
           </div>
           <div>
             <p className="text-white font-semibold text-sm leading-tight">Santhya</p>
-            <p className="text-indigo-300 text-[11px]">Admin Panel</p>
+            <p className="text-white/50 text-[11px]">Admin Panel</p>
           </div>
         </Link>
       </div>
@@ -131,12 +131,12 @@ export default function Sidebar({ role = 'master_admin' }) {
       <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-4
         [&::-webkit-scrollbar]:w-1
         [&::-webkit-scrollbar-track]:transparent
-        [&::-webkit-scrollbar-thumb]:bg-indigo-500
+        [&::-webkit-scrollbar-thumb]:bg-white/30
         [&::-webkit-scrollbar-thumb]:rounded-full">
         {groups.map((group, gi) => (
           <div key={gi}>
             {group.label && (
-              <p className="text-indigo-400 text-[10px] font-semibold tracking-widest uppercase px-2 mb-1">
+              <p className="text-white/40 text-[10px] font-semibold tracking-widest uppercase px-2 mb-1">
                 {group.label}
               </p>
             )}
@@ -150,7 +150,7 @@ export default function Sidebar({ role = 'master_admin' }) {
                       className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-all group ${
                         active
                           ? 'bg-white/15 text-white shadow-sm'
-                          : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                          : 'text-white/70 hover:bg-white/10 hover:text-white'
                       }`}
                     >
                       <item.icon className="w-4 h-4 flex-shrink-0" />
@@ -166,12 +166,12 @@ export default function Sidebar({ role = 'master_admin' }) {
       </nav>
 
       {/* Bottom */}
-      <div className="px-4 py-3 border-t border-indigo-600 flex-shrink-0">
+      <div className="px-4 py-3 border-t border-accent-hover flex-shrink-0">
         <Link
           href="/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 text-indigo-300 text-xs hover:text-white transition-colors"
+          className="flex items-center gap-2 text-white/50 text-xs hover:text-white transition-colors"
         >
           <ExternalLink className="w-3.5 h-3.5" />
           View Website

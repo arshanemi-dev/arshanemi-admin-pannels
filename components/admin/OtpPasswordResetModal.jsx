@@ -144,7 +144,7 @@ export default function OtpPasswordResetModal({ open, identifier: fixedIdentifie
           <button
             onClick={() => sendOtp(identifier)}
             disabled={loading || !identifier.trim()}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+            className="w-full bg-accent hover:bg-accent-hover text-white font-medium py-2.5 rounded-xl text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</> : 'Send OTP'}
           </button>
@@ -153,10 +153,10 @@ export default function OtpPasswordResetModal({ open, identifier: fixedIdentifie
 
       {step === 'otp' && (
         <>
-          <p className="text-sm text-gray-500 -mt-1">
-            A 6-digit code was sent to <strong className="text-gray-900">{identifier}</strong>.
+          <p className="text-sm text-subtle -mt-1">
+            A 6-digit code was sent to <strong className="text-foreground">{identifier}</strong>.
           </p>
-          <div className={`text-sm font-semibold ${timer > 0 ? 'text-indigo-600' : 'text-red-500'}`}>
+          <div className={`text-sm font-semibold ${timer > 0 ? 'text-accent' : 'text-red-500'}`}>
             {timer > 0 ? `Code expires in ${timer}s` : 'Code expired'}
           </div>
           <div className="flex gap-2 justify-center">
@@ -167,19 +167,19 @@ export default function OtpPasswordResetModal({ open, identifier: fixedIdentifie
                 type="text" inputMode="numeric" maxLength={1} value={digit}
                 onChange={(e) => handleOtpChange(e.target.value, i)}
                 onKeyDown={(e) => handleOtpKeyDown(e, i)}
-                className="w-11 h-12 text-center text-lg font-bold rounded-xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-11 h-12 text-center text-lg font-bold rounded-xl border border-divider-light bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
               />
             ))}
           </div>
           <button
             onClick={handleVerifyOtp}
             disabled={loading || timer === 0}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+            className="w-full bg-accent hover:bg-accent-hover text-white font-medium py-2.5 rounded-xl text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Verifying…</> : 'Verify Code'}
           </button>
           {timer === 0 && (
-            <button onClick={() => sendOtp(identifier)} disabled={loading} className="w-full text-indigo-600 hover:underline text-sm font-medium">
+            <button onClick={() => sendOtp(identifier)} disabled={loading} className="w-full text-accent hover:underline text-sm font-medium">
               Resend code
             </button>
           )}
@@ -200,7 +200,7 @@ export default function OtpPasswordResetModal({ open, identifier: fixedIdentifie
           <button
             onClick={handleSetPassword}
             disabled={loading || !password || !confirm}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+            className="w-full bg-accent hover:bg-accent-hover text-white font-medium py-2.5 rounded-xl text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</> : 'Change Password'}
           </button>
@@ -213,11 +213,11 @@ export default function OtpPasswordResetModal({ open, identifier: fixedIdentifie
             <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center">
               <CheckCircle2 className="w-6 h-6 text-green-600" />
             </div>
-            <p className="text-sm text-gray-600">Your password has been changed successfully.</p>
+            <p className="text-sm text-muted">Your password has been changed successfully.</p>
           </div>
           <button
             onClick={() => { onDone?.(); onClose() }}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl text-sm transition-colors"
+            className="w-full bg-accent hover:bg-accent-hover text-white font-medium py-2.5 rounded-xl text-sm transition-colors"
           >
             Done
           </button>

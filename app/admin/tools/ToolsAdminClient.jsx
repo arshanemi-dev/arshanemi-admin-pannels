@@ -141,21 +141,21 @@ export default function ToolsAdminClient({ initialTools }) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/admin" className="text-gray-400 hover:text-gray-600">
+          <Link href="/admin" className="text-subtle hover:text-muted">
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Tools</h2>
-            <p className="text-gray-500 text-sm mt-0.5">{tools.length} tools total</p>
+            <h2 className="text-2xl font-bold text-foreground">Tools</h2>
+            <p className="text-subtle text-sm mt-0.5">{tools.length} tools total</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Link href="/tools" target="_blank" className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 border border-gray-200 rounded-xl px-3 py-2">
+          <Link href="/tools" target="_blank" className="flex items-center gap-1.5 text-sm text-subtle hover:text-muted border border-divider rounded-xl px-3 py-2">
             <ExternalLink className="w-3.5 h-3.5" /> Preview
           </Link>
           <button
             onClick={openNew}
-            className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
+            className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
           >
             <Plus className="w-4 h-4" /> Add Tool
           </button>
@@ -164,46 +164,46 @@ export default function ToolsAdminClient({ initialTools }) {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-subtle" />
         <input
           type="text"
           placeholder="Search tools…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full pl-9 pr-4 py-2.5 border border-divider rounded-xl text-sm bg-card focus:outline-none focus:ring-2 focus:ring-accent"
         />
       </div>
 
       {/* Tools Table */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      <div className="bg-card rounded-2xl border border-divider overflow-hidden">
         {filtered.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">
+          <div className="text-center py-16 text-subtle">
             <p className="text-sm">No tools found. Click "Add Tool" to create one.</p>
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tool</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Slug</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Category</th>
-                <th className="text-right px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+              <tr className="border-b border-divider bg-surface">
+                <th className="text-left px-5 py-3 text-xs font-semibold text-subtle uppercase tracking-wider">Tool</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-subtle uppercase tracking-wider hidden md:table-cell">Slug</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-subtle uppercase tracking-wider hidden sm:table-cell">Category</th>
+                <th className="text-right px-5 py-3 text-xs font-semibold text-subtle uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-divider">
               {filtered.map((tool) => (
-                <tr key={tool.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={tool.id} className="hover:bg-surface transition-colors">
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center shrink-0">
-                        <span className="text-orange-600 text-xs font-bold">{tool.icon?.[0] || 'T'}</span>
+                      <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                        <span className="text-accent text-xs font-bold">{tool.icon?.[0] || 'T'}</span>
                       </div>
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <p className="font-semibold text-gray-900">{tool.title}</p>
+                          <p className="font-semibold text-foreground">{tool.title}</p>
                           {tool.toolUrl && (
                             <span title="Embeddable — has a Use Tool link">
-                              <Link2 className="w-3 h-3 text-orange-500" />
+                              <Link2 className="w-3 h-3 text-accent" />
                             </span>
                           )}
                           {tool.requiresLogin && (
@@ -212,15 +212,15 @@ export default function ToolsAdminClient({ initialTools }) {
                             </span>
                           )}
                         </div>
-                        <p className="text-gray-400 text-xs line-clamp-1 max-w-xs">{tool.shortDesc}</p>
+                        <p className="text-subtle text-xs line-clamp-1 max-w-xs">{tool.shortDesc}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-5 py-4 text-gray-500 font-mono text-xs hidden md:table-cell">
+                  <td className="px-5 py-4 text-subtle font-mono text-xs hidden md:table-cell">
                     {tool.slug}
                   </td>
                   <td className="px-5 py-4 hidden sm:table-cell">
-                    <span className="bg-orange-50 text-orange-700 text-xs font-medium px-2.5 py-1 rounded-full">
+                    <span className="bg-accent/10 text-accent-hover text-xs font-medium px-2.5 py-1 rounded-full">
                       {TOOL_CATEGORIES.find((c) => c.id === tool.category)?.label || tool.category}
                     </span>
                   </td>
@@ -229,20 +229,20 @@ export default function ToolsAdminClient({ initialTools }) {
                       <Link
                         href={`/tools/${tool.slug}`}
                         target="_blank"
-                        className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+                        className="p-1.5 text-subtle hover:text-muted rounded-lg hover:bg-surface"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
                       </Link>
                       <button
                         onClick={() => openEdit(tool)}
-                        className="p-1.5 text-gray-400 hover:text-orange-600 rounded-lg hover:bg-orange-50 transition-colors"
+                        className="p-1.5 text-subtle hover:text-accent rounded-lg hover:bg-accent/10 transition-colors"
                       >
                         <Pencil className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDelete(tool.id)}
                         disabled={deletingId === tool.id}
-                        className="p-1.5 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                        className="p-1.5 text-subtle hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
                       >
                         {deletingId === tool.id
                           ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -260,12 +260,12 @@ export default function ToolsAdminClient({ initialTools }) {
       {/* Form Modal */}
       {showForm && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-              <h3 className="text-lg font-bold text-gray-900">
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-divider">
+              <h3 className="text-lg font-bold text-foreground">
                 {editing ? 'Edit Tool' : 'Add New Tool'}
               </h3>
-              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+              <button onClick={() => setShowForm(false)} className="text-subtle hover:text-muted text-xl">×</button>
             </div>
 
             <div className="p-6 flex flex-col gap-4">
@@ -343,16 +343,16 @@ export default function ToolsAdminClient({ initialTools }) {
                 {urlError ? (
                   <p className="text-xs text-red-500 mt-1">{urlError}</p>
                 ) : (
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-subtle mt-1">
                     When set, a "Use Tool" button appears on the tools grid and detail page, opening this URL in an iframe. The target site must allow iframe embedding.
                   </p>
                 )}
               </FormField>
 
-              <div className="flex items-center justify-between rounded-xl border border-gray-200 px-4 py-3">
+              <div className="flex items-center justify-between rounded-xl border border-divider px-4 py-3">
                 <div>
-                  <p className="text-sm font-medium text-gray-700">Require Login</p>
-                  <p className="text-xs text-gray-400">Visitors must sign in before the embedded tool loads.</p>
+                  <p className="text-sm font-medium text-muted">Require Login</p>
+                  <p className="text-xs text-subtle">Visitors must sign in before the embedded tool loads.</p>
                 </div>
                 <button
                   type="button"
@@ -360,11 +360,11 @@ export default function ToolsAdminClient({ initialTools }) {
                   aria-checked={form.requiresLogin}
                   onClick={() => setForm((f) => ({ ...f, requiresLogin: !f.requiresLogin }))}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0 ${
-                    form.requiresLogin ? 'bg-orange-600' : 'bg-gray-200'
+                    form.requiresLogin ? 'bg-accent' : 'bg-divider-light'
                   }`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
+                    className={`inline-block h-4 w-4 transform rounded-full bg-card shadow-sm transition-transform ${
                       form.requiresLogin ? 'translate-x-6' : 'translate-x-1'
                     }`}
                   />
@@ -375,14 +375,14 @@ export default function ToolsAdminClient({ initialTools }) {
             <div className="flex gap-3 px-6 pb-6">
               <button
                 onClick={() => setShowForm(false)}
-                className="flex-1 border border-gray-200 text-gray-600 font-medium py-2.5 rounded-xl text-sm hover:bg-gray-50 transition-colors"
+                className="flex-1 border border-divider text-muted font-medium py-2.5 rounded-xl text-sm hover:bg-surface transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={loading}
-                className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                className="flex-1 bg-accent hover:bg-accent-hover text-white font-semibold py-2.5 rounded-xl text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
               >
                 {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</> : (editing ? 'Update Tool' : 'Create Tool')}
               </button>
@@ -394,18 +394,18 @@ export default function ToolsAdminClient({ initialTools }) {
       <style jsx>{`
         .admin-input {
           width: 100%;
-          border: 1px solid #e5e7eb;
+          border: 1px solid var(--color-divider);
           border-radius: 0.75rem;
           padding: 0.625rem 0.875rem;
           font-size: 0.875rem;
-          color: #111827;
-          background: #fff;
+          color: var(--color-foreground);
+          background: var(--color-card);
           transition: border-color 0.15s, box-shadow 0.15s;
         }
         .admin-input:focus {
           outline: none;
-          border-color: #ea580c;
-          box-shadow: 0 0 0 3px rgba(234,88,12,0.12);
+          border-color: var(--color-accent);
+          box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.12);
         }
       `}</style>
     </div>
@@ -415,7 +415,7 @@ export default function ToolsAdminClient({ initialTools }) {
 function FormField({ label, children }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-sm font-medium text-gray-700">{label}</label>
+      <label className="text-sm font-medium text-muted">{label}</label>
       {children}
     </div>
   )

@@ -28,7 +28,7 @@ export default function CaseStudiesPage() {
 
   const columns = [
     { key: 'title', label: 'Title', sortable: true,
-      render: (v) => <span className="font-medium text-gray-800 block max-w-xs truncate">{v}</span> },
+      render: (v) => <span className="font-medium text-foreground block max-w-xs truncate">{v}</span> },
     { key: 'industry', label: 'Industry', sortable: true },
     { key: 'service', label: 'Service' },
     { key: 'client', label: 'Client', sortable: true },
@@ -37,12 +37,12 @@ export default function CaseStudiesPage() {
   return (
     <>
       <PageHeader title="Case Studies" newHref="/admin/case-studies/new" />
-      {loading ? <div className="text-gray-400 text-sm">Loading…</div> : (
+      {loading ? <div className="text-subtle text-sm">Loading…</div> : (
         <DataTable columns={columns} data={data} searchKeys={['title', 'client', 'industry']}
           actions={(row) => (
             <div className="flex gap-2 justify-end">
-              <Link href={`/admin/case-studies/${row.id}`} className="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50"><Edit className="w-4 h-4" /></Link>
-              <button onClick={() => setConfirm(row)} className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
+              <Link href={`/admin/case-studies/${row.id}`} className="p-1.5 rounded-lg text-subtle hover:text-accent hover:bg-accent/10"><Edit className="w-4 h-4" /></Link>
+              <button onClick={() => setConfirm(row)} className="p-1.5 rounded-lg text-subtle hover:text-red-600 hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
             </div>
           )}
         />

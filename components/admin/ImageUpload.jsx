@@ -55,17 +55,17 @@ export default function ImageUpload({ value, onChange, collection = 'general', l
 
   return (
     <div className="flex flex-col gap-1.5">
-      {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
+      {label && <label className="text-sm font-medium text-muted">{label}</label>}
 
       {value ? (
-        <div className="relative group w-40 h-32 rounded-xl overflow-hidden border border-gray-200">
+        <div className="relative group w-40 h-32 rounded-xl overflow-hidden border border-divider">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={value} alt="Upload preview" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="p-1.5 rounded-lg bg-white text-gray-700 hover:bg-gray-100 text-xs font-medium"
+              className="p-1.5 rounded-lg bg-card text-muted hover:bg-surface text-xs font-medium"
             >
               Replace
             </button>
@@ -86,25 +86,25 @@ export default function ImageUpload({ value, onChange, collection = 'general', l
           onClick={() => !uploading && inputRef.current?.click()}
           className={`flex flex-col items-center justify-center w-full h-32 rounded-xl border-2 border-dashed cursor-pointer transition-colors ${
             dragging
-              ? 'border-indigo-400 bg-indigo-50'
-              : 'border-gray-300 hover:border-indigo-400 hover:bg-gray-50'
+              ? 'border-accent bg-accent/10'
+              : 'border-divider-light hover:border-accent hover:bg-surface'
           }`}
         >
           {uploading ? (
-            <Loader2 className="w-6 h-6 text-indigo-500 animate-spin" />
+            <Loader2 className="w-6 h-6 text-accent animate-spin" />
           ) : (
             <>
-              <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center mb-2">
+              <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center mb-2">
                 {dragging ? (
-                  <Upload className="w-5 h-5 text-indigo-500" />
+                  <Upload className="w-5 h-5 text-accent" />
                 ) : (
-                  <ImageIcon className="w-5 h-5 text-gray-400" />
+                  <ImageIcon className="w-5 h-5 text-subtle" />
                 )}
               </div>
-              <p className="text-xs text-gray-500 text-center">
-                <span className="text-indigo-600 font-medium">Click to upload</span> or drag & drop
+              <p className="text-xs text-subtle text-center">
+                <span className="text-accent font-medium">Click to upload</span> or drag & drop
               </p>
-              <p className="text-[11px] text-gray-400 mt-0.5">PNG, JPG, WEBP up to 5MB</p>
+              <p className="text-[11px] text-subtle mt-0.5">PNG, JPG, WEBP up to 5MB</p>
             </>
           )}
         </div>
@@ -114,7 +114,7 @@ export default function ImageUpload({ value, onChange, collection = 'general', l
       <button
         type="button"
         onClick={() => setPickerOpen(true)}
-        className="flex items-center gap-1.5 text-xs text-indigo-600 hover:text-indigo-700 hover:underline mt-0.5 w-fit"
+        className="flex items-center gap-1.5 text-xs text-accent hover:text-accent-hover hover:underline mt-0.5 w-fit"
       >
         <Images className="w-3.5 h-3.5" />
         Choose from Library

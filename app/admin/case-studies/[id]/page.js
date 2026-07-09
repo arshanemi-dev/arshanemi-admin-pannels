@@ -21,7 +21,7 @@ export default function EditCaseStudyPage() {
     fetch(`/api/admin/case-studies/${id}`).then((r) => r.json()).then(setForm)
   }, [id])
 
-  if (!form) return <div className="text-gray-400 text-sm">Loading…</div>
+  if (!form) return <div className="text-subtle text-sm">Loading…</div>
 
   const handle = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
   const handleSlug = (e) => setForm((f) => ({ ...f, slug: toSlug(e.target.value) }))
@@ -44,7 +44,7 @@ export default function EditCaseStudyPage() {
   return (
     <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
       <PageHeader title="Edit Case Study" backHref="/admin/case-studies" />
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col gap-5">
+      <div className="bg-card rounded-2xl border border-divider shadow-sm p-6 flex flex-col gap-5">
         <ImageUpload label="Image" value={form.image} onChange={(url) => set('image', url)} collection="case-studies" />
         <FormField label="Title" name="title" value={form.title || ''} onChange={handle} required />
         <div>
@@ -52,7 +52,7 @@ export default function EditCaseStudyPage() {
             hint={`Public URL: /case-studies/${slug}`} />
           {slug && (
             <a href={`/case-studies/${slug}`} target="_blank" rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1 text-xs text-indigo-600 hover:underline">
+              className="mt-1 inline-flex items-center gap-1 text-xs text-accent hover:underline">
               <ExternalLink className="w-3 h-3" /> Preview live page
             </a>
           )}
@@ -79,24 +79,24 @@ export default function EditCaseStudyPage() {
 
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-sm font-medium text-gray-700">Metrics</label>
+            <label className="text-sm font-medium text-muted">Metrics</label>
             <button type="button" onClick={() => set('metrics', [...(form.metrics || []), { label: '', value: '' }])}
-              className="text-xs text-indigo-600 font-medium flex items-center gap-1"><Plus className="w-3 h-3" /> Add</button>
+              className="text-xs text-accent font-medium flex items-center gap-1"><Plus className="w-3 h-3" /> Add</button>
           </div>
           {(form.metrics || []).map((m, i) => (
             <div key={i} className="flex gap-3 items-center mb-2">
               <input value={m.value} onChange={(e) => { const ms = [...form.metrics]; ms[i] = { ...ms[i], value: e.target.value }; set('metrics', ms) }}
-                placeholder="Value" className="w-32 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                placeholder="Value" className="w-32 text-sm border border-divider rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent" />
               <input value={m.label} onChange={(e) => { const ms = [...form.metrics]; ms[i] = { ...ms[i], label: e.target.value }; set('metrics', ms) }}
-                placeholder="Label" className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                placeholder="Label" className="flex-1 text-sm border border-divider rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent" />
               <button type="button" onClick={() => set('metrics', form.metrics.filter((_, idx) => idx !== i))}
-                className="p-1 text-gray-400 hover:text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
+                className="p-1 text-subtle hover:text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
             </div>
           ))}
         </div>
 
         <button type="submit" disabled={loading}
-          className="self-end px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold disabled:opacity-60">
+          className="self-end px-6 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold disabled:opacity-60">
           {loading ? 'Saving…' : 'Save Changes'}
         </button>
       </div>

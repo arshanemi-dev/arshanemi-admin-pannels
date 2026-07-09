@@ -46,7 +46,7 @@ function CopyBtn({ url }) {
       className={`p-1.5 rounded-lg transition-colors ${
         copied
           ? 'bg-green-100 text-green-600'
-          : 'bg-gray-100 hover:bg-indigo-50 text-gray-500 hover:text-indigo-600'
+          : 'bg-surface hover:bg-accent/10 text-subtle hover:text-accent'
       }`}
     >
       {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
@@ -60,23 +60,23 @@ function GridCard({ blob, selected, onToggle, onDelete, onSelect }) {
     <div
       onClick={() => onSelect ? onSelect(blob) : onToggle(blob.url)}
       className={`relative group rounded-xl border-2 overflow-hidden cursor-pointer transition-all ${
-        selected ? 'border-indigo-500 shadow-md' : 'border-gray-200 hover:border-indigo-300'
+        selected ? 'border-accent shadow-md' : 'border-divider hover:border-accent/50'
       }`}
     >
       {/* Thumbnail */}
-      <div className="h-28 bg-gray-100 flex items-center justify-center">
+      <div className="h-28 bg-surface flex items-center justify-center">
         {img ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={blob.url} alt={blob.filename} className="w-full h-full object-cover" />
         ) : (
-          <FileText className="w-8 h-8 text-gray-400" />
+          <FileText className="w-8 h-8 text-subtle" />
         )}
       </div>
 
       {/* Checkbox */}
       {!onSelect && (
         <div className={`absolute top-2 left-2 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
-          selected ? 'bg-indigo-600 border-indigo-600' : 'border-white/80 bg-white/60 opacity-0 group-hover:opacity-100'
+          selected ? 'bg-accent border-accent' : 'border-white/80 bg-white/60 opacity-0 group-hover:opacity-100'
         }`}>
           {selected && <Check className="w-3 h-3 text-white" />}
         </div>
@@ -98,9 +98,9 @@ function GridCard({ blob, selected, onToggle, onDelete, onSelect }) {
       </div>
 
       {/* Footer */}
-      <div className="px-2 py-1.5 bg-white border-t border-gray-100">
-        <p className="text-xs text-gray-700 truncate font-medium">{blob.filename}</p>
-        <p className="text-[10px] text-gray-400">{formatBytes(blob.size)}</p>
+      <div className="px-2 py-1.5 bg-card border-t border-divider">
+        <p className="text-xs text-muted truncate font-medium">{blob.filename}</p>
+        <p className="text-[10px] text-subtle">{formatBytes(blob.size)}</p>
       </div>
     </div>
   )
@@ -112,13 +112,13 @@ function ListRow({ blob, selected, onToggle, onDelete, onSelect }) {
     <tr
       onClick={() => onSelect ? onSelect(blob) : onToggle(blob.url)}
       className={`cursor-pointer transition-colors ${
-        selected ? 'bg-indigo-50' : 'hover:bg-gray-50'
+        selected ? 'bg-accent/10' : 'hover:bg-surface'
       }`}
     >
       {!onSelect && (
         <td className="pl-4 py-3 w-10">
           <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
-            selected ? 'bg-indigo-600 border-indigo-600' : 'border-gray-300'
+            selected ? 'bg-accent border-accent' : 'border-divider-light'
           }`}>
             {selected && <Check className="w-2.5 h-2.5 text-white" />}
           </div>
@@ -126,20 +126,20 @@ function ListRow({ blob, selected, onToggle, onDelete, onSelect }) {
       )}
       <td className="py-3 px-3">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded bg-gray-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
+          <div className="w-8 h-8 rounded bg-surface flex-shrink-0 flex items-center justify-center overflow-hidden">
             {img
               ? <img src={blob.url} alt="" className="w-full h-full object-cover" />
-              : <FileText className="w-4 h-4 text-gray-400" />
+              : <FileText className="w-4 h-4 text-subtle" />
             }
           </div>
-          <span className="text-sm text-gray-700 font-medium truncate max-w-[180px]">{blob.filename}</span>
+          <span className="text-sm text-muted font-medium truncate max-w-[180px]">{blob.filename}</span>
         </div>
       </td>
-      <td className="py-3 px-3 text-xs text-gray-500">{blob.folder}</td>
-      <td className="py-3 px-3 text-xs text-gray-500">{formatBytes(blob.size)}</td>
-      <td className="py-3 px-3 text-xs text-gray-500">{formatDate(blob.uploadedAt)}</td>
+      <td className="py-3 px-3 text-xs text-subtle">{blob.folder}</td>
+      <td className="py-3 px-3 text-xs text-subtle">{formatBytes(blob.size)}</td>
+      <td className="py-3 px-3 text-xs text-subtle">{formatDate(blob.uploadedAt)}</td>
       <td className="py-3 px-3">
-        <span className="text-xs text-gray-400 font-mono truncate max-w-[140px] block">
+        <span className="text-xs text-subtle font-mono truncate max-w-[140px] block">
           {blob.url.replace(/^https?:\/\/[^/]+\//, '').substring(0, 30)}…
         </span>
       </td>
@@ -229,16 +229,16 @@ export default function MediaLibrary({
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white flex-shrink-0">
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-divider bg-card flex-shrink-0">
         <input
           type="text"
           placeholder="Search files…"
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1) }}
-          className="flex-1 text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="flex-1 text-sm border border-divider-light rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
         />
 
-        <span className="text-xs text-gray-500 whitespace-nowrap">
+        <span className="text-xs text-subtle whitespace-nowrap">
           {filtered.length} file{filtered.length !== 1 ? 's' : ''}
         </span>
 
@@ -254,18 +254,18 @@ export default function MediaLibrary({
           </button>
         )}
 
-        <div className="flex border border-gray-200 rounded-lg overflow-hidden">
+        <div className="flex border border-divider rounded-lg overflow-hidden">
           <button
             type="button"
             onClick={() => setView('grid')}
-            className={`px-2.5 py-1.5 ${view === 'grid' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+            className={`px-2.5 py-1.5 ${view === 'grid' ? 'bg-accent text-white' : 'text-subtle hover:bg-surface'}`}
           >
             <Grid3X3 className="w-4 h-4" />
           </button>
           <button
             type="button"
             onClick={() => setView('list')}
-            className={`px-2.5 py-1.5 ${view === 'list' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+            className={`px-2.5 py-1.5 ${view === 'list' ? 'bg-accent text-white' : 'text-subtle hover:bg-surface'}`}
           >
             <List className="w-4 h-4" />
           </button>
@@ -278,10 +278,10 @@ export default function MediaLibrary({
         <div className="flex-1 overflow-y-auto p-4">
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+              <Loader2 className="w-8 h-8 text-accent animate-spin" />
             </div>
           ) : filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+            <div className="flex flex-col items-center justify-center py-20 text-subtle">
               <ImageIcon className="w-10 h-10 mb-3 opacity-40" />
               <p className="text-sm">{search ? 'No files match your search' : 'No files in this folder'}</p>
             </div>
@@ -289,7 +289,7 @@ export default function MediaLibrary({
             <>
               {!onSelect && (
                 <div className="flex items-center gap-2 mb-3">
-                  <button type="button" onClick={toggleAll} className="text-xs text-indigo-600 hover:underline">
+                  <button type="button" onClick={toggleAll} className="text-xs text-accent hover:underline">
                     {allSelected ? 'Deselect all' : 'Select all on page'}
                   </button>
                 </div>
@@ -308,31 +308,31 @@ export default function MediaLibrary({
               </div>
             </>
           ) : (
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="bg-card rounded-xl border border-divider overflow-hidden">
               <table className="w-full text-left">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-surface border-b border-divider">
                   <tr>
                     {!onSelect && (
                       <th className="pl-4 py-2.5 w-10">
                         <div
                           onClick={toggleAll}
                           className={`w-4 h-4 rounded border-2 cursor-pointer flex items-center justify-center ${
-                            allSelected ? 'bg-indigo-600 border-indigo-600' : 'border-gray-300'
+                            allSelected ? 'bg-accent border-accent' : 'border-divider-light'
                           }`}
                         >
                           {allSelected && <Check className="w-2.5 h-2.5 text-white" />}
                         </div>
                       </th>
                     )}
-                    <th className="py-2.5 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">File</th>
-                    <th className="py-2.5 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Folder</th>
-                    <th className="py-2.5 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Size</th>
-                    <th className="py-2.5 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Date</th>
-                    <th className="py-2.5 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Path</th>
-                    <th className="py-2.5 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+                    <th className="py-2.5 px-3 text-xs font-semibold text-subtle uppercase tracking-wide">File</th>
+                    <th className="py-2.5 px-3 text-xs font-semibold text-subtle uppercase tracking-wide">Folder</th>
+                    <th className="py-2.5 px-3 text-xs font-semibold text-subtle uppercase tracking-wide">Size</th>
+                    <th className="py-2.5 px-3 text-xs font-semibold text-subtle uppercase tracking-wide">Date</th>
+                    <th className="py-2.5 px-3 text-xs font-semibold text-subtle uppercase tracking-wide">Path</th>
+                    <th className="py-2.5 px-3 text-xs font-semibold text-subtle uppercase tracking-wide">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-divider">
                   {pageBlobs.map((blob) => (
                     <ListRow
                       key={blob.url}
@@ -355,16 +355,16 @@ export default function MediaLibrary({
                 type="button"
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg disabled:opacity-40 hover:bg-gray-50"
+                className="px-3 py-1.5 text-sm border border-divider-light rounded-lg disabled:opacity-40 hover:bg-surface"
               >
                 Prev
               </button>
-              <span className="text-sm text-gray-500">Page {page} of {totalPages}</span>
+              <span className="text-sm text-subtle">Page {page} of {totalPages}</span>
               <button
                 type="button"
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg disabled:opacity-40 hover:bg-gray-50"
+                className="px-3 py-1.5 text-sm border border-divider-light rounded-lg disabled:opacity-40 hover:bg-surface"
               >
                 Next
               </button>
@@ -374,26 +374,26 @@ export default function MediaLibrary({
 
         {/* Detail panel — only in non-picker grid view */}
         {detail && !onSelect && (
-          <div className="w-64 border-l border-gray-200 bg-white flex-shrink-0 overflow-y-auto p-4 flex flex-col gap-3">
+          <div className="w-64 border-l border-divider bg-card flex-shrink-0 overflow-y-auto p-4 flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-gray-700">File Info</p>
-              <button type="button" onClick={() => setDetail(null)} className="text-gray-400 hover:text-gray-600 text-xs">✕</button>
+              <p className="text-sm font-semibold text-muted">File Info</p>
+              <button type="button" onClick={() => setDetail(null)} className="text-subtle hover:text-muted text-xs">✕</button>
             </div>
-            <div className="rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center h-36">
+            <div className="rounded-xl overflow-hidden bg-surface flex items-center justify-center h-36">
               {isImage(detail)
                 ? <img src={detail.url} alt={detail.filename} className="w-full h-full object-contain" />
-                : <FileText className="w-10 h-10 text-gray-400" />
+                : <FileText className="w-10 h-10 text-subtle" />
               }
             </div>
-            <div className="space-y-1.5 text-xs text-gray-600">
+            <div className="space-y-1.5 text-xs text-muted">
               <p><span className="font-medium">Name:</span> {detail.filename}</p>
               <p><span className="font-medium">Folder:</span> {detail.folder}</p>
               <p><span className="font-medium">Size:</span> {formatBytes(detail.size)}</p>
               <p><span className="font-medium">Uploaded:</span> {formatDate(detail.uploadedAt)}</p>
             </div>
             <div>
-              <p className="text-xs font-medium text-gray-500 mb-1">URL</p>
-              <p className="text-[10px] font-mono bg-gray-50 rounded-lg p-2 break-all text-gray-600 leading-relaxed">
+              <p className="text-xs font-medium text-subtle mb-1">URL</p>
+              <p className="text-[10px] font-mono bg-surface rounded-lg p-2 break-all text-muted leading-relaxed">
                 {detail.url}
               </p>
             </div>

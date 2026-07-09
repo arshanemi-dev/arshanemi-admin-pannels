@@ -82,7 +82,7 @@ export default function NewPackagePage() {
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto flex flex-col gap-5">
       <PageHeader title="New SEO Package" backHref="/admin/seo-packages" />
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col gap-5">
+      <div className="bg-card rounded-2xl border border-divider shadow-sm p-6 flex flex-col gap-5">
 
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Package Name" name="name" value={form.name} onChange={handle} required />
@@ -131,17 +131,17 @@ export default function NewPackagePage() {
         {/* Features list */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-gray-700">Features</h3>
+            <h3 className="text-sm font-semibold text-muted">Features</h3>
             <button
               type="button"
               onClick={addFeature}
-              className="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1"
+              className="text-xs text-accent hover:text-accent-hover font-medium flex items-center gap-1"
             >
               + Add Feature
             </button>
           </div>
           {form.features.length === 0 && (
-            <p className="text-sm text-gray-400 text-center py-4 border border-dashed border-gray-200 rounded-xl">
+            <p className="text-sm text-subtle text-center py-4 border border-dashed border-divider rounded-xl">
               No features yet — click Add Feature
             </p>
           )}
@@ -152,7 +152,7 @@ export default function NewPackagePage() {
                   value={feat.label || ''}
                   onChange={(e) => updateFeature(i, { label: e.target.value })}
                   placeholder="Feature label"
-                  className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  className="flex-1 text-sm border border-divider rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
                 />
                 <input
                   type="checkbox"
@@ -165,20 +165,20 @@ export default function NewPackagePage() {
                         : false,
                     })
                   }
-                  className="w-4 h-4 rounded accent-indigo-600 shrink-0"
+                  className="w-4 h-4 rounded accent-accent shrink-0"
                 />
                 {feat.value !== false && (
                   <input
                     value={typeof feat.value === 'string' ? feat.value : ''}
                     onChange={(e) => updateFeature(i, { value: e.target.value || true })}
                     placeholder="Detail (optional)"
-                    className="w-32 text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                    className="w-32 text-sm border border-divider rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent"
                   />
                 )}
                 <button
                   type="button"
                   onClick={() => removeFeature(i)}
-                  className="p-1 text-gray-400 hover:text-red-500 shrink-0"
+                  className="p-1 text-subtle hover:text-red-500 shrink-0"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -190,7 +190,7 @@ export default function NewPackagePage() {
         <button
           type="submit"
           disabled={loading}
-          className="self-end px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold disabled:opacity-60"
+          className="self-end px-6 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold disabled:opacity-60"
         >
           {loading ? 'Creating…' : 'Create Package'}
         </button>

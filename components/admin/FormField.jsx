@@ -22,14 +22,14 @@ export default function FormField({
   className = '',
 }) {
   const base =
-    'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors disabled:bg-gray-50 disabled:text-gray-500'
+    'w-full rounded-lg border border-divider-light bg-card px-3 py-2 text-sm text-foreground placeholder-subtle focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors disabled:bg-surface disabled:text-subtle'
 
   const [showPassword, setShowPassword] = useState(false)
 
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
       {label && (
-        <label className="text-sm font-medium text-gray-700">
+        <label className="text-sm font-medium text-muted">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
@@ -69,11 +69,11 @@ export default function FormField({
           onClick={() => onChange({ target: { name, value: !value } })}
           disabled={disabled}
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-            value ? 'bg-indigo-600' : 'bg-gray-200'
+            value ? 'bg-accent' : 'bg-divider-light'
           } disabled:opacity-60`}
         >
           <span
-            className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
+            className={`inline-block h-4 w-4 transform rounded-full bg-card shadow-sm transition-transform ${
               value ? 'translate-x-6' : 'translate-x-1'
             }`}
           />
@@ -96,7 +96,7 @@ export default function FormField({
             type="button"
             onClick={() => setShowPassword((s) => !s)}
             tabIndex={-1}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-subtle hover:text-muted"
           >
             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
@@ -119,7 +119,7 @@ export default function FormField({
       )}
 
       {error && <p className="text-xs text-red-500">{error}</p>}
-      {hint && !error && <p className="text-xs text-gray-400">{hint}</p>}
+      {hint && !error && <p className="text-xs text-subtle">{hint}</p>}
     </div>
   )
 }

@@ -45,7 +45,7 @@ export default function CompanyPage() {
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
       <PageHeader title="Company Info" description="Contact details used across the site" />
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col gap-5">
+      <div className="bg-card rounded-2xl border border-divider shadow-sm p-6 flex flex-col gap-5">
         <FormField label="Main Email (receives contact & lead notifications)" name="email" type="email" value={form.email || ''} onChange={handle} required />
         <FormField label="HR Email (careers page apply links)" name="hrEmail" type="email" value={form.hrEmail || ''} onChange={handle} placeholder="hr@santhyainfotech.com" />
         <div className="grid grid-cols-2 gap-4">
@@ -56,7 +56,7 @@ export default function CompanyPage() {
         <FormField label="Address" name="address" type="textarea" rows={2} value={form.address || ''} onChange={handle} />
         <FormField label="Business Hours" name="hours" value={form.hours || ''} onChange={handle} />
         <button type="submit" disabled={loading}
-          className="self-end px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold disabled:opacity-60">
+          className="self-end px-6 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold disabled:opacity-60">
           {loading ? 'Saving…' : 'Save Changes'}
         </button>
       </div>

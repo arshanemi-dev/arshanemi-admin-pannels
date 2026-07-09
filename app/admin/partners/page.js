@@ -29,7 +29,7 @@ export default function PartnersPage() {
   const columns = [
     {
       key: 'url', label: 'Logo',
-      render: (v) => v ? <img src={v} alt="logo" className="h-8 object-contain" /> : <span className="text-gray-400 text-xs">No logo</span>,
+      render: (v) => v ? <img src={v} alt="logo" className="h-8 object-contain" /> : <span className="text-subtle text-xs">No logo</span>,
     },
     { key: 'name', label: 'Name', sortable: true },
     { key: 'title', label: 'Alt Text' },
@@ -38,12 +38,12 @@ export default function PartnersPage() {
   return (
     <>
       <PageHeader title="Partners" description="Client logos in homepage ticker" newHref="/admin/partners/new" />
-      {loading ? <div className="text-gray-400 text-sm">Loading…</div> : (
+      {loading ? <div className="text-subtle text-sm">Loading…</div> : (
         <DataTable columns={columns} data={data} searchKeys={['name']}
           actions={(row) => (
             <div className="flex gap-2 justify-end">
-              <Link href={`/admin/partners/${row.id}`} className="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50"><Edit className="w-4 h-4" /></Link>
-              <button onClick={() => setConfirm(row)} className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
+              <Link href={`/admin/partners/${row.id}`} className="p-1.5 rounded-lg text-subtle hover:text-accent hover:bg-accent/10"><Edit className="w-4 h-4" /></Link>
+              <button onClick={() => setConfirm(row)} className="p-1.5 rounded-lg text-subtle hover:text-red-600 hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
             </div>
           )}
         />

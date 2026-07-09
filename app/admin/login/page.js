@@ -117,9 +117,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-gray-50 flex">
+    <div className="h-screen overflow-hidden bg-surface flex">
       {/* Left panel — branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-orange-700 flex-col justify-between p-12">
+      <div className="hidden lg:flex lg:w-1/2 bg-accent-hover flex-col justify-between p-12">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
             <span className="text-white font-bold">A</span>
@@ -131,12 +131,12 @@ export default function LoginPage() {
           <h1 className="text-4xl font-bold text-white leading-snug mb-4">
             Manage your<br />tools &amp; content<br />from one place.
           </h1>
-          <p className="text-orange-300 text-base leading-relaxed">
+          <p className="text-white/70 text-base leading-relaxed">
             Update services, blogs, team, FAQs, testimonials, and more — all from a single, secure admin panel.
           </p>
         </div>
 
-        <p className="text-orange-400 text-sm">
+        <p className="text-white/50 text-sm">
           © {new Date().getFullYear()} Arshanemi. All rights reserved.
         </p>
       </div>
@@ -146,16 +146,16 @@ export default function LoginPage() {
         <div className="w-full max-w-sm">
           {/* Mobile logo */}
           <div className="flex items-center gap-2 mb-8 lg:hidden">
-            <div className="w-8 h-8 rounded-lg bg-orange-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
               <span className="text-white font-bold text-sm">S</span>
             </div>
-            <span className="font-semibold text-gray-900">Arshanemi</span>
+            <span className="font-semibold text-foreground">Arshanemi</span>
           </div>
 
           {step === 'credentials' ? (
             <>
-              <h2 className="text-2xl font-bold text-gray-900 mb-1">Welcome back</h2>
-              <p className="text-gray-500 text-sm mb-8">Sign in to your admin panel</p>
+              <h2 className="text-2xl font-bold text-foreground mb-1">Welcome back</h2>
+              <p className="text-subtle text-sm mb-8">Sign in to your admin panel</p>
 
               {error && (
                 <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-5">
@@ -165,7 +165,7 @@ export default function LoginPage() {
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium text-gray-700">Username</label>
+                  <label className="text-sm font-medium text-muted">Username</label>
                   <input
                     type="text"
                     value={form.username}
@@ -173,12 +173,12 @@ export default function LoginPage() {
                     placeholder="admin"
                     required
                     autoComplete="username"
-                    className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                    className="w-full rounded-xl border border-divider-light px-4 py-3 text-sm text-foreground placeholder-subtle bg-card focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium text-gray-700">Password</label>
+                  <label className="text-sm font-medium text-muted">Password</label>
                   <div className="relative">
                     <input
                       type={showPw ? 'text' : 'password'}
@@ -187,12 +187,12 @@ export default function LoginPage() {
                       placeholder="••••••••"
                       required
                       autoComplete="current-password"
-                      className="w-full rounded-xl border border-gray-300 px-4 py-3 pr-11 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                      className="w-full rounded-xl border border-divider-light px-4 py-3 pr-11 text-sm text-foreground placeholder-subtle bg-card focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPw((s) => !s)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-subtle hover:text-muted"
                     >
                       {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -200,7 +200,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowForgotPassword(true)}
-                    className="self-end text-xs font-medium text-orange-600 hover:underline"
+                    className="self-end text-xs font-medium text-accent hover:underline"
                   >
                     Forgot password?
                   </button>
@@ -209,7 +209,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 rounded-xl text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-1"
+                  className="w-full bg-accent hover:bg-accent-hover text-white font-semibold py-3 rounded-xl text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-1"
                 >
                   {loading ? (
                     <><Loader2 className="w-4 h-4 animate-spin" /> Signing in…</>
@@ -219,15 +219,15 @@ export default function LoginPage() {
             </>
           ) : (
             <>
-              <div className="w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center mb-4">
-                <ShieldCheck className="w-5 h-5 text-orange-600" />
+              <div className="w-11 h-11 rounded-xl bg-accent/10 flex items-center justify-center mb-4">
+                <ShieldCheck className="w-5 h-5 text-accent" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-1">Verify it&apos;s you</h2>
-              <p className="text-gray-500 text-sm mb-2">
-                A 6-digit code was emailed to the address on file for <strong className="text-gray-900">{form.username}</strong>.
+              <h2 className="text-2xl font-bold text-foreground mb-1">Verify it&apos;s you</h2>
+              <p className="text-subtle text-sm mb-2">
+                A 6-digit code was emailed to the address on file for <strong className="text-foreground">{form.username}</strong>.
               </p>
 
-              <div className={`inline-flex items-center gap-1.5 text-sm font-semibold mb-6 ${timer > 0 ? 'text-orange-600' : 'text-red-500'}`}>
+              <div className={`inline-flex items-center gap-1.5 text-sm font-semibold mb-6 ${timer > 0 ? 'text-accent' : 'text-red-500'}`}>
                 <span className="w-5 h-5 rounded-full border-2 border-current flex items-center justify-center text-[10px] font-bold">
                   {timer}
                 </span>
@@ -251,7 +251,7 @@ export default function LoginPage() {
                     value={digit}
                     onChange={(e) => handleOtpChange(e.target.value, i)}
                     onKeyDown={(e) => handleOtpKeyDown(e, i)}
-                    className="w-12 h-12 text-center text-xl font-bold rounded-xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                    className="w-12 h-12 text-center text-xl font-bold rounded-xl border border-divider-light bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
                   />
                 ))}
               </div>
@@ -259,7 +259,7 @@ export default function LoginPage() {
               <button
                 onClick={handleVerifyOtp}
                 disabled={loading || timer === 0}
-                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 rounded-xl text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mb-4"
+                className="w-full bg-accent hover:bg-accent-hover text-white font-semibold py-3 rounded-xl text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mb-4"
               >
                 {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Verifying…</> : 'Verify & Sign In'}
               </button>
@@ -268,14 +268,14 @@ export default function LoginPage() {
                 <button
                   onClick={handleResend}
                   disabled={loading}
-                  className="w-full text-orange-600 hover:underline text-sm font-medium"
+                  className="w-full text-accent hover:underline text-sm font-medium"
                 >
                   Resend code
                 </button>
               ) : (
                 <button
                   onClick={() => { setStep('credentials'); setError(''); setOtp(['','','','','','']) }}
-                  className="w-full text-gray-500 hover:text-gray-700 text-sm font-medium"
+                  className="w-full text-subtle hover:text-muted text-sm font-medium"
                 >
                   Back to login
                 </button>

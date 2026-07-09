@@ -48,45 +48,45 @@ export default function SEOPackagesPage() {
       ) : error ? (
         <LoadError onRetry={load} />
       ) : data.length === 0 ? (
-        <div className="text-center py-16 text-gray-400 text-sm">
-          No packages yet — click <span className="font-semibold text-indigo-600">+ New</span> to create one.
+        <div className="text-center py-16 text-subtle text-sm">
+          No packages yet — click <span className="font-semibold text-accent">+ New</span> to create one.
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {data.map((pkg) => (
-            <div key={pkg.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+            <div key={pkg.id} className="bg-card rounded-2xl border border-divider shadow-sm p-5">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-800 truncate">{pkg.name}</h3>
-                  <p className="text-sm text-gray-500 mt-0.5 truncate">{pkg.tagline}</p>
+                  <h3 className="font-semibold text-foreground truncate">{pkg.name}</h3>
+                  <p className="text-sm text-subtle mt-0.5 truncate">{pkg.tagline}</p>
                 </div>
                 <div className="flex items-center gap-1 ml-2 shrink-0">
                   <Link
                     href={`/admin/seo-packages/${pkg.id}`}
-                    className="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                    className="p-1.5 rounded-lg text-subtle hover:text-accent hover:bg-accent/10 transition-colors"
                   >
                     <Edit className="w-4 h-4" />
                   </Link>
                   <button
                     onClick={() => setConfirm(pkg)}
-                    className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                    className="p-1.5 rounded-lg text-subtle hover:text-red-600 hover:bg-red-50 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-foreground">
                 {pkg.currency}{pkg.price}
-                <span className="text-sm font-normal text-gray-500">/{pkg.period}</span>
+                <span className="text-sm font-normal text-subtle">/{pkg.period}</span>
               </div>
               {pkg.badge && (
-                <span className="inline-block mt-2 text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-medium">
+                <span className="inline-block mt-2 text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full font-medium">
                   {pkg.badge}
                 </span>
               )}
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {(pkg.teaserFeatures || []).map((f, i) => (
-                  <span key={i} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-lg">{f}</span>
+                  <span key={i} className="text-xs bg-surface text-muted px-2 py-1 rounded-lg">{f}</span>
                 ))}
               </div>
             </div>

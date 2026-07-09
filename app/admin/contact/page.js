@@ -43,12 +43,12 @@ export default function ContactPage() {
   return (
     <form onSubmit={save} className="max-w-2xl mx-auto">
       <PageHeader title="Contact Page" />
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col gap-5">
-        <div className="text-xs text-gray-400 bg-gray-50 border border-gray-100 rounded-lg px-4 py-3">
+      <div className="bg-card rounded-2xl border border-divider shadow-sm p-6 flex flex-col gap-5">
+        <div className="text-xs text-subtle bg-surface border border-divider rounded-lg px-4 py-3">
           Services in the contact form are pulled automatically from <strong>Admin → Services</strong>. No need to manage them here.
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">Budget Options</h3>
+          <h3 className="text-sm font-semibold text-muted mb-3">Budget Options</h3>
           <FormField
             label="Budget options (one per line)"
             type="textarea"
@@ -58,7 +58,7 @@ export default function ContactPage() {
           />
         </div>
         <button type="submit" disabled={loading}
-          className="self-end px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold disabled:opacity-60">
+          className="self-end px-6 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold disabled:opacity-60">
           {loading ? 'Saving…' : 'Save Contact Page'}
         </button>
       </div>

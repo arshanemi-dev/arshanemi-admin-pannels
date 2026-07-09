@@ -12,13 +12,13 @@ const ROLE_LABELS = {
 
 function InfoRow({ icon: Icon, label, value }) {
   return (
-    <div className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
-      <div className="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0">
-        <Icon className="w-4 h-4 text-gray-400" />
+    <div className="flex items-center gap-3 py-3 border-b border-divider last:border-0">
+      <div className="w-9 h-9 rounded-lg bg-surface flex items-center justify-center flex-shrink-0">
+        <Icon className="w-4 h-4 text-subtle" />
       </div>
       <div className="min-w-0">
-        <p className="text-xs text-gray-400">{label}</p>
-        <p className="text-sm font-medium text-gray-900 truncate">{value}</p>
+        <p className="text-xs text-subtle">{label}</p>
+        <p className="text-sm font-medium text-foreground truncate">{value}</p>
       </div>
     </div>
   )
@@ -48,24 +48,24 @@ export default function ProfilePage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-indigo-100 flex items-center justify-center">
-          <UserCircle className="w-5 h-5 text-indigo-600" />
+        <div className="w-9 h-9 rounded-xl bg-accent/10 flex items-center justify-center">
+          <UserCircle className="w-5 h-5 text-accent" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-gray-900">My Profile</h1>
-          <p className="text-sm text-gray-500">Your account details</p>
+          <h1 className="text-xl font-bold text-foreground">My Profile</h1>
+          <p className="text-sm text-subtle">Your account details</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-200 p-6">
-        <div className="flex items-center gap-4 pb-5 border-b border-gray-100">
-          <div className="w-14 h-14 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
+      <div className="bg-card rounded-2xl border border-divider p-6">
+        <div className="flex items-center gap-4 pb-5 border-b border-divider">
+          <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
             {profile.name?.charAt(0).toUpperCase() || '?'}
           </div>
           <div className="min-w-0">
-            <p className="text-lg font-bold text-gray-900 truncate">{profile.name}</p>
+            <p className="text-lg font-bold text-foreground truncate">{profile.name}</p>
             <div className="flex flex-wrap items-center gap-2 mt-1">
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700">
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-accent/10 text-accent-hover">
                 {ROLE_LABELS[profile.role] || profile.role}
               </span>
               <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
@@ -93,7 +93,7 @@ export default function ProfilePage() {
 
         <button
           onClick={() => setShowPasswordModal(true)}
-          className="mt-5 w-full flex items-center justify-center gap-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 py-2.5 hover:bg-gray-50 transition-colors"
+          className="mt-5 w-full flex items-center justify-center gap-2 rounded-xl border border-divider-light text-sm font-medium text-muted py-2.5 hover:bg-surface transition-colors"
         >
           <KeyRound className="w-4 h-4" /> Change Password
         </button>

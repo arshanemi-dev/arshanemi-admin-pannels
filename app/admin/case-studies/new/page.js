@@ -52,7 +52,7 @@ export default function NewCaseStudyPage() {
   return (
     <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
       <PageHeader title="New Case Study" backHref="/admin/case-studies" />
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col gap-5">
+      <div className="bg-card rounded-2xl border border-divider shadow-sm p-6 flex flex-col gap-5">
         <ImageUpload label="Case Study Image" value={form.image} onChange={(url) => set('image', url)} collection="case-studies" />
         <FormField label="Title" name="title" value={form.title} onChange={handle} required />
         <FormField label="URL Slug" name="slug" value={form.slug} onChange={handleSlug}
@@ -80,24 +80,24 @@ export default function NewCaseStudyPage() {
         {/* Metrics */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-sm font-medium text-gray-700">Metrics</label>
+            <label className="text-sm font-medium text-muted">Metrics</label>
             <button type="button" onClick={() => set('metrics', [...form.metrics, { label: '', value: '' }])}
-              className="text-xs text-indigo-600 font-medium flex items-center gap-1"><Plus className="w-3 h-3" /> Add</button>
+              className="text-xs text-accent font-medium flex items-center gap-1"><Plus className="w-3 h-3" /> Add</button>
           </div>
           {form.metrics.map((m, i) => (
             <div key={i} className="flex gap-3 items-center mb-2">
               <input value={m.value} onChange={(e) => { const ms = [...form.metrics]; ms[i] = { ...ms[i], value: e.target.value }; set('metrics', ms) }}
-                placeholder="Value (e.g. 300K+)" className="w-32 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                placeholder="Value (e.g. 300K+)" className="w-32 text-sm border border-divider rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent" />
               <input value={m.label} onChange={(e) => { const ms = [...form.metrics]; ms[i] = { ...ms[i], label: e.target.value }; set('metrics', ms) }}
-                placeholder="Label (e.g. Organic Impressions)" className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                placeholder="Label (e.g. Organic Impressions)" className="flex-1 text-sm border border-divider rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent" />
               <button type="button" onClick={() => set('metrics', form.metrics.filter((_, idx) => idx !== i))}
-                className="p-1 text-gray-400 hover:text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
+                className="p-1 text-subtle hover:text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
             </div>
           ))}
         </div>
 
         <button type="submit" disabled={loading}
-          className="self-end px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold disabled:opacity-60">
+          className="self-end px-6 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold disabled:opacity-60">
           {loading ? 'Creating…' : 'Create Case Study'}
         </button>
       </div>

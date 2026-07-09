@@ -24,7 +24,7 @@ function PlatformIcon({ icon, color, size = 18 }) {
   const Icon = LucideIcons[icon]
   return Icon
     ? <Icon size={size} style={{ color }} />
-    : <LucideIcons.Globe size={size} className="text-gray-400" />
+    : <LucideIcons.Globe size={size} className="text-subtle" />
 }
 
 function SocialLinkRow({ link, index, onChange, onRemove }) {
@@ -36,7 +36,7 @@ function SocialLinkRow({ link, index, onChange, onRemove }) {
   }
 
   return (
-    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-200">
+    <div className="flex items-center gap-3 p-3 bg-surface rounded-xl border border-divider">
       {/* Icon preview bubble */}
       <div
         className="w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0"
@@ -49,7 +49,7 @@ function SocialLinkRow({ link, index, onChange, onRemove }) {
       <select
         value={link.label || ''}
         onChange={handlePlatformChange}
-        className="text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white w-36 flex-shrink-0"
+        className="text-sm border border-divider rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent bg-card w-36 flex-shrink-0"
       >
         {SOCIAL_PLATFORMS.map((p) => (
           <option key={p.label} value={p.label}>{p.label}</option>
@@ -62,14 +62,14 @@ function SocialLinkRow({ link, index, onChange, onRemove }) {
         value={link.href || ''}
         onChange={(e) => onChange(index, { ...link, href: e.target.value })}
         placeholder={platform.placeholder}
-        className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        className="flex-1 text-sm border border-divider rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
       />
 
       {/* Remove */}
       <button
         type="button"
         onClick={() => onRemove(index)}
-        className="text-gray-400 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-50 flex-shrink-0"
+        className="text-subtle hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-50 flex-shrink-0"
       >
         <LucideIcons.Trash2 size={15} />
       </button>
@@ -80,13 +80,13 @@ function SocialLinkRow({ link, index, onChange, onRemove }) {
 function FooterPreview({ socialLinks }) {
   if (!socialLinks.length) return null
   return (
-    <div className="rounded-xl border border-gray-200 overflow-hidden">
-      <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 flex items-center gap-2">
-        <div className="w-2 h-2 rounded-full bg-gray-300" />
-        <span className="text-xs font-medium text-gray-500 uppercase tracking-widest">Footer Preview</span>
+    <div className="rounded-xl border border-divider overflow-hidden">
+      <div className="px-4 py-2 bg-surface border-b border-divider flex items-center gap-2">
+        <div className="w-2 h-2 rounded-full bg-subtle" />
+        <span className="text-xs font-medium text-subtle uppercase tracking-widest">Footer Preview</span>
       </div>
       <div className="bg-[#0a0a0a] px-6 py-5">
-        <p className="text-[11px] text-gray-600 mb-3">Social icons shown in footer brand column</p>
+        <p className="text-[11px] text-muted mb-3">Social icons shown in footer brand column</p>
         <div className="flex gap-2 flex-wrap">
           {socialLinks.map((s, i) => {
             const Icon = LucideIcons[s.icon]
@@ -95,7 +95,7 @@ function FooterPreview({ socialLinks }) {
               <div
                 key={i}
                 title={s.label}
-                className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-700 text-gray-400 hover:border-gray-500 transition-colors cursor-default"
+                className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-700 text-subtle hover:border-gray-500 transition-colors cursor-default"
               >
                 {Icon ? <Icon size={15} /> : null}
               </div>
@@ -116,7 +116,7 @@ export default function NavigationPage() {
     fetch('/api/admin/singleton/navigation').then((r) => r.json()).then(setForm)
   }, [])
 
-  if (!form) return <div className="text-gray-400 text-sm p-6">Loading…</div>
+  if (!form) return <div className="text-subtle text-sm p-6">Loading…</div>
 
   const socialLinks = form.socialLinks || []
 
@@ -155,21 +155,21 @@ export default function NavigationPage() {
     <form onSubmit={save} className="max-w-3xl mx-auto">
       <PageHeader title="Navigation" description="Manage social media links shown in the footer" />
 
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col gap-6">
+      <div className="bg-card rounded-2xl border border-divider shadow-sm p-6 flex flex-col gap-6">
 
         {/* Social Links */}
         <div>
           <div className="flex items-start justify-between gap-4 mb-4">
             <div>
-              <h3 className="text-sm font-semibold text-gray-800">Social Links</h3>
-              <p className="text-xs text-gray-400 mt-0.5">Select a platform, paste the URL. Changes appear in the footer instantly after saving.</p>
+              <h3 className="text-sm font-semibold text-foreground">Social Links</h3>
+              <p className="text-xs text-subtle mt-0.5">Select a platform, paste the URL. Changes appear in the footer instantly after saving.</p>
             </div>
           </div>
 
           {/* Add platform chips */}
           {available.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-4 p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-              <span className="text-xs text-gray-400 self-center mr-1">Add:</span>
+            <div className="flex flex-wrap gap-2 mb-4 p-3 bg-surface rounded-xl border border-dashed border-divider">
+              <span className="text-xs text-subtle self-center mr-1">Add:</span>
               {available.map((p) => {
                 const Icon = LucideIcons[p.icon]
                 return (
@@ -177,7 +177,7 @@ export default function NavigationPage() {
                     key={p.label}
                     type="button"
                     onClick={() => addLink(p)}
-                    className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white hover:border-indigo-400 hover:bg-indigo-50 text-gray-600 hover:text-indigo-700 transition-all shadow-sm"
+                    className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-divider bg-card hover:border-accent hover:bg-accent/10 text-muted hover:text-accent-hover transition-all shadow-sm"
                   >
                     {Icon && <Icon size={13} style={{ color: p.color }} />}
                     {p.label}
@@ -189,7 +189,7 @@ export default function NavigationPage() {
 
           {/* Existing links */}
           {socialLinks.length === 0 ? (
-            <div className="text-center py-10 text-sm text-gray-400 border border-dashed border-gray-200 rounded-xl">
+            <div className="text-center py-10 text-sm text-subtle border border-dashed border-divider rounded-xl">
               No social links yet. Click a platform above to add one.
             </div>
           ) : (
@@ -204,11 +204,11 @@ export default function NavigationPage() {
         {/* Live footer preview */}
         <FooterPreview socialLinks={socialLinks} />
 
-        <div className="flex justify-end pt-2 border-t border-gray-100">
+        <div className="flex justify-end pt-2 border-t border-divider">
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold disabled:opacity-60 transition-colors"
+            className="px-6 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold disabled:opacity-60 transition-colors"
           >
             {loading ? 'Saving…' : 'Save Navigation'}
           </button>

@@ -43,7 +43,7 @@ export default function BlogsPage() {
     {
       key: 'category', label: 'Category',
       render: (v) => (
-        <span className="text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full font-medium">
+        <span className="text-xs bg-accent/10 text-accent-hover px-2 py-1 rounded-full font-medium">
           {v?.name || '—'}
         </span>
       ),
@@ -66,7 +66,7 @@ export default function BlogsPage() {
     <>
       <PageHeader title="Blog Posts" description={`${data.length} posts`} newHref="/admin/blogs/new" />
       {loading ? (
-        <div className="text-gray-400 text-sm">Loading…</div>
+        <div className="text-subtle text-sm">Loading…</div>
       ) : (
         <DataTable
           columns={columns}
@@ -75,11 +75,11 @@ export default function BlogsPage() {
           actions={(row) => (
             <div className="flex items-center gap-2 justify-end">
               <Link href={`/admin/blogs/${row.id}`}
-                className="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors">
+                className="p-1.5 rounded-lg text-subtle hover:text-accent hover:bg-accent/10 transition-colors">
                 <Edit className="w-4 h-4" />
               </Link>
               <button onClick={() => setConfirm(row)}
-                className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                className="p-1.5 rounded-lg text-subtle hover:text-red-600 hover:bg-red-50 transition-colors">
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>

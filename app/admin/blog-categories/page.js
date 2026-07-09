@@ -51,26 +51,26 @@ export default function BlogCategoriesPage() {
   return (
     <>
       <PageHeader title="Blog Categories" description="Manage category taxonomy" />
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-2xl border border-divider shadow-sm overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
+            <tr className="bg-surface border-b border-divider">
               {['Name', 'Slug', 'Thumbnail Bg Class', ''].map((h) => (
-                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{h}</th>
+                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-subtle uppercase tracking-wider">{h}</th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-divider">
             {loading ? (
-              <tr><td colSpan={4} className="px-4 py-8 text-center text-gray-400">Loading…</td></tr>
+              <tr><td colSpan={4} className="px-4 py-8 text-center text-subtle">Loading…</td></tr>
             ) : categories.map((cat) => (
-              <tr key={cat.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 font-medium text-gray-800">{cat.name}</td>
-                <td className="px-4 py-3 font-mono text-xs text-gray-500">{cat.slug}</td>
-                <td className="px-4 py-3 text-xs text-gray-500 truncate max-w-xs">{cat.thumbnailBg}</td>
+              <tr key={cat.id} className="hover:bg-surface">
+                <td className="px-4 py-3 font-medium text-foreground">{cat.name}</td>
+                <td className="px-4 py-3 font-mono text-xs text-subtle">{cat.slug}</td>
+                <td className="px-4 py-3 text-xs text-subtle truncate max-w-xs">{cat.thumbnailBg}</td>
                 <td className="px-4 py-3 text-right">
                   <button onClick={() => setConfirm(cat)}
-                    className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                    className="p-1.5 rounded-lg text-subtle hover:text-red-600 hover:bg-red-50 transition-colors">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </td>
@@ -78,28 +78,28 @@ export default function BlogCategoriesPage() {
             ))}
 
             {/* Inline add row */}
-            <tr className="bg-indigo-50/50">
+            <tr className="bg-accent/5">
               <td className="px-4 py-3">
                 <input value={newCat.name}
                   onChange={(e) => setNewCat((n) => ({ ...n, name: e.target.value, slug: e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-') }))}
                   placeholder="Category name"
-                  className="w-full text-sm border border-gray-300 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  className="w-full text-sm border border-divider-light rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent" />
               </td>
               <td className="px-4 py-3">
                 <input value={newCat.slug}
                   onChange={(e) => setNewCat((n) => ({ ...n, slug: e.target.value }))}
                   placeholder="category-slug"
-                  className="w-full text-sm border border-gray-300 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  className="w-full text-sm border border-divider-light rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent" />
               </td>
               <td className="px-4 py-3">
                 <input value={newCat.thumbnailBg}
                   onChange={(e) => setNewCat((n) => ({ ...n, thumbnailBg: e.target.value }))}
                   placeholder="Tailwind gradient class"
-                  className="w-full text-sm border border-gray-300 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  className="w-full text-sm border border-divider-light rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent" />
               </td>
               <td className="px-4 py-3 text-right">
                 <button onClick={handleAdd} disabled={adding || !newCat.name}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium disabled:opacity-60 transition-colors ml-auto">
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent hover:bg-accent-hover text-white text-xs font-medium disabled:opacity-60 transition-colors ml-auto">
                   <Plus className="w-3.5 h-3.5" /> Add
                 </button>
               </td>

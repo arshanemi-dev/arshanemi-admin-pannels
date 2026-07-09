@@ -31,7 +31,7 @@ export default function TestimonialsPage() {
       key: 'avatar', label: '',
       render: (v, row) => v
         ? <img src={v} alt={row.name} className="w-8 h-8 rounded-full object-cover" />
-        : <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs">{row.name?.[0]}</div>,
+        : <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center text-accent font-bold text-xs">{row.name?.[0]}</div>,
     },
     { key: 'name', label: 'Name', sortable: true },
     { key: 'role', label: 'Role' },
@@ -45,12 +45,12 @@ export default function TestimonialsPage() {
   return (
     <>
       <PageHeader title="Testimonials" newHref="/admin/testimonials/new" />
-      {loading ? <div className="text-gray-400 text-sm">Loading…</div> : (
+      {loading ? <div className="text-subtle text-sm">Loading…</div> : (
         <DataTable columns={columns} data={data} searchKeys={['name', 'company']}
           actions={(row) => (
             <div className="flex gap-2 justify-end">
-              <Link href={`/admin/testimonials/${row.id}`} className="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50"><Edit className="w-4 h-4" /></Link>
-              <button onClick={() => setConfirm(row)} className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
+              <Link href={`/admin/testimonials/${row.id}`} className="p-1.5 rounded-lg text-subtle hover:text-accent hover:bg-accent/10"><Edit className="w-4 h-4" /></Link>
+              <button onClick={() => setConfirm(row)} className="p-1.5 rounded-lg text-subtle hover:text-red-600 hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
             </div>
           )}
         />

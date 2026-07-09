@@ -81,7 +81,7 @@ export default function CareersPage() {
       <PageHeader title="Careers" description="Job openings" />
       <div className="flex justify-end mb-4">
         <button onClick={handleCreate}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors">
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-medium transition-colors">
           <Plus className="w-4 h-4" /> Add Position
         </button>
       </div>
@@ -93,12 +93,12 @@ export default function CareersPage() {
       ) : (
         <div className="flex flex-col gap-4">
           {openings.length === 0 && (
-            <div className="text-center py-16 text-gray-400 text-sm">
-              No job openings yet — click <span className="font-semibold text-indigo-600">+ Add Position</span> to create one.
+            <div className="text-center py-16 text-subtle text-sm">
+              No job openings yet — click <span className="font-semibold text-accent">+ Add Position</span> to create one.
             </div>
           )}
           {openings.map((job) => (
-            <div key={job.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex flex-col gap-4">
+            <div key={job.id} className="bg-card rounded-2xl border border-divider shadow-sm p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <FormField label="Job Title" value={job.title || ''} onChange={(e) => update(job.id, { title: e.target.value })} required />
                 <FormField label="Type" type="select" value={job.jobType || 'Full-Time'}
@@ -116,11 +116,11 @@ export default function CareersPage() {
                 placeholder="Describe the role, responsibilities, and requirements…" />
               <div className="flex gap-2 justify-end">
                 <button type="button" onClick={() => handleSave(job)} disabled={saving === job.id}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 text-sm font-medium hover:bg-indigo-100 transition-colors disabled:opacity-60">
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-accent/10 text-accent text-sm font-medium hover:bg-accent/10 transition-colors disabled:opacity-60">
                   <Save className="w-4 h-4" /> {saving === job.id ? 'Saving…' : 'Save'}
                 </button>
                 <button type="button" onClick={() => setConfirm(job)}
-                  className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                  className="p-2 rounded-lg text-subtle hover:text-red-600 hover:bg-red-50 transition-colors">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>

@@ -52,7 +52,7 @@ export default async function AdminLayout({ children }) {
   if (role === 'user') {
     return (
       <ToastProvider>
-        <div className="flex flex-col h-screen overflow-hidden bg-gray-50">
+        <div className="flex flex-col h-screen overflow-hidden bg-surface">
           <Topbar username={payload.name} />
           <main className="flex-1 overflow-y-auto flex justify-center">
             <div className="p-6 lg:p-8 w-full max-w-2xl">{children}</div>
@@ -65,7 +65,7 @@ export default async function AdminLayout({ children }) {
   return (
     <ToastProvider>
       {/* Fixed full-viewport shell — nothing outside this scrolls */}
-      <div className="flex h-screen overflow-hidden bg-gray-50">
+      <div className="flex h-screen overflow-hidden bg-surface">
         <Sidebar role={role} />
         <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
           <Topbar username={payload.name} />

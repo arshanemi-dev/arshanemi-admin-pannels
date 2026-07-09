@@ -1,10 +1,10 @@
 export function Skeleton({ className = '' }) {
-  return <div className={`animate-pulse bg-gray-100 rounded-lg ${className}`} />
+  return <div className={`animate-pulse bg-surface rounded-lg ${className}`} />
 }
 
 export function FormSkeleton({ rows = 4 }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col gap-5 max-w-3xl mx-auto">
+    <div className="bg-card rounded-2xl border border-divider shadow-sm p-6 flex flex-col gap-5 max-w-3xl mx-auto">
       {Array.from({ length: rows }, (_, i) => (
         <div key={i} className="flex flex-col gap-1.5">
           <Skeleton className="h-3.5 w-20" />
@@ -20,12 +20,12 @@ export function FormSkeleton({ rows = 4 }) {
 
 export function TableSkeleton({ rows = 6 }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-      <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+    <div className="bg-card rounded-2xl border border-divider shadow-sm overflow-hidden">
+      <div className="p-4 border-b border-divider flex items-center justify-between">
         <Skeleton className="h-8 w-48 rounded-lg" />
         <Skeleton className="h-8 w-28 rounded-lg" />
       </div>
-      <div className="divide-y divide-gray-100">
+      <div className="divide-y divide-divider">
         {Array.from({ length: rows }, (_, i) => (
           <div key={i} className="flex items-center gap-4 px-4 py-3.5">
             <Skeleton className="h-4 flex-1" />
@@ -43,7 +43,7 @@ export function CardSkeleton({ count = 3 }) {
   return (
     <div className="flex flex-col gap-4">
       {Array.from({ length: count }, (_, i) => (
-        <div key={i} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex flex-col gap-4">
+        <div key={i} className="bg-card rounded-2xl border border-divider shadow-sm p-5 flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-4">
             {[0, 1].map((j) => (
               <div key={j} className="flex flex-col gap-1.5">
@@ -70,7 +70,7 @@ export function PackageGridSkeleton() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       {Array.from({ length: 3 }, (_, i) => (
-        <div key={i} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex flex-col gap-3">
+        <div key={i} className="bg-card rounded-2xl border border-divider shadow-sm p-5 flex flex-col gap-3">
           <div className="flex items-start justify-between">
             <div className="flex flex-col gap-1.5 flex-1">
               <Skeleton className="h-5 w-3/4" />
@@ -96,10 +96,10 @@ export function PackageGridSkeleton() {
 export function LoadError({ onRetry }) {
   return (
     <div className="text-center py-16">
-      <p className="text-sm text-gray-500 mb-3">Failed to load data. Please check your connection.</p>
+      <p className="text-sm text-subtle mb-3">Failed to load data. Please check your connection.</p>
       <button
         onClick={onRetry}
-        className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
+        className="px-4 py-2 rounded-lg bg-accent hover:bg-accent-hover text-white text-sm font-medium transition-colors"
       >
         Retry
       </button>

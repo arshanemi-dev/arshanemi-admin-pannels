@@ -29,18 +29,18 @@ export default function IndustriesPage() {
   const columns = [
     { key: 'name', label: 'Name', sortable: true },
     { key: 'slug', label: 'Slug' },
-    { key: 'icon', label: 'Icon', render: (v) => <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded font-mono">{v}</span> },
+    { key: 'icon', label: 'Icon', render: (v) => <span className="text-xs bg-surface text-muted px-2 py-1 rounded font-mono">{v}</span> },
   ]
 
   return (
     <>
       <PageHeader title="Industries" newHref="/admin/industries/new" />
-      {loading ? <div className="text-gray-400 text-sm">Loading…</div> : (
+      {loading ? <div className="text-subtle text-sm">Loading…</div> : (
         <DataTable columns={columns} data={data} searchKeys={['name', 'slug']}
           actions={(row) => (
             <div className="flex gap-2 justify-end">
-              <Link href={`/admin/industries/${row.id}`} className="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50"><Edit className="w-4 h-4" /></Link>
-              <button onClick={() => setConfirm(row)} className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
+              <Link href={`/admin/industries/${row.id}`} className="p-1.5 rounded-lg text-subtle hover:text-accent hover:bg-accent/10"><Edit className="w-4 h-4" /></Link>
+              <button onClick={() => setConfirm(row)} className="p-1.5 rounded-lg text-subtle hover:text-red-600 hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
             </div>
           )}
         />

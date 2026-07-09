@@ -70,25 +70,25 @@ function InlineToolbar({ textareaRef, onChange, value }) {
   }
 
   return (
-    <div className="flex items-center gap-1 px-2 py-1.5 bg-gray-50 border-b border-gray-200">
+    <div className="flex items-center gap-1 px-2 py-1.5 bg-surface border-b border-divider">
       <button type="button" onClick={() => wrap('<strong>', '</strong>')}
-        className="p-1 rounded hover:bg-indigo-100 text-gray-600 hover:text-indigo-700" title="Bold">
+        className="p-1 rounded hover:bg-accent/10 text-muted hover:text-accent-hover" title="Bold">
         <Bold className="w-3.5 h-3.5" />
       </button>
       <button type="button" onClick={() => wrap('<em>', '</em>')}
-        className="p-1 rounded hover:bg-indigo-100 text-gray-600 hover:text-indigo-700" title="Italic">
+        className="p-1 rounded hover:bg-accent/10 text-muted hover:text-accent-hover" title="Italic">
         <Italic className="w-3.5 h-3.5" />
       </button>
       <button type="button" onClick={() => wrap('<code>', '</code>')}
-        className="p-1 rounded hover:bg-indigo-100 text-gray-600 hover:text-indigo-700" title="Inline code">
+        className="p-1 rounded hover:bg-accent/10 text-muted hover:text-accent-hover" title="Inline code">
         <Code className="w-3.5 h-3.5" />
       </button>
       <button type="button" onClick={() => wrap('<a href="">', '</a>')}
-        className="p-1 rounded hover:bg-indigo-100 text-gray-600 hover:text-indigo-700" title="Link">
+        className="p-1 rounded hover:bg-accent/10 text-muted hover:text-accent-hover" title="Link">
         <Link2 className="w-3.5 h-3.5" />
       </button>
       <button type="button" onClick={() => wrap('', '<br>')}
-        className="p-1 rounded hover:bg-indigo-100 text-gray-600 hover:text-indigo-700 text-xs font-bold" title="Line break">
+        className="p-1 rounded hover:bg-accent/10 text-muted hover:text-accent-hover text-xs font-bold" title="Line break">
         ↵
       </button>
     </div>
@@ -100,7 +100,7 @@ function InlineToolbar({ textareaRef, onChange, value }) {
 function ParagraphEditor({ block, update }) {
   const ref = useRef(null)
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden">
+    <div className="border border-divider rounded-lg overflow-hidden">
       <InlineToolbar textareaRef={ref} onChange={(html) => update({ html })} value={block.html || ''} />
       <textarea
         ref={ref}
@@ -108,7 +108,7 @@ function ParagraphEditor({ block, update }) {
         onChange={(e) => update({ html: e.target.value })}
         rows={4}
         placeholder="Paragraph HTML… (use toolbar above for formatting)"
-        className="w-full px-3 py-2 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-400"
+        className="w-full px-3 py-2 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent"
       />
     </div>
   )
@@ -121,7 +121,7 @@ function HeadingEditor({ block, update }) {
         <select
           value={block.type}
           onChange={(e) => update({ type: e.target.value })}
-          className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          className="text-sm border border-divider rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent"
         >
           {['h2', 'h3', 'h4'].map((t) => (
             <option key={t} value={t}>{t.toUpperCase()}</option>
@@ -131,14 +131,14 @@ function HeadingEditor({ block, update }) {
           value={block.text || ''}
           onChange={(e) => update({ text: e.target.value, id: slugify(e.target.value) })}
           placeholder="Heading text"
-          className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          className="flex-1 text-sm border border-divider rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent"
         />
       </div>
       <input
         value={block.id || ''}
         onChange={(e) => update({ id: e.target.value })}
         placeholder="ID / anchor (used in TOC)"
-        className="text-xs border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-400 text-gray-500"
+        className="text-xs border border-divider rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-accent text-subtle"
       />
     </div>
   )
@@ -156,8 +156,8 @@ function ListEditor({ block, update }) {
             onClick={() => update({ type: t })}
             className={`text-xs px-2 py-1 rounded-lg border font-medium transition-colors ${
               block.type === t
-                ? 'bg-indigo-600 text-white border-indigo-600'
-                : 'bg-white text-gray-600 border-gray-300 hover:border-indigo-400'
+                ? 'bg-accent text-white border-accent'
+                : 'bg-card text-muted border-divider-light hover:border-accent'
             }`}
           >
             {t === 'ul' ? 'Bullet' : 'Numbered'}
@@ -166,7 +166,7 @@ function ListEditor({ block, update }) {
       </div>
       {items.map((item, ii) => (
         <div key={ii} className="flex gap-2 items-center">
-          <span className="text-xs text-gray-400 w-5 shrink-0">
+          <span className="text-xs text-subtle w-5 shrink-0">
             {block.type === 'ol' ? `${ii + 1}.` : '•'}
           </span>
           <input
@@ -177,16 +177,16 @@ function ListEditor({ block, update }) {
               update({ items: next })
             }}
             placeholder={`Item ${ii + 1} (HTML allowed)`}
-            className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="flex-1 text-sm border border-divider rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button type="button" onClick={() => update({ items: items.filter((_, i) => i !== ii) })}
-            className="p-1 text-gray-400 hover:text-red-500">
+            className="p-1 text-subtle hover:text-red-500">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
       ))}
       <button type="button" onClick={() => update({ items: [...items, ''] })}
-        className="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1 mt-1">
+        className="text-xs text-accent hover:text-accent-hover font-medium flex items-center gap-1 mt-1">
         <Plus className="w-3 h-3" /> Add item
       </button>
     </div>
@@ -199,7 +199,7 @@ function CodeEditor({ block, update }) {
       <select
         value={block.lang || 'js'}
         onChange={(e) => update({ lang: e.target.value })}
-        className="w-32 text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        className="w-32 text-sm border border-divider rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent"
       >
         {CODE_LANGS.map((l) => <option key={l} value={l}>{l}</option>)}
       </select>
@@ -209,7 +209,7 @@ function CodeEditor({ block, update }) {
         rows={6}
         placeholder="Code…"
         spellCheck={false}
-        className="w-full font-mono text-sm border border-gray-200 rounded-lg px-3 py-2 resize-y focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-gray-50"
+        className="w-full font-mono text-sm border border-divider rounded-lg px-3 py-2 resize-y focus:outline-none focus:ring-2 focus:ring-accent bg-surface"
       />
     </div>
   )
@@ -230,13 +230,13 @@ function TableEditor({ block, update }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="overflow-x-auto rounded-lg border border-gray-200">
+      <div className="overflow-x-auto rounded-lg border border-divider">
         <table className="text-sm">
           <tbody>
             {rows.map((row, ri) => (
-              <tr key={ri} className={ri === 0 ? 'bg-gray-50' : ''}>
+              <tr key={ri} className={ri === 0 ? 'bg-surface' : ''}>
                 {row.map((cell, ci) => (
-                  <td key={ci} className="border border-gray-200 p-1">
+                  <td key={ci} className="border border-divider p-1">
                     <input
                       value={cell}
                       onChange={(e) => setCell(ri, ci, e.target.value)}
@@ -245,9 +245,9 @@ function TableEditor({ block, update }) {
                     />
                   </td>
                 ))}
-                <td className="border border-gray-200 p-1">
+                <td className="border border-divider p-1">
                   <button type="button" onClick={() => removeRow(ri)}
-                    className="p-0.5 text-gray-400 hover:text-red-500">
+                    className="p-0.5 text-subtle hover:text-red-500">
                     <Trash2 className="w-3 h-3" />
                   </button>
                 </td>
@@ -258,11 +258,11 @@ function TableEditor({ block, update }) {
       </div>
       <div className="flex gap-2">
         <button type="button" onClick={addRow}
-          className="text-xs text-indigo-600 font-medium flex items-center gap-1 hover:text-indigo-800">
+          className="text-xs text-accent font-medium flex items-center gap-1 hover:text-accent-hover">
           <Plus className="w-3 h-3" /> Row
         </button>
         <button type="button" onClick={addCol}
-          className="text-xs text-indigo-600 font-medium flex items-center gap-1 hover:text-indigo-800">
+          className="text-xs text-accent font-medium flex items-center gap-1 hover:text-accent-hover">
           <Plus className="w-3 h-3" /> Column
         </button>
         {rows[0]?.length > 1 && (
@@ -284,7 +284,7 @@ function InterlinkEditor({ block, update }) {
         value={block.label || 'Read Also'}
         onChange={(e) => update({ label: e.target.value })}
         placeholder="Label (e.g. Read Also)"
-        className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 w-48 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        className="text-sm border border-divider rounded-lg px-3 py-1.5 w-48 focus:outline-none focus:ring-2 focus:ring-accent"
       />
       {links.map((link, li) => (
         <div key={li} className="flex gap-2 items-center">
@@ -296,7 +296,7 @@ function InterlinkEditor({ block, update }) {
               update({ links: next })
             }}
             placeholder="Link text"
-            className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="flex-1 text-sm border border-divider rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <input
             value={link.href}
@@ -306,16 +306,16 @@ function InterlinkEditor({ block, update }) {
               update({ links: next })
             }}
             placeholder="/blog/some-post"
-            className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="flex-1 text-sm border border-divider rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button type="button" onClick={() => update({ links: links.filter((_, i) => i !== li) })}
-            className="p-1 text-gray-400 hover:text-red-500">
+            className="p-1 text-subtle hover:text-red-500">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
       ))}
       <button type="button" onClick={() => update({ links: [...links, { href: '', text: '' }] })}
-        className="text-xs text-indigo-600 font-medium flex items-center gap-1 hover:text-indigo-800">
+        className="text-xs text-accent font-medium flex items-center gap-1 hover:text-accent-hover">
         <Plus className="w-3 h-3" /> Add link
       </button>
     </div>
@@ -327,11 +327,11 @@ function FaqBlockEditor({ block, update }) {
   return (
     <div className="flex flex-col gap-3">
       {items.map((item, ii) => (
-        <div key={ii} className="flex flex-col gap-1.5 p-3 border border-gray-200 rounded-lg">
+        <div key={ii} className="flex flex-col gap-1.5 p-3 border border-divider rounded-lg">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-indigo-600">Q{ii + 1}</span>
+            <span className="text-xs font-medium text-accent">Q{ii + 1}</span>
             <button type="button" onClick={() => update({ items: items.filter((_, i) => i !== ii) })}
-              className="ml-auto p-1 text-gray-400 hover:text-red-500">
+              className="ml-auto p-1 text-subtle hover:text-red-500">
               <Trash2 className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -343,7 +343,7 @@ function FaqBlockEditor({ block, update }) {
               update({ items: next })
             }}
             placeholder="Question"
-            className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="text-sm border border-divider rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <textarea
             value={item.a}
@@ -354,12 +354,12 @@ function FaqBlockEditor({ block, update }) {
             }}
             rows={3}
             placeholder="Answer"
-            className="text-sm border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="text-sm border border-divider rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-accent"
           />
         </div>
       ))}
       <button type="button" onClick={() => update({ items: [...items, { q: '', a: '' }] })}
-        className="text-xs text-indigo-600 font-medium flex items-center gap-1 hover:text-indigo-800">
+        className="text-xs text-accent font-medium flex items-center gap-1 hover:text-accent-hover">
         <Plus className="w-3 h-3" /> Add Q&A pair
       </button>
     </div>
@@ -373,28 +373,28 @@ function BlockItem({ block, onChange, onDelete, onMoveUp, onMoveDown, onDuplicat
   const meta = BLOCK_TYPES.find((t) => t.value === block.type)
 
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
+    <div className="border border-divider rounded-xl overflow-hidden bg-card shadow-sm">
       {/* Toolbar */}
-      <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 border-b border-gray-200">
-        <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+      <div className="flex items-center gap-2 px-3 py-2 bg-surface border-b border-divider">
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-subtle uppercase tracking-wide">
           {meta?.icon && <meta.icon className="w-3.5 h-3.5" />}
           {meta?.label || block.type}
         </div>
         <div className="ml-auto flex items-center gap-0.5">
           <button type="button" onClick={onMoveUp} disabled={isFirst} title="Move up"
-            className="p-1.5 rounded text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 disabled:opacity-30 transition-colors">
+            className="p-1.5 rounded text-subtle hover:text-accent hover:bg-accent/10 disabled:opacity-30 transition-colors">
             <MoveUp className="w-3.5 h-3.5" />
           </button>
           <button type="button" onClick={onMoveDown} disabled={isLast} title="Move down"
-            className="p-1.5 rounded text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 disabled:opacity-30 transition-colors">
+            className="p-1.5 rounded text-subtle hover:text-accent hover:bg-accent/10 disabled:opacity-30 transition-colors">
             <MoveDown className="w-3.5 h-3.5" />
           </button>
           <button type="button" onClick={onDuplicate} title="Duplicate"
-            className="p-1.5 rounded text-gray-400 hover:text-green-600 hover:bg-green-50 transition-colors">
+            className="p-1.5 rounded text-subtle hover:text-green-600 hover:bg-green-50 transition-colors">
             <Copy className="w-3.5 h-3.5" />
           </button>
           <button type="button" onClick={onDelete} title="Delete"
-            className="p-1.5 rounded text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+            className="p-1.5 rounded text-subtle hover:text-red-600 hover:bg-red-50 transition-colors">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -415,11 +415,11 @@ function BlockItem({ block, onChange, onDelete, onMoveUp, onMoveDown, onDuplicat
             onChange={(e) => update({ text: e.target.value })}
             rows={2}
             placeholder="Blockquote text…"
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="w-full px-3 py-2 text-sm border border-divider rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-accent"
           />
         )}
         {block.type === 'hr' && (
-          <div className="py-2 text-center text-xs text-gray-400">— Horizontal rule —</div>
+          <div className="py-2 text-center text-xs text-subtle">— Horizontal rule —</div>
         )}
         {block.type === 'code' && <CodeEditor block={block} update={update} />}
         {block.type === 'img' && (
@@ -434,13 +434,13 @@ function BlockItem({ block, onChange, onDelete, onMoveUp, onMoveDown, onDuplicat
               value={block.alt || ''}
               onChange={(e) => update({ alt: e.target.value })}
               placeholder="Alt text (required for accessibility)"
-              className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="text-sm border border-divider rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent"
             />
             <input
               value={block.caption || ''}
               onChange={(e) => update({ caption: e.target.value })}
               placeholder="Caption (optional)"
-              className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-500"
+              className="text-sm border border-divider rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent text-subtle"
             />
           </div>
         )}
@@ -488,7 +488,7 @@ export default function BlogBlockEditor({ value = [], onChange }) {
       {/* Block list */}
       <div className="flex flex-col gap-2">
         {value.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed border-gray-200 rounded-xl text-gray-400">
+          <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed border-divider rounded-xl text-subtle">
             <Plus className="w-8 h-8 mb-2 opacity-40" />
             <p className="text-sm">No blocks yet — add your first block below</p>
           </div>
@@ -513,7 +513,7 @@ export default function BlogBlockEditor({ value = [], onChange }) {
         <button
           type="button"
           onClick={() => setShowDropdown((o) => !o)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-dashed border-indigo-300 text-indigo-600 hover:bg-indigo-50 text-sm font-medium transition-colors w-full justify-center"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-dashed border-accent/50 text-accent hover:bg-accent/10 text-sm font-medium transition-colors w-full justify-center"
         >
           <Plus className="w-4 h-4" />
           Add Block
@@ -521,14 +521,14 @@ export default function BlogBlockEditor({ value = [], onChange }) {
         </button>
 
         {showDropdown && (
-          <div className="absolute bottom-full mb-2 left-0 right-0 bg-white rounded-xl border border-gray-200 shadow-xl z-50 p-2">
+          <div className="absolute bottom-full mb-2 left-0 right-0 bg-card rounded-xl border border-divider shadow-xl z-50 p-2">
             <div className="grid grid-cols-3 gap-1">
               {BLOCK_TYPES.map((t) => (
                 <button
                   key={t.value}
                   type="button"
                   onClick={() => addBlock(t.value)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-accent/10 hover:text-accent-hover transition-colors"
                 >
                   <t.icon className="w-4 h-4 shrink-0" />
                   {t.label}

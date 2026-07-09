@@ -30,13 +30,13 @@ function fmt(iso) {
 
 function StatCard({ icon: Icon, label, value, color }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-4 shadow-sm">
+    <div className="bg-card border border-divider rounded-xl p-4 flex items-center gap-4 shadow-sm">
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${color}`}>
         <Icon className="w-5 h-5" />
       </div>
       <div>
-        <p className="text-2xl font-bold text-gray-900">{value}</p>
-        <p className="text-xs text-gray-500">{label}</p>
+        <p className="text-2xl font-bold text-foreground">{value}</p>
+        <p className="text-xs text-subtle">{label}</p>
       </div>
     </div>
   )
@@ -121,7 +121,7 @@ export default function CandidatesPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard icon={Users}    label="Total Applications" value={stats.total}      color="bg-indigo-50 text-indigo-600" />
+        <StatCard icon={Users}    label="Total Applications" value={stats.total}      color="bg-accent/10 text-accent" />
         <StatCard icon={Clock}    label="New (Unreviewed)"   value={stats.new}        color="bg-blue-50 text-blue-600" />
         <StatCard icon={Filter}   label="Shortlisted"        value={stats.shortlisted} color="bg-green-50 text-green-600" />
         <StatCard icon={Briefcase}label="Hired"              value={stats.hired}       color="bg-purple-50 text-purple-600" />
@@ -130,18 +130,18 @@ export default function CandidatesPage() {
       {/* Filters */}
       <div className="flex flex-wrap gap-3 mb-4">
         <div className="relative flex-1 min-w-52">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-subtle" />
           <input
             value={query}
             onChange={(e) => { setQuery(e.target.value); setPage(1) }}
             placeholder="Search name, email, job…"
-            className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full pl-9 pr-4 py-2 rounded-lg border border-divider-light text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
           />
         </div>
         <select
           value={filterJob}
           onChange={(e) => { setFilterJob(e.target.value); setPage(1) }}
-          className="px-3 py-2 rounded-lg border border-gray-300 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="px-3 py-2 rounded-lg border border-divider-light text-sm text-muted focus:outline-none focus:ring-2 focus:ring-accent"
         >
           <option value="">All Positions</option>
           {jobTitles.map((j) => <option key={j} value={j}>{j}</option>)}
@@ -149,40 +149,40 @@ export default function CandidatesPage() {
         <select
           value={filterStatus}
           onChange={(e) => { setFilterStatus(e.target.value); setPage(1) }}
-          className="px-3 py-2 rounded-lg border border-gray-300 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="px-3 py-2 rounded-lg border border-divider-light text-sm text-muted focus:outline-none focus:ring-2 focus:ring-accent"
         >
           <option value="">All Statuses</option>
           {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
         <button
           onClick={load}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-divider-light text-sm text-muted hover:bg-surface transition-colors"
         >
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-2xl border border-divider shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
+              <tr className="bg-surface border-b border-divider">
                 {['Candidate', 'Position', 'Applied', 'Status', 'Resume', 'Actions'].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-subtle uppercase tracking-wider whitespace-nowrap">
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-divider">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-gray-400">Loading…</td>
+                  <td colSpan={6} className="px-4 py-12 text-center text-subtle">Loading…</td>
                 </tr>
               ) : paged.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-gray-400">
+                  <td colSpan={6} className="px-4 py-12 text-center text-subtle">
                     No candidates found.
                   </td>
                 </tr>
@@ -190,20 +190,20 @@ export default function CandidatesPage() {
                 <>
                   <tr
                     key={c.id}
-                    className="hover:bg-gray-50 transition-colors cursor-pointer"
+                    className="hover:bg-surface transition-colors cursor-pointer"
                     onClick={() => setExpandedId(expandedId === c.id ? null : c.id)}
                   >
                     {/* Candidate */}
                     <td className="px-4 py-3">
-                      <p className="font-semibold text-gray-900 text-sm">{c.name}</p>
+                      <p className="font-semibold text-foreground text-sm">{c.name}</p>
                       <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                         <a href={`mailto:${c.email}`} onClick={(e) => e.stopPropagation()}
-                          className="text-xs text-indigo-600 hover:underline flex items-center gap-1">
+                          className="text-xs text-accent hover:underline flex items-center gap-1">
                           <Mail className="w-3 h-3" /> {c.email}
                         </a>
                         {c.phone && (
                           <a href={`tel:${c.phone}`} onClick={(e) => e.stopPropagation()}
-                            className="text-xs text-gray-500 flex items-center gap-1">
+                            className="text-xs text-subtle flex items-center gap-1">
                             <Phone className="w-3 h-3" /> {c.phone}
                           </a>
                         )}
@@ -211,10 +211,10 @@ export default function CandidatesPage() {
                     </td>
                     {/* Position */}
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="text-sm font-medium text-gray-800">{c.jobTitle || '—'}</span>
+                      <span className="text-sm font-medium text-foreground">{c.jobTitle || '—'}</span>
                     </td>
                     {/* Applied */}
-                    <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-500">
+                    <td className="px-4 py-3 whitespace-nowrap text-xs text-subtle">
                       {fmt(c.appliedAt)}
                     </td>
                     {/* Status */}
@@ -223,7 +223,7 @@ export default function CandidatesPage() {
                         value={c.status || 'New'}
                         disabled={updatingId === c.id}
                         onChange={(e) => updateStatus(c.id, e.target.value)}
-                        className={`text-xs font-semibold border rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400 disabled:opacity-60 ${STATUS_COLORS[c.status] || STATUS_COLORS.New}`}
+                        className={`text-xs font-semibold border rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-60 ${STATUS_COLORS[c.status] || STATUS_COLORS.New}`}
                       >
                         {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
@@ -235,21 +235,21 @@ export default function CandidatesPage() {
                           href={c.resumeUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 hover:text-indigo-800 hover:underline"
+                          className="inline-flex items-center gap-1.5 text-xs font-medium text-accent hover:text-accent-hover hover:underline"
                         >
                           <Download className="w-3.5 h-3.5" />
                           {c.resumeFileName || 'Resume'}
                           <ExternalLink className="w-3 h-3 opacity-50" />
                         </a>
                       ) : (
-                        <span className="text-xs text-gray-400">No file</span>
+                        <span className="text-xs text-subtle">No file</span>
                       )}
                     </td>
                     {/* Actions */}
                     <td className="px-4 py-3 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => setDeleteTarget(c)}
-                        className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        className="p-1.5 rounded-lg text-subtle hover:text-red-600 hover:bg-red-50 transition-colors"
                         title="Delete application"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -259,10 +259,10 @@ export default function CandidatesPage() {
 
                   {/* Expanded cover letter row */}
                   {expandedId === c.id && c.coverLetter && (
-                    <tr key={`${c.id}-detail`} className="bg-indigo-50/40">
+                    <tr key={`${c.id}-detail`} className="bg-accent/5">
                       <td colSpan={6} className="px-6 py-4">
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Cover Letter</p>
-                        <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">{c.coverLetter}</p>
+                        <p className="text-xs font-semibold text-subtle uppercase tracking-wider mb-1">Cover Letter</p>
+                        <p className="text-sm text-muted whitespace-pre-line leading-relaxed">{c.coverLetter}</p>
                       </td>
                     </tr>
                   )}
@@ -275,7 +275,7 @@ export default function CandidatesPage() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-4 text-sm text-gray-500">
+        <div className="flex items-center justify-between mt-4 text-sm text-subtle">
           <span>
             {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
           </span>
@@ -283,7 +283,7 @@ export default function CandidatesPage() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="p-1.5 rounded-lg hover:bg-gray-100 disabled:opacity-40"
+              className="p-1.5 rounded-lg hover:bg-surface disabled:opacity-40"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -291,7 +291,7 @@ export default function CandidatesPage() {
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="p-1.5 rounded-lg hover:bg-gray-100 disabled:opacity-40"
+              className="p-1.5 rounded-lg hover:bg-surface disabled:opacity-40"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

@@ -16,8 +16,8 @@ const CATEGORY_OPTIONS = [
 
 function SectionCard({ title, children }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex flex-col gap-4">
-      <h3 className="text-sm font-semibold text-gray-700 border-b border-gray-100 pb-3">{title}</h3>
+    <div className="bg-card rounded-2xl border border-divider shadow-sm p-5 flex flex-col gap-4">
+      <h3 className="text-sm font-semibold text-muted border-b border-divider pb-3">{title}</h3>
       {children}
     </div>
   )
@@ -27,18 +27,18 @@ function ArraySection({ title, items, onChange, renderItem, onAdd, addLabel = 'A
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-gray-600">{title}</span>
+        <span className="text-xs font-semibold text-muted">{title}</span>
         <button type="button" onClick={onAdd}
-          className="flex items-center gap-1.5 text-xs text-indigo-600 font-medium hover:text-indigo-800">
+          className="flex items-center gap-1.5 text-xs text-accent font-medium hover:text-accent-hover">
           <Plus className="w-3.5 h-3.5" /> {addLabel}
         </button>
       </div>
       {items.map((item, i) => (
-        <div key={i} className="border border-gray-100 rounded-xl p-4 flex flex-col gap-3">
+        <div key={i} className="border border-divider rounded-xl p-4 flex flex-col gap-3">
           <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">#{i + 1}</span>
+            <span className="text-xs text-subtle">#{i + 1}</span>
             <button type="button" onClick={() => onChange(items.filter((_, idx) => idx !== i))}
-              className="p-1 text-gray-400 hover:text-red-500">
+              className="p-1 text-subtle hover:text-red-500">
               <Trash2 className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -135,7 +135,7 @@ export default function EditServicePage() {
 
       {/* Stats */}
       <SectionCard title="Stats Strip">
-        <p className="text-xs text-gray-500 -mt-1">Shown as a 4-column metrics strip below the hero. Add up to 8 stats; remove any you don't need.</p>
+        <p className="text-xs text-subtle -mt-1">Shown as a 4-column metrics strip below the hero. Add up to 8 stats; remove any you don't need.</p>
         <ArraySection
           title="Stat Items"
           items={stats}
@@ -236,7 +236,7 @@ export default function EditServicePage() {
 
       {/* Related Blogs */}
       <SectionCard title="Related Blog Slugs">
-        <p className="text-xs text-gray-500">Enter blog post slugs (one per row). These appear as related articles on the service page.</p>
+        <p className="text-xs text-subtle">Enter blog post slugs (one per row). These appear as related articles on the service page.</p>
         {relatedBlogs.map((slug, i) => (
           <div key={i} className="flex gap-2 items-center">
             <div className="flex-1">
@@ -248,20 +248,20 @@ export default function EditServicePage() {
                 }} />
             </div>
             <button type="button" onClick={() => set('relatedBlogs', relatedBlogs.filter((_, idx) => idx !== i))}
-              className="mt-5 p-1.5 text-gray-400 hover:text-red-500">
+              className="mt-5 p-1.5 text-subtle hover:text-red-500">
               <Trash2 className="w-3.5 h-3.5" />
             </button>
           </div>
         ))}
         <button type="button" onClick={() => set('relatedBlogs', [...relatedBlogs, ''])}
-          className="flex items-center gap-1.5 text-xs text-indigo-600 font-medium hover:text-indigo-800 self-start">
+          className="flex items-center gap-1.5 text-xs text-accent font-medium hover:text-accent-hover self-start">
           <Plus className="w-3.5 h-3.5" /> Add Blog Slug
         </button>
       </SectionCard>
 
       {/* Challenges */}
       <SectionCard title="Challenges Section (wide image banner + card grid)">
-        <p className="text-xs text-gray-500 -mt-1">Wide cinematic image at top with heading overlaid, then a numbered glass card grid below.</p>
+        <p className="text-xs text-subtle -mt-1">Wide cinematic image at top with heading overlaid, then a numbered glass card grid below.</p>
         <FormField
           label="Section Heading"
           value={form.challenges?.heading || ''}
@@ -282,7 +282,7 @@ export default function EditServicePage() {
           placeholder="https://images.unsplash.com/photo-..."
         />
         {form.challenges?.imageUrl && (
-          <div className="relative h-32 rounded-xl overflow-hidden border border-gray-200">
+          <div className="relative h-32 rounded-xl overflow-hidden border border-divider">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={form.challenges.imageUrl} alt="Preview" className="w-full h-full object-cover" />
           </div>
@@ -311,7 +311,7 @@ export default function EditServicePage() {
 
       <div className="flex justify-end">
         <button type="submit" disabled={loading}
-          className="px-8 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors disabled:opacity-60">
+          className="px-8 py-3 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-colors disabled:opacity-60">
           {loading ? 'Saving…' : 'Save Service'}
         </button>
       </div>

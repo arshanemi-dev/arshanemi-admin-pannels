@@ -46,7 +46,7 @@ export default function ServicesPage() {
     { key: 'category', label: 'Category', sortable: true },
     {
       key: 'icon', label: 'Icon',
-      render: (v) => <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded font-mono">{v}</span>,
+      render: (v) => <span className="text-xs bg-surface text-muted px-2 py-1 rounded font-mono">{v}</span>,
     },
   ]
 
@@ -65,11 +65,11 @@ export default function ServicesPage() {
           actions={(row) => (
             <div className="flex items-center gap-2 justify-end">
               <Link href={`/admin/services/${row.id}`}
-                className="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors">
+                className="p-1.5 rounded-lg text-subtle hover:text-accent hover:bg-accent/10 transition-colors">
                 <Edit className="w-4 h-4" />
               </Link>
               <button onClick={() => setConfirm(row)}
-                className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                className="p-1.5 rounded-lg text-subtle hover:text-red-600 hover:bg-red-50 transition-colors">
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>

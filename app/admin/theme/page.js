@@ -41,7 +41,7 @@ function loadGoogleFont(fontFamily) {
 function ColorSwatch({ colorKey, value = '#000000', onChange }) {
   const isLight = luminance(value) > 0.5
   return (
-    <label className="group flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+    <label className="group flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-surface cursor-pointer transition-colors">
       <div className="relative flex-shrink-0 w-8 h-8 rounded-md shadow-sm ring-1 ring-black/10 overflow-hidden"
         style={{ backgroundColor: value }}>
         <input
@@ -52,10 +52,10 @@ function ColorSwatch({ colorKey, value = '#000000', onChange }) {
         />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-medium text-gray-700 truncate leading-tight">
+        <p className="text-xs font-medium text-muted truncate leading-tight">
           {COLOR_LABELS[colorKey] || colorKey}
         </p>
-        <p className="text-[11px] font-mono text-gray-400 leading-tight">{value}</p>
+        <p className="text-[11px] font-mono text-subtle leading-tight">{value}</p>
       </div>
       <div className="w-4 h-4 rounded-sm flex items-center justify-center opacity-0 group-hover:opacity-100"
         style={{ backgroundColor: value }}>
@@ -69,10 +69,10 @@ function ColorSwatch({ colorKey, value = '#000000', onChange }) {
 
 function Section({ icon: Icon, title, children }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-100 bg-gray-50">
-        <Icon className="w-4 h-4 text-indigo-600" />
-        <h3 className="text-sm font-semibold text-gray-800">{title}</h3>
+    <div className="bg-card rounded-xl border border-divider overflow-hidden">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-divider bg-surface">
+        <Icon className="w-4 h-4 text-accent" />
+        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
       </div>
       <div className="p-4">{children}</div>
     </div>
@@ -213,7 +213,7 @@ export default function ThemePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -223,15 +223,15 @@ export default function ThemePage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Theme Settings</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-xl font-bold text-foreground">Theme Settings</h1>
+          <p className="text-sm text-subtle mt-0.5">
             Customise colors, typography & layout — changes apply live to the public site.
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           {/* ── Site Mode Switch ── */}
-          <div className="flex items-center gap-1.5 px-1.5 py-1.5 bg-gray-100 rounded-xl border border-gray-200">
-            <span className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider pl-1 pr-0.5">
+          <div className="flex items-center gap-1.5 px-1.5 py-1.5 bg-surface rounded-xl border border-divider">
+            <span className="text-[11px] text-subtle font-semibold uppercase tracking-wider pl-1 pr-0.5">
               Live Mode:
             </span>
             {['dark', 'light'].map(m => (
@@ -239,9 +239,9 @@ export default function ThemePage() {
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   theme.mode === m
                     ? m === 'dark'
-                      ? 'bg-gray-900 text-white shadow-sm'
-                      : 'bg-white text-gray-900 shadow-sm border border-gray-200'
-                    : 'text-gray-500 hover:text-gray-700'
+                      ? 'bg-foreground text-background shadow-sm'
+                      : 'bg-card text-foreground shadow-sm border border-divider'
+                    : 'text-subtle hover:text-muted'
                 }`}>
                 {m === 'dark' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
                 {m === 'dark' ? 'Dark' : 'Light'}
@@ -249,11 +249,11 @@ export default function ThemePage() {
             ))}
           </div>
           <button onClick={handleReset}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors border border-gray-200">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-muted hover:bg-surface transition-colors border border-divider">
             <RefreshCw className="w-3.5 h-3.5" /> Reset
           </button>
           <button onClick={handleSave} disabled={saving || !dirty}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm">
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-accent text-white hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm">
             <Save className="w-3.5 h-3.5" />
             {saving ? 'Saving…' : dirty ? 'Save Changes' : 'Saved'}
           </button>
@@ -270,13 +270,13 @@ export default function ThemePage() {
           <Section icon={Palette} title="Color Palette">
             {/* Palette editing tabs */}
             <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-lg">
+              <div className="flex items-center gap-1 p-1 bg-surface rounded-lg">
                 {['dark', 'light'].map(m => (
                   <button key={m} onClick={() => setMode(m)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
                       mode === m
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-500 hover:text-gray-700'
+                        ? 'bg-card text-foreground shadow-sm'
+                        : 'text-subtle hover:text-muted'
                     }`}>
                     {m === 'dark' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
                     {m === 'dark' ? 'Dark Palette' : 'Light Palette'}
@@ -293,7 +293,7 @@ export default function ThemePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
               {COLOR_GROUPS.map(group => (
                 <div key={group.label}>
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 px-2 mb-1 mt-3">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-subtle px-2 mb-1 mt-3">
                     {group.label}
                   </p>
                   {group.keys.map(key => (
@@ -315,36 +315,36 @@ export default function ThemePage() {
 
               {/* Font family */}
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-2">Font Family</label>
+                <label className="block text-xs font-semibold text-muted mb-2">Font Family</label>
                 <div ref={fontRef} className="relative">
                   <button
                     onClick={() => setFontDropOpen(o => !o)}
-                    className="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg border border-gray-200 bg-white hover:border-gray-300 text-sm font-medium text-gray-800 transition-colors"
+                    className="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg border border-divider bg-card hover:border-divider-light text-sm font-medium text-foreground transition-colors"
                     style={{ fontFamily: fontFamilyCSS }}>
                     {fontFamily}
-                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${fontDropOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-4 h-4 text-subtle transition-transform ${fontDropOpen ? 'rotate-180' : ''}`} />
                   </button>
                   {fontDropOpen && (
-                    <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-20 py-1 max-h-52 overflow-y-auto">
+                    <div className="absolute left-0 right-0 top-full mt-1 bg-card border border-divider rounded-xl shadow-lg z-20 py-1 max-h-52 overflow-y-auto">
                       {FONT_OPTIONS.map(f => (
                         <button key={f.value} onClick={() => updateFont(f.value)}
-                          className="w-full flex items-center justify-between px-3 py-2 hover:bg-gray-50 text-sm text-gray-700 transition-colors"
+                          className="w-full flex items-center justify-between px-3 py-2 hover:bg-surface text-sm text-muted transition-colors"
                           style={{ fontFamily: f.value === 'System' ? SYSTEM_FONT_STACK : `${f.value}, sans-serif` }}>
                           <span>{f.label}</span>
-                          {fontFamily === f.value && <Check className="w-4 h-4 text-indigo-600" />}
+                          {fontFamily === f.value && <Check className="w-4 h-4 text-accent" />}
                         </button>
                       ))}
                     </div>
                   )}
                 </div>
-                <p className="mt-1.5 text-[11px] text-gray-400">Applied to the entire public site.</p>
+                <p className="mt-1.5 text-[11px] text-subtle">Applied to the entire public site.</p>
               </div>
 
               {/* Font scale */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-semibold text-gray-700">UI Font Scale</label>
-                  <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+                  <label className="text-xs font-semibold text-muted">UI Font Scale</label>
+                  <span className="text-xs font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full">
                     {(scale * 100).toFixed(0)}%
                   </span>
                 </div>
@@ -352,36 +352,36 @@ export default function ThemePage() {
                   type="range" min="0.8" max="1.3" step="0.05"
                   value={scale}
                   onChange={e => updateScale(e.target.value)}
-                  className="w-full accent-indigo-600"
+                  className="w-full accent-accent"
                 />
                 <div className="flex justify-between mt-1">
                   {SCALE_MARKS.map(m => (
                     <span key={m.value}
-                      className={`text-[10px] ${Math.abs(m.value - scale) < 0.01 ? 'text-indigo-600 font-bold' : 'text-gray-400'}`}>
+                      className={`text-[10px] ${Math.abs(m.value - scale) < 0.01 ? 'text-accent font-bold' : 'text-subtle'}`}>
                       {m.label}
                     </span>
                   ))}
                 </div>
-                <p className="mt-2 text-[11px] text-gray-400">
+                <p className="mt-2 text-[11px] text-subtle">
                   Scales the base font size (16px × scale). Affects all rem values.
                 </p>
               </div>
             </div>
 
             {/* Font preview strip */}
-            <div className="mt-4 p-3 rounded-lg bg-gray-50 border border-gray-100" style={{ fontFamily: fontFamilyCSS }}>
-              <p className="text-xs text-gray-400 mb-2 uppercase tracking-wider">Preview — {fontFamily}</p>
-              <p className="text-2xl font-bold text-gray-900 leading-tight">Heading Bold 700</p>
-              <p className="text-base font-medium text-gray-700">Semibold 600 — subheading text</p>
-              <p className="text-sm text-gray-500 mt-1">Regular 400 — the quick brown fox jumps over the lazy dog.</p>
-              <p className="text-xs text-gray-400 mt-1">Small 300 — caption and fine print text goes here</p>
+            <div className="mt-4 p-3 rounded-lg bg-surface border border-divider" style={{ fontFamily: fontFamilyCSS }}>
+              <p className="text-xs text-subtle mb-2 uppercase tracking-wider">Preview — {fontFamily}</p>
+              <p className="text-2xl font-bold text-foreground leading-tight">Heading Bold 700</p>
+              <p className="text-base font-medium text-muted">Semibold 600 — subheading text</p>
+              <p className="text-sm text-subtle mt-1">Regular 400 — the quick brown fox jumps over the lazy dog.</p>
+              <p className="text-xs text-subtle mt-1">Small 300 — caption and fine print text goes here</p>
             </div>
           </Section>
 
           {/* ── Border Radius ────────────────────────────── */}
           <Section icon={Sliders} title="Border Radius">
             <div>
-              <p className="text-xs text-gray-500 mb-3">Choose a preset or apply a global corner style.</p>
+              <p className="text-xs text-subtle mb-3">Choose a preset or apply a global corner style.</p>
               <div className="grid grid-cols-4 gap-2 mb-4">
                 {Object.entries(RADIUS_PRESETS).map(([key, preset]) => {
                   const active = borderRadius.preset === key
@@ -390,15 +390,15 @@ export default function ThemePage() {
                     <button key={key} onClick={() => applyRadiusPreset(key)}
                       className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all ${
                         active
-                          ? 'border-indigo-500 bg-indigo-50'
-                          : 'border-gray-200 hover:border-gray-300 bg-white'
+                          ? 'border-accent bg-accent/10'
+                          : 'border-divider hover:border-divider-light bg-card'
                       }`}>
                       <div className="w-10 h-10 border-2 border-current transition-colors"
                         style={{
                           borderRadius: previewR,
-                          borderColor: active ? '#6366f1' : '#9ca3af',
+                          borderColor: active ? 'var(--color-accent)' : 'var(--color-divider-light)',
                         }} />
-                      <span className={`text-xs font-semibold ${active ? 'text-indigo-700' : 'text-gray-600'}`}>
+                      <span className={`text-xs font-semibold ${active ? 'text-accent-hover' : 'text-muted'}`}>
                         {preset.label}
                       </span>
                     </button>
@@ -408,14 +408,14 @@ export default function ThemePage() {
 
               {/* Fine-tune values */}
               <details className="group">
-                <summary className="text-xs font-semibold text-gray-500 cursor-pointer hover:text-gray-700 flex items-center gap-1 list-none">
+                <summary className="text-xs font-semibold text-subtle cursor-pointer hover:text-muted flex items-center gap-1 list-none">
                   <ChevronDown className="w-3.5 h-3.5 transition-transform group-open:rotate-180" />
                   Fine-tune individual values
                 </summary>
                 <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {['sm', 'base', 'md', 'lg', 'xl', '2xl'].map(k => (
                     <div key={k}>
-                      <label className="block text-[11px] font-medium text-gray-500 mb-1">
+                      <label className="block text-[11px] font-medium text-subtle mb-1">
                         {k === 'base' ? 'rounded (base)' : `rounded-${k}`}
                       </label>
                       <input
@@ -428,7 +428,7 @@ export default function ThemePage() {
                           document.documentElement.style.setProperty(cssKey, val)
                           setDirty(true)
                         }}
-                        className="w-full px-2 py-1.5 text-xs font-mono border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-400"
+                        className="w-full px-2 py-1.5 text-xs font-mono border border-divider rounded-md focus:outline-none focus:ring-1 focus:ring-accent"
                         placeholder="e.g. 8px"
                       />
                     </div>
@@ -441,17 +441,17 @@ export default function ThemePage() {
 
         {/* Right — sticky live preview */}
         <div className="xl:sticky xl:top-6 space-y-3">
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <div className="bg-card rounded-xl border border-divider p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-1.5">
-                <Eye className="w-4 h-4 text-indigo-600" />
-                <h3 className="text-sm font-semibold text-gray-800">Live Preview</h3>
+                <Eye className="w-4 h-4 text-accent" />
+                <h3 className="text-sm font-semibold text-foreground">Live Preview</h3>
               </div>
-              <div className="flex items-center gap-1 p-0.5 bg-gray-100 rounded-md">
+              <div className="flex items-center gap-1 p-0.5 bg-surface rounded-md">
                 {['dark', 'light'].map(m => (
                   <button key={m} onClick={() => setMode(m)}
                     className={`px-2 py-0.5 rounded text-[11px] font-medium transition-all ${
-                      mode === m ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
+                      mode === m ? 'bg-card text-foreground shadow-sm' : 'text-subtle'
                     }`}>
                     {m === 'dark' ? '☾' : '☀'} {m}
                   </button>
@@ -462,8 +462,8 @@ export default function ThemePage() {
           </div>
 
           {/* Scale preview badge */}
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <p className="text-xs font-semibold text-gray-700 mb-2">Scale Preview</p>
+          <div className="bg-card rounded-xl border border-divider p-4">
+            <p className="text-xs font-semibold text-muted mb-2">Scale Preview</p>
             <div className="space-y-1.5">
               {[{ size: `${(14 * scale).toFixed(1)}px`, label: 'text-sm', sample: 'Small text' },
                 { size: `${(16 * scale).toFixed(1)}px`, label: 'text-base', sample: 'Base text' },
@@ -471,10 +471,10 @@ export default function ThemePage() {
                 { size: `${(24 * scale).toFixed(1)}px`, label: 'text-2xl', sample: 'Heading' },
               ].map(r => (
                 <div key={r.label} className="flex items-center justify-between">
-                  <span className="text-gray-700 font-medium" style={{ fontSize: r.size, fontFamily: fontFamilyCSS, lineHeight: 1.2 }}>
+                  <span className="text-muted font-medium" style={{ fontSize: r.size, fontFamily: fontFamilyCSS, lineHeight: 1.2 }}>
                     {r.sample}
                   </span>
-                  <span className="text-[10px] text-gray-400 font-mono">{r.label} · {r.size}</span>
+                  <span className="text-[10px] text-subtle font-mono">{r.label} · {r.size}</span>
                 </div>
               ))}
             </div>

@@ -27,7 +27,7 @@ export default function ConfirmDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+      <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
 
         {/* Header */}
         <div className="flex items-start gap-4">
@@ -35,12 +35,12 @@ export default function ConfirmDialog({
             <AlertTriangle className="w-5 h-5 text-red-600" />
           </div>
           <div className="flex-1">
-            <h3 className="text-base font-semibold text-gray-900">{title || 'Are you sure?'}</h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <h3 className="text-base font-semibold text-foreground">{title || 'Are you sure?'}</h3>
+            <p className="mt-1 text-sm text-subtle">
               {description || 'This action cannot be undone.'}
             </p>
           </div>
-          <button onClick={onCancel} className="text-gray-400 hover:text-gray-600 flex-shrink-0">
+          <button onClick={onCancel} className="text-subtle hover:text-muted flex-shrink-0">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -48,8 +48,8 @@ export default function ConfirmDialog({
         {/* Type-to-confirm input */}
         {confirmText && (
           <div className="mt-5">
-            <p className="text-sm text-gray-600 mb-2">
-              Type <span className="font-semibold text-gray-900 bg-gray-100 px-1.5 py-0.5 rounded font-mono text-[13px]">{confirmText}</span> to confirm:
+            <p className="text-sm text-muted mb-2">
+              Type <span className="font-semibold text-foreground bg-surface px-1.5 py-0.5 rounded font-mono text-[13px]">{confirmText}</span> to confirm:
             </p>
             <input
               autoFocus
@@ -63,7 +63,7 @@ export default function ConfirmDialog({
                   ? 'border-red-300 focus:ring-red-300'
                   : typed === confirmText
                   ? 'border-green-400 focus:ring-green-300'
-                  : 'border-gray-300 focus:ring-red-400'
+                  : 'border-divider-light focus:ring-red-400'
               }`}
             />
             {typed && typed !== confirmText && (
@@ -76,7 +76,7 @@ export default function ConfirmDialog({
         <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={onCancel}
-            className="px-4 py-2 rounded-lg text-sm font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 rounded-lg text-sm font-medium bg-card border border-divider-light text-muted hover:bg-surface transition-colors"
           >
             Cancel
           </button>
