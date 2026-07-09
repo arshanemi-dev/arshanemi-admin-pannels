@@ -6,6 +6,7 @@ import ThemePreview from '@/components/admin/ThemePreview'
 import { useToast } from '@/components/admin/Toast'
 import { defaultTheme } from '@/data/defaultTheme'
 import { COLOR_GROUPS, COLOR_LABELS, FONT_OPTIONS, RADIUS_PRESETS, SCALE_MARKS } from '@/data/themeEditorConfig'
+import { themePresets, contrastRatio, bestPresetFor, MIN_TEXT_CONTRAST, MIN_ACCENT_CONTRAST } from '@/data/themePresets'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -65,6 +66,32 @@ function ColorSwatch({ colorKey, value = '#000000', onChange }) {
   )
 }
 
+// ─── Preset Card ──────────────────────────────────────────────────────────────
+
+function PresetCard({ preset, mode, active, onSelect }) {
+  const c = preset[mode]
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(preset)}
+      className={`group flex flex-col rounded-xl border-2 overflow-hidden text-left transition-all ${
+        active ? 'border-accent shadow-sm' : 'border-divider hover:border-divider-light'
+      }`}
+    >
+      <div className="h-9 w-full flex">
+        <div className="flex-1" style={{ backgroundColor: c['accent-hover'] }} />
+        <div className="flex-1" style={{ backgroundColor: c.accent }} />
+        <div className="flex-1" style={{ backgroundColor: c['accent-vivid'] }} />
+        <div className="flex-1" style={{ backgroundColor: c.cyan }} />
+      </div>
+      <div className="px-2.5 py-1.5 bg-card flex items-center justify-between gap-2">
+        <span className="text-xs font-medium text-foreground truncate">{preset.name}</span>
+        {active && <Check className="w-3.5 h-3.5 text-accent flex-shrink-0" />}
+      </div>
+    </button>
+  )
+}
+
 // ─── Section Card ─────────────────────────────────────────────────────────────
 
 function Section({ icon: Icon, title, children }) {
@@ -82,7 +109,7 @@ function Section({ icon: Icon, title, children }) {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function ThemePage() {
-  const { toast } = useToast()
+  const { addToast } = useToast()
   const [theme, setTheme] = useState(defaultTheme)
   const [mode, setMode] = useState('dark')
   const [loading, setLoading] = useState(true)
@@ -124,10 +151,47 @@ export default function ThemePage() {
     }
   }
 
+  // Applies a color edit, then auto-corrects it if it makes text unreadable
+  // or the accent invisible against the current background — swapping in
+  // restored defaults / the best-contrast preset rather than letting a
+  // broken combination stand.
   function updateColor(key, value) {
-    setTheme(prev => ({ ...prev, [mode]: { ...prev[mode], [key]: value } }))
-    applyColorVar(key, value)
+    const next = { ...(theme[mode] || {}), [key]: value }
+    const patch = { [key]: value }
+    let warning = null
+
+    if (key === 'accent' || key === 'foreground' || key === 'background') {
+      if (contrastRatio(next.foreground, next.background) < MIN_TEXT_CONTRAST) {
+        patch.foreground = defaultTheme[mode].foreground
+        patch.background = defaultTheme[mode].background
+        warning = 'Text and background were nearly identical — restored readable defaults.'
+      }
+      const bg = patch.background ?? next.background
+      if (contrastRatio(next.accent, bg) < MIN_ACCENT_CONTRAST) {
+        const suggestion = bestPresetFor(mode, bg)
+        if (suggestion) {
+          Object.assign(patch, suggestion[mode])
+          warning = `That accent was hard to see — switched to "${suggestion.name}" for better contrast.`
+        }
+      }
+    }
+
+    setTheme(prev => ({ ...prev, [mode]: { ...prev[mode], ...patch } }))
+    Object.entries(patch).forEach(([k, v]) => applyColorVar(k, v))
     setDirty(true)
+    if (warning) addToast(warning, 'error')
+  }
+
+  // Applies a curated preset's accent family to both modes at once.
+  function applyPreset(preset) {
+    setTheme(prev => ({
+      ...prev,
+      dark:  { ...prev.dark,  ...preset.dark },
+      light: { ...prev.light, ...preset.light },
+    }))
+    Object.entries(preset[mode]).forEach(([k, v]) => applyColorVar(k, v))
+    setDirty(true)
+    addToast(`Applied "${preset.name}" theme`, 'success')
   }
 
   function updateScale(value) {
@@ -182,10 +246,10 @@ export default function ThemePage() {
       if (!res.ok) throw new Error((await res.json()).error || 'Failed')
       // Bust client-side cache so ThemeContext picks up new values
       localStorage.removeItem('si-theme-config')
-      toast('Theme saved — changes are live!', 'success')
+      addToast('Theme saved — changes are live!', 'success')
       setDirty(false)
     } catch (err) {
-      toast(err.message || 'Failed to save theme', 'error')
+      addToast(err.message || 'Failed to save theme', 'error')
     } finally {
       setSaving(false)
     }
@@ -200,7 +264,7 @@ export default function ThemePage() {
     document.documentElement.style.setProperty('--font-sans', SYSTEM_FONT_STACK)
     await fetch('/api/admin/theme', { method: 'DELETE' })
     localStorage.removeItem('si-theme-config')
-    toast('Reset to defaults', 'info')
+    addToast('Reset to defaults', 'success')
     setDirty(false)
   }
 
@@ -268,6 +332,29 @@ export default function ThemePage() {
 
           {/* ── Colors ──────────────────────────────────── */}
           <Section icon={Palette} title="Color Palette">
+            {/* Quick Themes — curated presets, one click applies a full accent family */}
+            <div className="mb-5">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-subtle mb-2">
+                Quick Themes
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                {themePresets.map(preset => (
+                  <PresetCard
+                    key={preset.id}
+                    preset={preset}
+                    mode={mode}
+                    active={colors.accent === preset[mode].accent}
+                    onSelect={applyPreset}
+                  />
+                ))}
+              </div>
+              <p className="mt-2 text-[11px] text-subtle">
+                Pick a starting point, then fine-tune individual colors below. If a manual edit
+                makes text or the accent hard to read, we'll automatically swap in the closest
+                readable option.
+              </p>
+            </div>
+
             {/* Palette editing tabs */}
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-1 p-1 bg-surface rounded-lg">

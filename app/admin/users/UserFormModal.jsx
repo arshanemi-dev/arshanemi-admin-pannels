@@ -12,8 +12,10 @@ const ROLE_OPTIONS = [
 function emptyForm(companies) {
   return {
     name: '', email: '', mobile: '', password: '',
+    address1: '', address2: '',
     role: 'user', companyId: companies[0]?.id || '',
     otpEnabled: false, isActive: true,
+    walletCreditsTotal: 0, walletCreditsUsed: 0,
   }
 }
 
@@ -29,8 +31,11 @@ export default function UserFormModal({ open, mode, viewer, companies, initial, 
     if (mode === 'edit' && initial) {
       setForm({
         name: initial.name || '', email: initial.email || '', mobile: initial.mobile || '',
-        password: '', role: initial.role, companyId: initial.company_id || '',
+        password: '', address1: initial.address1 || '', address2: initial.address2 || '',
+        role: initial.role, companyId: initial.company_id || '',
         otpEnabled: !!initial.otp_enabled, isActive: !!initial.is_active,
+        walletCreditsTotal: initial.wallet_credits_total ?? 0,
+        walletCreditsUsed: initial.wallet_credits_used ?? 0,
       })
     } else {
       setForm(emptyForm(companies))
@@ -56,8 +61,12 @@ export default function UserFormModal({ open, mode, viewer, companies, initial, 
         name: form.name.trim(),
         email: form.email.trim() || null,
         mobile: form.mobile.trim() || null,
+        address1: form.address1.trim() || null,
+        address2: form.address2.trim() || null,
         otpEnabled: form.otpEnabled,
         isActive: form.isActive,
+        walletCreditsTotal: Math.max(0, +form.walletCreditsTotal || 0),
+        walletCreditsUsed: Math.max(0, +form.walletCreditsUsed || 0),
       }
       if (mode === 'create') body.password = form.password
       if (isMaster) {
@@ -110,6 +119,8 @@ export default function UserFormModal({ open, mode, viewer, companies, initial, 
       <FormField label="Name" name="name" required value={form.name} onChange={(e) => set('name', e.target.value)} />
       <FormField label="Email" name="email" type="email" value={form.email} onChange={(e) => set('email', e.target.value)} />
       <FormField label="Mobile" name="mobile" value={form.mobile} onChange={(e) => set('mobile', e.target.value)} />
+      <FormField label="Address 1" name="address1" value={form.address1} onChange={(e) => set('address1', e.target.value)} />
+      <FormField label="Address 2" name="address2" value={form.address2} onChange={(e) => set('address2', e.target.value)} />
 
       {mode === 'create' && (
         <FormField
@@ -132,6 +143,17 @@ export default function UserFormModal({ open, mode, viewer, companies, initial, 
           />
         </>
       )}
+
+      <div className="grid grid-cols-2 gap-3">
+        <FormField
+          label="Wallet Credits (Total)" name="walletCreditsTotal" type="number" min={0}
+          value={form.walletCreditsTotal} onChange={(e) => set('walletCreditsTotal', e.target.value)}
+        />
+        <FormField
+          label="Wallet Credits (Used)" name="walletCreditsUsed" type="number" min={0}
+          value={form.walletCreditsUsed} onChange={(e) => set('walletCreditsUsed', e.target.value)}
+        />
+      </div>
 
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium text-muted">Require OTP on login</label>

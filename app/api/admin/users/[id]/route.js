@@ -29,6 +29,10 @@ export async function PATCH(req, { params }) {
   if ('mobile' in body) patch.mobile = body.mobile?.trim() || null
   if ('isActive' in body) patch.isActive = !!body.isActive
   if ('otpEnabled' in body) patch.otpEnabled = !!body.otpEnabled
+  if ('address1' in body) patch.address1 = body.address1?.trim() || null
+  if ('address2' in body) patch.address2 = body.address2?.trim() || null
+  if ('walletCreditsTotal' in body) patch.walletCreditsTotal = Math.max(0, +body.walletCreditsTotal || 0)
+  if ('walletCreditsUsed' in body) patch.walletCreditsUsed = Math.max(0, +body.walletCreditsUsed || 0)
 
   if ('email' in body) {
     const email = body.email ? body.email.toLowerCase().trim() : null
@@ -62,7 +66,9 @@ export async function PATCH(req, { params }) {
     return NextResponse.json({
       id: updated.id, name: updated.name, email: updated.email, mobile: updated.mobile,
       role: updated.role, companyId: updated.company_id, isActive: updated.is_active,
-      otpEnabled: updated.otp_enabled, createdAt: updated.created_at,
+      otpEnabled: updated.otp_enabled, address1: updated.address1, address2: updated.address2,
+      walletCreditsTotal: updated.wallet_credits_total, walletCreditsUsed: updated.wallet_credits_used,
+      createdAt: updated.created_at,
     })
   } catch (err) {
     console.error('Update user error:', err)

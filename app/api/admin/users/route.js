@@ -20,7 +20,7 @@ export async function POST(req) {
   if (!staff) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await req.json()
-  let { name, email, mobile, password, role, companyId, otpEnabled } = body
+  let { name, email, mobile, password, role, companyId, otpEnabled, address1, address2, walletCreditsTotal } = body
 
   if (!name?.trim()) return NextResponse.json({ error: 'Name is required' }, { status: 400 })
   if (!email && !mobile) return NextResponse.json({ error: 'Provide at least an email or mobile number' }, { status: 400 })
@@ -64,6 +64,9 @@ export async function POST(req) {
       role,
       companyId,
       otpEnabled: !!otpEnabled,
+      address1: address1?.trim() || null,
+      address2: address2?.trim() || null,
+      walletCreditsTotal: Number.isFinite(+walletCreditsTotal) ? Math.max(0, +walletCreditsTotal) : 0,
     })
 
     try {
@@ -75,7 +78,9 @@ export async function POST(req) {
     return NextResponse.json({
       id: user.id, name: user.name, email: user.email, mobile: user.mobile,
       role: user.role, companyId: user.company_id, isActive: user.is_active,
-      otpEnabled: user.otp_enabled, createdAt: user.created_at,
+      otpEnabled: user.otp_enabled, address1: user.address1, address2: user.address2,
+      walletCreditsTotal: user.wallet_credits_total, walletCreditsUsed: user.wallet_credits_used,
+      createdAt: user.created_at,
     }, { status: 201 })
   } catch (err) {
     console.error('Create user error:', err)
