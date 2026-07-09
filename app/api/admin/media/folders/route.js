@@ -15,7 +15,7 @@ export async function POST(req) {
   const admin = await getAdminFromRequest(req)
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { name, parentPath = 'santhya-media' } = await req.json()
+  const { name, parentPath = 'arshanemi-media' } = await req.json()
   if (!name || !name.trim()) {
     return NextResponse.json({ error: 'Folder name is required' }, { status: 400 })
   }

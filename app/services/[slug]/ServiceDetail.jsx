@@ -221,7 +221,7 @@ function WhyChooseUs({ whyUs, service }) {
     <section className="section-pad bg-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div {...fadeUp()} className="mb-14">
-          <SectionHeading eyebrow="Why Choose Us" title="The Santhya Infotech Advantage" subtitle={`What makes our ${service.title.toLowerCase()} services different from every other agency.`} />
+          <SectionHeading eyebrow="Why Choose Us" title="The Arshanemi Advantage" subtitle={`What makes our ${service.title.toLowerCase()} services different from every other agency.`} />
         </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.map((item, i) => {

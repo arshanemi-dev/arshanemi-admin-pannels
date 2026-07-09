@@ -88,7 +88,7 @@ export default function ServiceChallenges({ challenges, service }) {
             <div className="relative h-[480px] sm:h-[520px] rounded-3xl overflow-hidden shadow-2xl shadow-indigo-900/40">
               <Image
                 src={imageUrl}
-                alt={`${service?.title || 'SEO'} challenges — Santhya Infotech`}
+                alt={`${service?.title || 'SEO'} challenges — Arshanemi`}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -140,7 +140,7 @@ export default function ServiceChallenges({ challenges, service }) {
                   </div>
                   <div>
                     <p className="text-sm font-bold text-white leading-tight">
-                      Santhya Infotech Solves All of These
+                      Arshanemi Solves All of These
                     </p>
                     <p className="text-xs text-indigo-200 mt-0.5">
                       Proven strategies. Measurable outcomes. Zero guesswork.

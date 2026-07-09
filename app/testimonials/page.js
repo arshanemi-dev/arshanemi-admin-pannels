@@ -5,8 +5,8 @@ import CTABanner from '@/components/sections/CTABanner';
 import { getCachedCollection } from '@/lib/db';
 
 export const metadata = {
-  title: 'Client Testimonials | Santhya Infotech',
-  description: 'Real results from real clients. See what businesses say about Santhya Infotech\'s SEO and digital marketing services.',
+  title: 'Client Testimonials | Arshanemi',
+  description: 'Real results from real clients. See what businesses say about Arshanemi\'s SEO and digital marketing services.',
 };
 
 function StarRating({ rating }) {

@@ -108,7 +108,7 @@ export const blogs = [
       },
       {
         "type": "p",
-        "html": "When you write an article for another website or publication as an expert in your field, and that site publishes it, it’s a form of earned media. Guest posting helps you reach a new audience, build authority, and often gets you backlinks to your website &#8211; which also helps your SEO. This is a tactic that Santhya Infotech regularly uses to help brands grow their online presence through strategic guest posting services."
+        "html": "When you write an article for another website or publication as an expert in your field, and that site publishes it, it’s a form of earned media. Guest posting helps you reach a new audience, build authority, and often gets you backlinks to your website &#8211; which also helps your SEO. This is a tactic that Arshanemi regularly uses to help brands grow their online presence through strategic guest posting services."
       },
       {
         "type": "h3",
@@ -218,7 +218,7 @@ export const blogs = [
         "items": [
           "<strong>Create shareable content:</strong> Write blog posts, guides, infographics, or videos that actually help people. When your content answers real questions or provides new insights, others will naturally want to share it or reference it in their own writing.",
           "<strong>Build relationships with journalists and bloggers: </strong>Get to know journalists and writers who cover your industry. Follow them, engage with their content, and pitch story ideas that are truly relevant to their audience. Don’t just reach out when you want something &#8211; build a real relationship over time.",
-          "<strong>Use guest posting strategically:</strong> Reach out to reputable blogs and publications in your niche and offer to write expert articles for them. Guest posting exposes your name to a new audience and earns valuable backlinks. At Santhya Infotech, we offer dedicated guest post services to help brands secure high-authority placements that drive both visibility and SEO results.",
+          "<strong>Use guest posting strategically:</strong> Reach out to reputable blogs and publications in your niche and offer to write expert articles for them. Guest posting exposes your name to a new audience and earns valuable backlinks. At Arshanemi, we offer dedicated guest post services to help brands secure high-authority placements that drive both visibility and SEO results.",
           "<strong>Encourage customer reviews:</strong> Provide an exceptional experience and then make it easy for happy customers to leave a review. Send a follow-up email after a purchase. Add a review link to your website. The more positive reviews you collect, the stronger your earned media presence will become.",
           "<strong>Share original research and data:</strong> Conduct surveys, publish reports, or share unique data points from your industry. Journalists and bloggers love to cite original research. When you publish something new and useful, other sites mention it &#8211; and those references build your authority and backlink profile.",
           "<strong>Engage authentically on social media:</strong> Consistently show up on social platforms, join conversations, answer questions, and add value. When your brand consistently helps people online, it builds a community that naturally shares your content and talks about you.",
@@ -259,7 +259,7 @@ export const blogs = [
       },
       {
         "type": "p",
-        "html": "If you’re looking to accelerate your earned media results &#8211; whether it’s through SEO-based content, strategic guest posting, or link building &#8211; Santhya Infotech is here to help you build a strong, lasting digital presence."
+        "html": "If you’re looking to accelerate your earned media results &#8211; whether it’s through SEO-based content, strategic guest posting, or link building &#8211; Arshanemi is here to help you build a strong, lasting digital presence."
       },
       {
         "type": "h2",

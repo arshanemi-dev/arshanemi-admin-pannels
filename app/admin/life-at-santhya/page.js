@@ -12,7 +12,7 @@ export default function LifeAtSanthyaPage() {
   const { addToast } = useToast()
 
   useEffect(() => {
-    fetch('/api/admin/singleton/life-at-santhya').then((r) => r.json()).then(setForm)
+    fetch('/api/admin/singleton/life-at-arshanemi').then((r) => r.json()).then(setForm)
   }, [])
 
   if (!form) return <div className="text-subtle text-sm">Loading…</div>
@@ -20,7 +20,7 @@ export default function LifeAtSanthyaPage() {
   async function save(e) {
     e.preventDefault()
     setLoading(true)
-    const res = await fetch('/api/admin/singleton/life-at-santhya', {
+    const res = await fetch('/api/admin/singleton/life-at-arshanemi', {
       method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form),
     })
     if (res.ok) addToast('Saved!')

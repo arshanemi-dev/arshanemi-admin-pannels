@@ -6,8 +6,8 @@ import { caseStudyTestimonials } from '@/data/testimonials';
 import CaseStudiesClient from './CaseStudiesClient';
 
 export const metadata = {
-  title: 'Case Studies | Santhya Infotech',
-  description: 'Real SEO results for real businesses. Browse Santhya Infotech case studies across Healthcare, eCommerce, Real Estate, and more.',
+  title: 'Case Studies | Arshanemi',
+  description: 'Real SEO results for real businesses. Browse Arshanemi case studies across Healthcare, eCommerce, Real Estate, and more.',
 };
 
 export default async function CaseStudiesPage() {

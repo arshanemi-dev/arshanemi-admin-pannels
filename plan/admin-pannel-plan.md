@@ -1,4 +1,4 @@
-# Admin Panel — Santhya Infotech CMS
+# Admin Panel — Arshanemi CMS
 
 ## Context
 The site has 20 static JavaScript data files (`data/*.js`). The goal is to:
@@ -35,14 +35,14 @@ Existing: `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID` already present.
 
 | Blob Key Pattern | Usage |
 |---|---|
-| `santhya-data/[collection].json` | All collection/singleton JSON |
-| `santhya-images/[collection]/[nanoid].[ext]` | Uploaded images/logos |
+| `arshanemi-data/[collection].json` | All collection/singleton JSON |
+| `arshanemi-images/[collection]/[nanoid].[ext]` | Uploaded images/logos |
 
 **List collections** (array of items, each with `id: nanoid()`):
 `services`, `service-content`, `industries`, `blogs`, `blog-categories`, `case-studies`, `testimonials`, `team`, `faqs`, `partners`, `careers`, `seo-packages`
 
 **Singleton collections** (plain objects, edit-only):
-`company`, `stats`, `badges`, `hero`, `process`, `about`, `life-at-santhya`, `contact`, `navigation`
+`company`, `stats`, `badges`, `hero`, `process`, `about`, `life-at-arshanemi`, `contact`, `navigation`
 
 ---
 
@@ -62,7 +62,7 @@ getSingleton(name)            // → object
 updateSingleton(name, data)   // put blob
 seedCollection(name, array)   // initial migration only
 ```
-Blob key: `santhya-data/${name}.json`
+Blob key: `arshanemi-data/${name}.json`
 
 **`lib/auth.js`** — JWT utilities
 ```js
@@ -73,7 +73,7 @@ getAdminFromRequest(req)      // reads 'admin-token' cookie, verifies
 
 **`lib/upload.js`** — Vercel Blob image helpers
 ```js
-uploadImage(file, collection) // put to santhya-images/[col]/[id].[ext], return url
+uploadImage(file, collection) // put to arshanemi-images/[col]/[id].[ext], return url
 deleteImage(url)              // del from Vercel Blob by URL
 ```
 
@@ -86,7 +86,7 @@ Also adds `X-Admin-User` header for downstream use.
 Node script (`node scripts/seed.js`) that:
 1. Imports each `data/*.js` file
 2. Adds `id: nanoid()` to each item in list collections
-3. Uploads as JSON to Vercel Blob (`santhya-data/[name].json`)
+3. Uploads as JSON to Vercel Blob (`arshanemi-data/[name].json`)
 Run once after setup.
 
 **Image fields audit — what needs special handling during seed:**
@@ -109,7 +109,7 @@ async function reuploadPartnerLogos(partners) {
     const res = await fetch(p.url)
     const buffer = await res.arrayBuffer()
     const ext = p.url.split('.').pop().split('?')[0]
-    const blob = await put(`santhya-images/partners/${nanoid()}.${ext}`, buffer, {
+    const blob = await put(`arshanemi-images/partners/${nanoid()}.${ext}`, buffer, {
       access: 'public', contentType: res.headers.get('content-type') || 'image/png'
     })
     return { ...p, id: nanoid(), url: blob.url }
@@ -214,7 +214,7 @@ admin/[collection]/[id]/route.js
 | `hero/page.js` | heroBullets[] + heroMetrics[] |
 | `process/page.js` | 3 processSteps: number, icon, title, description, tags[] |
 | `about/page.js` | aboutValues, aboutServices, whyUs, aboutStats |
-| `life-at-santhya/page.js` | companyValues[] + milestones[] |
+| `life-at-arshanemi/page.js` | companyValues[] + milestones[] |
 | `contact/page.js` | contactInfo[], contactServices[], contactBudgets[] |
 | `navigation/page.js` | navLinks, footerLinks, socialLinks |
 | `service-content/page.js` | List of slugs → click → edit hero/stats/process/whyUs/faqs |
@@ -225,7 +225,7 @@ admin/[collection]/[id]/route.js
 
 ### Blog Data Schema
 
-Each blog document stored in `santhya-data/blogs.json`:
+Each blog document stored in `arshanemi-data/blogs.json`:
 
 ```js
 {
@@ -248,7 +248,7 @@ Each blog document stored in `santhya-data/blogs.json`:
 }
 ```
 
-**Category document** stored in `santhya-data/blog-categories.json`:
+**Category document** stored in `arshanemi-data/blog-categories.json`:
 ```js
 {
   id: 7,                  // keep numeric id from WordPress for backwards compat
@@ -563,7 +563,7 @@ const services = await getCollection('services')
 - `app/case-studies/page.js`
 - `app/testimonials/page.js`
 - `app/careers/page.js` + `app/seo-packages/page.js`
-- `app/life-at-santhya/page.js` + `app/contact/page.js`
+- `app/life-at-arshanemi/page.js` + `app/contact/page.js`
 - `components/layout/Header.jsx` + `Footer.jsx`
 
 **ISR strategy:**

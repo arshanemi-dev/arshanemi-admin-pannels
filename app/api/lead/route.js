@@ -33,7 +33,7 @@ export async function POST(req) {
     const { subject, html } = buildLeadEmail({ name, email, phone, interest });
 
     await sendEmail({
-      from: `"Santhya Infotech Website" <${process.env.SMTP_USER}>`,
+      from: `"Arshanemi Website" <${process.env.SMTP_USER}>`,
       replyTo: `"${name}" <${email}>`,
       to: toEmail,
       subject,

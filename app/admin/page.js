@@ -93,7 +93,7 @@ export default function DashboardPage() {
             { label: 'Hero Content', href: '/admin/hero' },
             { label: 'About Page', href: '/admin/about' },
             { label: 'Process Steps', href: '/admin/process' },
-            { label: 'Life at Arshanemi', href: '/admin/life-at-santhya' },
+            { label: 'Life at Arshanemi', href: '/admin/life-at-arshanemi' },
             { label: 'Contact Page', href: '/admin/contact' },
             { label: 'Navigation', href: '/admin/navigation' },
             { label: 'Service Content', href: '/admin/service-content' },

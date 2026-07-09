@@ -10,25 +10,25 @@ import { services as defaultServices } from '@/data/services';
 const SITE_URL = 'https://www.santhyainfotech.com';
 
 export const metadata = {
-  title: 'Contact Santhya Infotech — Free SEO Audit & Consultation',
+  title: 'Contact Arshanemi — Free SEO Audit & Consultation',
   description:
-    `Contact Santhya Infotech for a free SEO audit and digital marketing consultation. Call ${COMPANY_PHONE_PRIMARY}, email ${COMPANY_EMAIL}, or WhatsApp us. Based in Surat, Gujarat.`,
+    `Contact Arshanemi for a free SEO audit and digital marketing consultation. Call ${COMPANY_PHONE_PRIMARY}, email ${COMPANY_EMAIL}, or WhatsApp us. Based in Surat, Gujarat.`,
   keywords: [
-    'contact Santhya Infotech', 'free SEO audit Surat', 'SEO consultation India',
+    'contact Arshanemi', 'free SEO audit Surat', 'SEO consultation India',
     'digital marketing agency contact', 'SEO agency Surat phone number',
   ],
   alternates: { canonical: `${SITE_URL}/contact` },
   openGraph: {
-    title: 'Contact Santhya Infotech — Free SEO Audit & Consultation',
+    title: 'Contact Arshanemi — Free SEO Audit & Consultation',
     description:
       'Get a free SEO audit and consultation from Surat\'s leading digital marketing agency. Call, email, or WhatsApp us today — no commitment required.',
     url: `${SITE_URL}/contact`,
-    images: [{ url: `${SITE_URL}/images/santhya-infotech-logo.png`, width: 1200, height: 630, alt: 'Contact Santhya Infotech' }],
+    images: [{ url: `${SITE_URL}/images/arshanemi-infotech-logo.png`, width: 1200, height: 630, alt: 'Contact Arshanemi' }],
   },
   twitter: {
-    title: 'Contact Santhya Infotech — Free SEO Audit',
+    title: 'Contact Arshanemi — Free SEO Audit',
     description: 'Get a free SEO audit from Surat\'s leading digital marketing agency. No commitment required.',
-    images: [`${SITE_URL}/images/santhya-infotech-logo.png`],
+    images: [`${SITE_URL}/images/arshanemi-infotech-logo.png`],
   },
 };
 
@@ -37,8 +37,8 @@ const localBusinessSchema = {
   '@context': 'https://schema.org',
   '@type': ['LocalBusiness', 'ProfessionalService'],
   '@id': `${SITE_URL}/#organization`,
-  name: 'Santhya Infotech',
-  image: `${SITE_URL}/images/santhya-infotech-logo.png`,
+  name: 'Arshanemi',
+  image: `${SITE_URL}/images/arshanemi-infotech-logo.png`,
   url: SITE_URL,
   telephone: COMPANY_PHONE_PRIMARY,
   email: COMPANY_EMAIL,

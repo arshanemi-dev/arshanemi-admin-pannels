@@ -25,7 +25,7 @@ export const testimonials = [
     company: 'Mehta Dental Clinic',
     role: 'Founder & Dentist',
     rating: 5,
-    text: 'Santhya Infotech helped us rank on the first page of Google for "dentist in Surat" within 3 months. Our new patient bookings have tripled since we started working with them.',
+    text: 'Arshanemi helped us rank on the first page of Google for "dentist in Surat" within 3 months. Our new patient bookings have tripled since we started working with them.',
     avatar: '/images/team/avatar-1.jpg',
   },
   {
@@ -33,7 +33,7 @@ export const testimonials = [
     company: 'GreenLeaf Wellness',
     role: 'CEO',
     rating: 5,
-    text: 'The team at Santhya Infotech is incredibly professional and result-oriented. They built a comprehensive SEO strategy that increased our organic traffic by 280% in six months.',
+    text: 'The team at Arshanemi is incredibly professional and result-oriented. They built a comprehensive SEO strategy that increased our organic traffic by 280% in six months.',
     avatar: '/images/team/avatar-2.jpg',
   },
   {
@@ -41,7 +41,7 @@ export const testimonials = [
     company: 'Patel Real Estate',
     role: 'Director',
     rating: 5,
-    text: 'We were struggling to get leads online. After partnering with Santhya Infotech, our website now generates 40+ qualified leads every month through organic search alone.',
+    text: 'We were struggling to get leads online. After partnering with Arshanemi, our website now generates 40+ qualified leads every month through organic search alone.',
     avatar: '/images/team/avatar-3.jpg',
   },
   {
@@ -49,7 +49,7 @@ export const testimonials = [
     company: 'The Grand Surat Hotel',
     role: 'Marketing Manager',
     rating: 5,
-    text: 'Our direct bookings increased by 65% after Santhya Infotech optimized our Google My Business and hotel SEO. We reduced our OTA dependency significantly.',
+    text: 'Our direct bookings increased by 65% after Arshanemi optimized our Google My Business and hotel SEO. We reduced our OTA dependency significantly.',
     avatar: '/images/team/avatar-4.jpg',
   },
   {
@@ -57,7 +57,7 @@ export const testimonials = [
     company: 'Desai Law Associates',
     role: 'Managing Partner',
     rating: 5,
-    text: 'Excellent service and transparent reporting. Santhya Infotech helped our law firm rank for competitive keywords and the quality of leads we receive now is outstanding.',
+    text: 'Excellent service and transparent reporting. Arshanemi helped our law firm rank for competitive keywords and the quality of leads we receive now is outstanding.',
     avatar: '/images/team/avatar-5.jpg',
   },
   {
@@ -65,7 +65,7 @@ export const testimonials = [
     company: 'FitLife Gym',
     role: 'Owner',
     rating: 5,
-    text: 'In just 4 months, Santhya Infotech grew our Instagram following by 5,000 and our gym membership sign-ups doubled. Their social media strategy is top-notch.',
+    text: 'In just 4 months, Arshanemi grew our Instagram following by 5,000 and our gym membership sign-ups doubled. Their social media strategy is top-notch.',
     avatar: '/images/team/avatar-6.jpg',
   },
 ];

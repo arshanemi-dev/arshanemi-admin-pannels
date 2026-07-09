@@ -13,7 +13,7 @@ const staticRoutes = [
   { url: '/contact',        changeFrequency: 'monthly', priority: 0.9 },
   { url: '/testimonials',   changeFrequency: 'monthly', priority: 0.6 },
   { url: '/careers',        changeFrequency: 'monthly', priority: 0.6 },
-  { url: '/life-at-santhya',changeFrequency: 'monthly', priority: 0.5 },
+  { url: '/life-at-arshanemi',changeFrequency: 'monthly', priority: 0.5 },
 ];
 
 export default async function sitemap() {

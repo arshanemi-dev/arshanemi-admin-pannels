@@ -7,7 +7,7 @@ export async function GET(req) {
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { searchParams } = new URL(req.url)
-  // prefix = full blob path prefix, e.g. "santhya-images/partners" or "" for all
+  // prefix = full blob path prefix, e.g. "arshanemi-images/partners" or "" for all
   const prefix = searchParams.get('prefix') || ''
 
   const blobs = await listMedia(prefix)

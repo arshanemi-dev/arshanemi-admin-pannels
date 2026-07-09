@@ -1,4 +1,4 @@
-# Plan: Santhya Infotech Website — Next.js Rebuild (DianApps Pixel-Match)
+# Plan: Arshanemi Website — Next.js Rebuild (DianApps Pixel-Match)
 
 ## Context
 
@@ -232,7 +232,7 @@ FAQ accordion:
 
 ---
 
-## Company Data (Santhya Infotech)
+## Company Data (Arshanemi)
 
 Founder & CEO:  Nand Kishor Yadav
 SEO Manager:    Harshil Raval
@@ -252,7 +252,7 @@ Hours:          Mon-Sat 9 AM – 9 PM IST
 4.  styles/globals.css — base bg, font-smoothing, ticker + gradientPulse keyframes
 5.  lib/utils.js — cn(), slugify(), formatNumber()
 6.  hooks/ — useInView.js, useCountUp.js, useScrollHeader.js
-7.  data/ — all 8 data files with Santhya Infotech content
+7.  data/ — all 8 data files with Arshanemi content
 8.  components/ui/ — Button, Card, Badge, SectionHeading, WhatsAppFloat
 9.  components/layout/ — Header, MobileMenu, Footer
 10. components/sections/ — all 11 homepage sections

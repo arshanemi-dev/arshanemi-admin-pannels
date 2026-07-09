@@ -32,7 +32,7 @@ export const companyValues = [
 ];
 
 export const milestones = [
-  { year: '2019', event: 'Santhya Infotech founded in Surat by Nand Kishor Yadav' },
+  { year: '2019', event: 'Arshanemi founded in Surat by Nand Kishor Yadav' },
   { year: '2020', event: 'Reached 50 active clients across local and eCommerce verticals' },
   { year: '2021', event: 'Expanded to Google Ads and Social Media Marketing services' },
   { year: '2022', event: 'Launched White Label SEO program for agencies across India' },

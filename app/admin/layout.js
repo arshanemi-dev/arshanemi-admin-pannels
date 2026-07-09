@@ -6,7 +6,7 @@ import Topbar from '@/components/admin/Topbar'
 import { ToastProvider } from '@/components/admin/Toast'
 
 export const metadata = {
-  title: 'Admin — Santhya Infotech',
+  title: 'Admin — Arshanemi',
   robots: { index: false },
 }
 

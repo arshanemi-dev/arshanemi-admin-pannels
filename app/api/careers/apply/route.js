@@ -72,7 +72,7 @@ export async function POST(req) {
     })
 
     await sendEmail({
-      from: `"Santhya Infotech Careers" <${process.env.SMTP_USER}>`,
+      from: `"Arshanemi Careers" <${process.env.SMTP_USER}>`,
       replyTo: `"${name}" <${email}>`,
       to: hrEmail,
       subject,

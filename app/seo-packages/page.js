@@ -6,7 +6,7 @@ import SeoPackagesClient from './SeoPackagesClient';
 const SITE_URL = 'https://www.santhyainfotech.com';
 
 export const metadata = {
-  title: 'SEO Packages & Pricing | Santhya Infotech',
+  title: 'SEO Packages & Pricing | Arshanemi',
   description: 'Transparent SEO packages starting from $150/month. Choose Starter, Growth, or Pro — all include full-service SEO with no hidden fees.',
   alternates: { canonical: `${SITE_URL}/seo-packages` },
 };

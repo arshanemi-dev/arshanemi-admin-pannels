@@ -33,25 +33,25 @@ export async function generateMetadata({ params }) {
   const pageUrl = `${SITE_URL}/services/${slug}`;
 
   return {
-    title: `${service.title} Services in India | Santhya Infotech`,
+    title: `${service.title} Services in India | Arshanemi`,
     description,
     keywords: [
       `${service.title.toLowerCase()} services`, `${service.title.toLowerCase()} agency India`,
-      `${service.title.toLowerCase()} Surat`, 'SEO agency Surat', 'Santhya Infotech',
+      `${service.title.toLowerCase()} Surat`, 'SEO agency Surat', 'Arshanemi',
     ],
     alternates: { canonical: pageUrl },
     openGraph: {
-      title: `${service.title} Services | Santhya Infotech`,
+      title: `${service.title} Services | Arshanemi`,
       description,
       url: pageUrl,
       images: [
-        { url: `${SITE_URL}/images/santhya-infotech-logo.png`, width: 1200, height: 630, alt: `${service.title} — Santhya Infotech` },
+        { url: `${SITE_URL}/images/arshanemi-infotech-logo.png`, width: 1200, height: 630, alt: `${service.title} — Arshanemi` },
       ],
     },
     twitter: {
-      title: `${service.title} Services | Santhya Infotech`,
+      title: `${service.title} Services | Arshanemi`,
       description,
-      images: [`${SITE_URL}/images/santhya-infotech-logo.png`],
+      images: [`${SITE_URL}/images/arshanemi-infotech-logo.png`],
     },
   };
 }
@@ -63,7 +63,7 @@ function buildServiceSchema(service, content, slug) {
     '@type': 'Service',
     '@id': `${pageUrl}/#service`,
     serviceType: service.title,
-    name: `${service.title} by Santhya Infotech`,
+    name: `${service.title} by Arshanemi`,
     description: content?.hero?.subtext || service.shortDesc,
     url: pageUrl,
     provider: { '@id': `${SITE_URL}/#organization` },

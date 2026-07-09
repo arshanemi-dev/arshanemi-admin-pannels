@@ -78,7 +78,7 @@ const masterAdminGroups = [
       { label: 'Process Steps',  href: '/admin/process',          icon: Settings },
 
       { label: 'Careers',        href: '/admin/careers',          icon: Briefcase },
-      { label: 'Life at Santhya',href: '/admin/life-at-santhya',  icon: Heart },
+      { label: 'Life at Santhya',href: '/admin/life-at-arshanemi',  icon: Heart },
       { label: 'Contact Page',   href: '/admin/contact',          icon: Phone },
       { label: 'Navigation',     href: '/admin/navigation',       icon: Map },
 

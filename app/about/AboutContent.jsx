@@ -68,7 +68,7 @@ export default function AboutContent() {
               <span className="text-cyan-300">Digital Excellence</span>
             </h1>
             <p className="text-base sm:text-lg text-indigo-100 leading-relaxed max-w-2xl mx-auto mb-10">
-              Santhya Infotech is a Surat-based SEO and digital marketing agency formed with a shared vision — to transform marketing and design into something extraordinary by harnessing the full power of digital technology.
+              Arshanemi is a Surat-based SEO and digital marketing agency formed with a shared vision — to transform marketing and design into something extraordinary by harnessing the full power of digital technology.
             </p>
             <div className="inline-flex items-center gap-2 text-xs text-indigo-200 bg-white/10 border border-white/20 rounded-full px-4 py-2">
               <MapPin size={12} className="text-cyan-300" />
@@ -90,7 +90,7 @@ export default function AboutContent() {
             >
               <SectionHeading eyebrow="Our Story" title="Built on Results, Driven by Data" center={false} />
               <div className="mt-6 space-y-4 text-muted text-sm leading-relaxed">
-                <p>Santhya Infotech was founded with one unwavering mission — to make world-class digital marketing accessible to every business, regardless of size or budget. What began as a small, passionate team in Surat, Gujarat, has grown into a full-service SEO agency trusted by 200+ clients across India and beyond.</p>
+                <p>Arshanemi was founded with one unwavering mission — to make world-class digital marketing accessible to every business, regardless of size or budget. What began as a small, passionate team in Surat, Gujarat, has grown into a full-service SEO agency trusted by 200+ clients across India and beyond.</p>
                 <p>Our Founder & CEO, <span className="text-foreground font-semibold">Nand Kishor Yadav</span>, built this agency on the belief that real growth comes from ethical strategies, radical transparency, and a relentless focus on measurable outcomes. We don't chase vanity metrics; we chase results that move your business forward.</p>
                 <p>Today our creative team combines the art and science of digital marketing — transforming concepts into compelling campaigns that rank higher, convert better, and retain customers longer.</p>
               </div>
@@ -194,7 +194,7 @@ export default function AboutContent() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <SectionHeading eyebrow="Why Santhya Infotech" title="Why Businesses Trust Us" center={false} />
+              <SectionHeading eyebrow="Why Arshanemi" title="Why Businesses Trust Us" center={false} />
               <p className="mt-4 text-sm text-muted leading-relaxed max-w-md">
                 We're not just another agency. We treat your business goals as our own — measuring success by your growth, not our deliverables.
               </p>

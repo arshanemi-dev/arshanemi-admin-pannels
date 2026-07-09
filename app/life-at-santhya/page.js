@@ -6,15 +6,15 @@ import CTABanner from '@/components/sections/CTABanner';
 import { getCachedCollection, getCachedSingleton } from '@/lib/db';
 
 export const metadata = {
-  title: 'Life @ Santhya Infotech | Our Culture & Team',
-  description: 'Discover what it\'s like to work at Santhya Infotech — our culture, values, team, and the environment we\'ve built together.',
+  title: 'Life @ Arshanemi | Our Culture & Team',
+  description: 'Discover what it\'s like to work at Arshanemi — our culture, values, team, and the environment we\'ve built together.',
 };
 
 
 export default async function LifeAtSanthyaPage() {
   const [blobTeam, lifeData] = await Promise.all([
     getCachedCollection('team'),
-    getCachedSingleton('life-at-santhya'),
+    getCachedSingleton('life-at-arshanemi'),
   ]);
   const team = blobTeam.length ? blobTeam : defaultTeam;
   const companyValues = lifeData?.companyValues?.length ? lifeData.companyValues : defaultValues;
@@ -33,7 +33,7 @@ export default async function LifeAtSanthyaPage() {
             Our Culture
           </span>
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-4 text-foreground">
-            Life @ <span className="gradient-text">Santhya Infotech</span>
+            Life @ <span className="gradient-text">Arshanemi</span>
           </h1>
           <p className="text-lg text-muted">
             A place where ambitious people do meaningful work, grow fast, and genuinely enjoy what they do.

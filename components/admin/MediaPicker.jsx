@@ -168,8 +168,8 @@ export default function MediaPicker({ open, onClose, onSelect }) {
   function handleSelect(blob) { onSelect(blob.url); onClose() }
   function handleDeleted(urls) { setAllBlobs((prev) => prev.filter((b) => !urls.includes(b.url))) }
 
-  const uploadDest = activeFolder.startsWith('santhya-media/')
-    ? activeFolder.replace('santhya-media/', '')
+  const uploadDest = activeFolder.startsWith('arshanemi-media/')
+    ? activeFolder.replace('arshanemi-media/', '')
     : 'general'
 
   async function handleUpload(files) {
@@ -207,7 +207,7 @@ export default function MediaPicker({ open, onClose, onSelect }) {
       const res = await fetch('/api/admin/media/folders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newFolderName.trim(), parentPath: addingUnder || 'santhya-media' }),
+        body: JSON.stringify({ name: newFolderName.trim(), parentPath: addingUnder || 'arshanemi-media' }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed')
@@ -323,7 +323,7 @@ export default function MediaPicker({ open, onClose, onSelect }) {
                       </div>
                       <p className="text-sm font-medium text-muted">Drop files or click to browse</p>
                       <p className="text-xs text-subtle mt-1.5">PNG, JPG, WEBP, SVG — up to 10MB</p>
-                      <p className="text-xs text-accent mt-1.5">→ <strong>santhya-media/{uploadDest}</strong></p>
+                      <p className="text-xs text-accent mt-1.5">→ <strong>arshanemi-media/{uploadDest}</strong></p>
                     </>
                   )}
                 </div>

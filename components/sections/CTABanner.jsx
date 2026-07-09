@@ -94,7 +94,7 @@ export default function CTABanner({ email, phonePrimary, phoneSecondary, whatsap
             <div className="relative h-[480px] sm:h-[520px] rounded-3xl overflow-hidden shadow-2xl shadow-indigo-900/40">
               <Image
                 src={imageUrl}
-                alt="Santhya Infotech — SEO Growth Team"
+                alt="Arshanemi — SEO Growth Team"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"

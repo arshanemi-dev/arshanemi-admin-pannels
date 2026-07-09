@@ -99,14 +99,14 @@ export default async function Footer({ socialLinks, email, phonePrimary, phoneSe
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-5">
                <Image
-                              src="/images/santhya-infotech-logo.png"
-                              alt="Santhya Infotech"
+                              src="/images/arshanemi-infotech-logo.png"
+                              alt="Arshanemi"
                               width={36}
                               height={36}
                               className="rounded-xl"
                               priority
                             />
-              <span className="text-foreground font-bold text-lg">Santhya Infotech</span>
+              <span className="text-foreground font-bold text-lg">Arshanemi</span>
             </Link>
             <p className="text-sm text-muted leading-relaxed mb-6">
               Results-driven SEO &amp; digital marketing agency helping businesses rank higher, grow faster, and win online.
@@ -200,7 +200,7 @@ export default async function Footer({ socialLinks, email, phonePrimary, phoneSe
         {/* Bottom bar */}
         <div className="py-6 border-t border-divider flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-subtle">
-            © {new Date().getFullYear()} Santhya Infotech. All rights reserved.
+            © {new Date().getFullYear()} Arshanemi. All rights reserved.
           </p>
           <div className="flex items-center gap-1 text-subtle text-xs">
             <Link href="/privacy-policy" className="hover:text-foreground transition-colors px-2">

@@ -25,7 +25,7 @@ export async function generateMetadata({ params }) {
   const pageUrl = `${SITE_URL}/blog/${slug}`;
 
   return {
-    title: `${post.title} | Santhya Infotech Blog`,
+    title: `${post.title} | Arshanemi Blog`,
     description: post.excerpt,
     alternates: { canonical: pageUrl },
     openGraph: {
@@ -37,13 +37,13 @@ export async function generateMetadata({ params }) {
       authors: [`${SITE_URL}/about`],
       images: post.image
         ? [{ url: post.image, width: 1200, height: 630, alt: post.title }]
-        : [{ url: `${SITE_URL}/images/santhya-infotech-logo.png`, width: 1200, height: 630, alt: post.title }],
+        : [{ url: `${SITE_URL}/images/arshanemi-infotech-logo.png`, width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.excerpt,
-      images: post.image ? [post.image] : [`${SITE_URL}/images/santhya-infotech-logo.png`],
+      images: post.image ? [post.image] : [`${SITE_URL}/images/arshanemi-infotech-logo.png`],
     },
   };
 }
@@ -90,7 +90,7 @@ function AuthorCard({ name }) {
         </div>
         <div>
           <p className="text-sm font-semibold text-foreground">{name}</p>
-          <p className="text-xs text-subtle">Santhya Infotech</p>
+          <p className="text-xs text-subtle">Arshanemi</p>
         </div>
       </div>
       <p className="text-xs text-muted leading-relaxed">
@@ -231,7 +231,7 @@ export default async function BlogDetailPage({ params }) {
     description: post.excerpt,
     image: post.image
       ? [post.image]
-      : [`${SITE_URL}/images/santhya-infotech-logo.png`],
+      : [`${SITE_URL}/images/arshanemi-infotech-logo.png`],
     datePublished: post.dateISO,
     dateModified: post.dateISO,
     author: {

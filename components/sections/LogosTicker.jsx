@@ -52,8 +52,8 @@ export default function LogosTicker({ partners }) {
           <div className="w-full lg:w-[38%] flex flex-col items-center content-center lg:items-start text-center lg:text-left gap-5">
             <div className="flex items-center justify-center lg:justify-start w-full" style={{ justifyContent: 'center' }}>
             <img
-              src="/images/santhya-infotech-logo.png"
-              alt="Santhya Infotech"
+              src="/images/arshanemi-infotech-logo.png"
+              alt="Arshanemi"
               className="h-28 w-auto"
             />
             </div>

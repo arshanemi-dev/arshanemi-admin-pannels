@@ -17,7 +17,7 @@ const SITE_URL = 'https://www.santhyainfotech.com';
 export const metadata = {
   title: 'SEO & Digital Marketing Agency in Surat, Gujarat | #1 Ranked',
   description:
-    "Rank higher on Google and grow your business with Santhya Infotech — Surat's #1 SEO & digital marketing agency. Local SEO, eCommerce SEO, Google Ads, Link Building & more. Free SEO audit available.",
+    "Rank higher on Google and grow your business with Arshanemi — Surat's #1 SEO & digital marketing agency. Local SEO, eCommerce SEO, Google Ads, Link Building & more. Free SEO audit available.",
   keywords: [
     'SEO agency Surat', 'best SEO company Surat', 'digital marketing agency Surat Gujarat',
     'local SEO services', 'ecommerce SEO India', 'Google Ads management',
@@ -25,24 +25,24 @@ export const metadata = {
   ],
   alternates: { canonical: SITE_URL },
   openGraph: {
-    title: 'Santhya Infotech — #1 SEO & Digital Marketing Agency in Surat',
+    title: 'Arshanemi — #1 SEO & Digital Marketing Agency in Surat',
     description:
       "Rank higher on Google and grow your business with Surat's leading SEO & digital marketing agency. Local SEO, eCommerce SEO, Google Ads, and more. Free audit available.",
     url: SITE_URL,
     images: [
       {
-        url: `${SITE_URL}/images/santhya-infotech-logo.png`,
+        url: `${SITE_URL}/images/arshanemi-infotech-logo.png`,
         width: 1200,
         height: 630,
-        alt: 'Santhya Infotech — SEO & Digital Marketing Agency Surat',
+        alt: 'Arshanemi — SEO & Digital Marketing Agency Surat',
       },
     ],
   },
   twitter: {
-    title: 'Santhya Infotech — #1 SEO & Digital Marketing Agency in Surat',
+    title: 'Arshanemi — #1 SEO & Digital Marketing Agency in Surat',
     description:
       "Rank higher on Google and grow your business with Surat's leading SEO agency. Free SEO audit available.",
-    images: [`${SITE_URL}/images/santhya-infotech-logo.png`],
+    images: [`${SITE_URL}/images/arshanemi-infotech-logo.png`],
   },
 };
 
@@ -52,18 +52,18 @@ const homepageFaqSchema = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'What SEO services does Santhya Infotech offer?',
+      name: 'What SEO services does Arshanemi offer?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Santhya Infotech offers Local SEO, eCommerce SEO, Shopify SEO, WooCommerce SEO, Technical SEO, Link Building, Google Ads (PPC), Social Media Marketing, Content Writing, YouTube SEO, Google My Business Optimization, and White Label SEO services.',
+        text: 'Arshanemi offers Local SEO, eCommerce SEO, Shopify SEO, WooCommerce SEO, Technical SEO, Link Building, Google Ads (PPC), Social Media Marketing, Content Writing, YouTube SEO, Google My Business Optimization, and White Label SEO services.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Is Santhya Infotech based in Surat?',
+      name: 'Is Arshanemi based in Surat?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes, Santhya Infotech is headquartered at 204 Nilkanth Darshan Building, Katargam, Surat, Gujarat 395004, India. We serve clients across India, UAE, and globally.',
+        text: 'Yes, Arshanemi is headquartered at 204 Nilkanth Darshan Building, Katargam, Surat, Gujarat 395004, India. We serve clients across India, UAE, and globally.',
       },
     },
     {
@@ -84,7 +84,7 @@ const homepageFaqSchema = {
     },
     {
       '@type': 'Question',
-      name: 'What industries does Santhya Infotech serve?',
+      name: 'What industries does Arshanemi serve?',
       acceptedAnswer: {
         '@type': 'Answer',
         text: 'We specialize in SEO for Healthcare, Dental, Law Firms, Real Estate, Hotels & Hospitality, eCommerce, Gyms & Fitness, Restaurants, Education, and many more industries across India and UAE.',

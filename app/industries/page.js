@@ -11,23 +11,23 @@ const SITE_URL = 'https://www.santhyainfotech.com';
 export const metadata = {
   title: 'Industries We Serve — Specialized SEO for Every Sector',
   description:
-    'Santhya Infotech delivers specialized SEO strategies for Healthcare, Dental, Law Firms, Real Estate, Hotels, eCommerce, Gyms, Restaurants, Salons, Education, and more.',
+    'Arshanemi delivers specialized SEO strategies for Healthcare, Dental, Law Firms, Real Estate, Hotels, eCommerce, Gyms, Restaurants, Salons, Education, and more.',
   keywords: [
     'industry-specific SEO', 'healthcare SEO', 'dental SEO', 'law firm SEO', 'real estate SEO India',
     'hotel SEO', 'ecommerce SEO', 'gym SEO', 'restaurant SEO Surat',
   ],
   alternates: { canonical: `${SITE_URL}/industries` },
   openGraph: {
-    title: 'Industries We Serve — Specialized SEO | Santhya Infotech',
+    title: 'Industries We Serve — Specialized SEO | Arshanemi',
     description:
       'Specialized SEO strategies for Healthcare, Dental, Law, Real Estate, Hotels, eCommerce, and 20+ more industries across India & UAE.',
     url: `${SITE_URL}/industries`,
-    images: [{ url: `${SITE_URL}/images/santhya-infotech-logo.png`, width: 1200, height: 630, alt: 'Santhya Infotech Industries' }],
+    images: [{ url: `${SITE_URL}/images/arshanemi-infotech-logo.png`, width: 1200, height: 630, alt: 'Arshanemi Industries' }],
   },
   twitter: {
-    title: 'Industries We Serve | Santhya Infotech',
+    title: 'Industries We Serve | Arshanemi',
     description: 'Industry-specific SEO strategies for 20+ sectors across India & UAE.',
-    images: [`${SITE_URL}/images/santhya-infotech-logo.png`],
+    images: [`${SITE_URL}/images/arshanemi-infotech-logo.png`],
   },
 };
 

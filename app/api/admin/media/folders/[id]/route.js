@@ -55,7 +55,7 @@ export async function DELETE(req, { params }) {
   const folder = folders.find((f) => f.id === id)
   if (!folder) return NextResponse.json({ error: 'Folder not found' }, { status: 404 })
 
-  const folderPath = folder.path || `santhya-media/${folder.slug}`
+  const folderPath = folder.path || `arshanemi-media/${folder.slug}`
 
   const count = await countFilesInFolder(folderPath)
   if (count > 0) {

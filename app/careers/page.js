@@ -8,8 +8,8 @@ import { openings as defaultOpenings, perks as defaultPerks } from '@/data/caree
 import { getCachedCollection, getCachedSingleton } from '@/lib/db';
 
 export const metadata = {
-  title: 'Careers | Santhya Infotech',
-  description: "Join the Santhya Infotech team. We're hiring passionate SEO and digital marketing professionals in Surat, Gujarat.",
+  title: 'Careers | Arshanemi',
+  description: "Join the Arshanemi team. We're hiring passionate SEO and digital marketing professionals in Surat, Gujarat.",
 };
 
 export default async function CareersPage() {
@@ -42,7 +42,7 @@ export default async function CareersPage() {
             <span className="gradient-text">Digital Marketing</span>
           </h1>
           <p className="text-lg text-muted max-w-xl mx-auto">
-            We're looking for passionate, driven professionals to join Santhya Infotech and help our clients dominate search.
+            We're looking for passionate, driven professionals to join Arshanemi and help our clients dominate search.
           </p>
           <p className="mt-4 text-sm text-subtle">
             Click <strong className="text-muted">View Details &amp; Apply</strong> on any role to see the full JD and submit your application.
@@ -65,7 +65,7 @@ export default async function CareersPage() {
           <p className="mt-8 text-center text-sm text-muted">
             Don&apos;t see a fit?{' '}
             <Link
-              href={`mailto:${hrEmail}?subject=Open Application — Santhya Infotech`}
+              href={`mailto:${hrEmail}?subject=Open Application — Arshanemi`}
               className="text-accent-light hover:text-accent transition-colors font-medium"
             >
               Send us your CV anyway
@@ -105,7 +105,7 @@ export default async function CareersPage() {
             Send your resume and a short intro directly to our HR team. We respond within 2 business days.
           </p>
           <Link
-            href={`mailto:${hrEmail}?subject=Career Application — Santhya Infotech`}
+            href={`mailto:${hrEmail}?subject=Career Application — Arshanemi`}
             className="inline-flex items-center gap-2 bg-accent text-white font-semibold text-sm px-6 py-3 rounded-xl hover:bg-accent/90 transition-colors"
           >
             Email Your CV <ArrowRight size={14} />

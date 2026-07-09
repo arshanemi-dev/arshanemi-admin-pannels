@@ -40,10 +40,10 @@ export async function generateMetadata({ params }) {
   const { industry } = await resolveIndustryData(slug);
   if (!industry) return {};
   const pageUrl = `${SITE_URL}/industries/${slug}`;
-  const description = `Specialized ${industry.name} SEO by Santhya Infotech. ${industry.description}`;
+  const description = `Specialized ${industry.name} SEO by Arshanemi. ${industry.description}`;
 
   return {
-    title: `${industry.name} SEO Services in India | Santhya Infotech`,
+    title: `${industry.name} SEO Services in India | Arshanemi`,
     description,
     keywords: [
       `${industry.name.toLowerCase()} SEO`, `SEO for ${industry.name.toLowerCase()}`,
@@ -51,17 +51,17 @@ export async function generateMetadata({ params }) {
     ],
     alternates: { canonical: pageUrl },
     openGraph: {
-      title: `${industry.name} SEO Services | Santhya Infotech`,
+      title: `${industry.name} SEO Services | Arshanemi`,
       description,
       url: pageUrl,
       images: [
-        { url: `${SITE_URL}/images/santhya-infotech-logo.png`, width: 1200, height: 630, alt: `${industry.name} SEO — Santhya Infotech` },
+        { url: `${SITE_URL}/images/arshanemi-infotech-logo.png`, width: 1200, height: 630, alt: `${industry.name} SEO — Arshanemi` },
       ],
     },
     twitter: {
-      title: `${industry.name} SEO Services | Santhya Infotech`,
+      title: `${industry.name} SEO Services | Arshanemi`,
       description,
-      images: [`${SITE_URL}/images/santhya-infotech-logo.png`],
+      images: [`${SITE_URL}/images/arshanemi-infotech-logo.png`],
     },
   };
 }
@@ -83,7 +83,7 @@ function buildServiceSchema(industry, slug) {
     '@context': 'https://schema.org',
     '@type': 'Service',
     serviceType: `${industry.name} SEO`,
-    name: `${industry.name} SEO Services by Santhya Infotech`,
+    name: `${industry.name} SEO Services by Arshanemi`,
     description: industry.description,
     url: `${SITE_URL}/industries/${slug}`,
     provider: { '@id': `${SITE_URL}/#organization` },

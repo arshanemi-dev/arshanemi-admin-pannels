@@ -29,19 +29,19 @@ export async function generateMetadata({ params }) {
   if (!cs) return {};
   const pageUrl = `${SITE_URL}/case-studies/${slug}`;
   return {
-    title: `${cs.title} | Case Study — Santhya Infotech`,
+    title: `${cs.title} | Case Study — Arshanemi`,
     description: cs.description,
     alternates: { canonical: pageUrl },
     openGraph: {
-      title: `${cs.title} | Santhya Infotech`,
+      title: `${cs.title} | Arshanemi`,
       description: cs.description,
       url: pageUrl,
-      images: [{ url: cs.image || `${SITE_URL}/images/santhya-infotech-logo.png`, width: 1200, height: 630, alt: cs.title }],
+      images: [{ url: cs.image || `${SITE_URL}/images/arshanemi-infotech-logo.png`, width: 1200, height: 630, alt: cs.title }],
     },
     twitter: {
-      title: `${cs.title} | Santhya Infotech`,
+      title: `${cs.title} | Arshanemi`,
       description: cs.description,
-      images: [cs.image || `${SITE_URL}/images/santhya-infotech-logo.png`],
+      images: [cs.image || `${SITE_URL}/images/arshanemi-infotech-logo.png`],
     },
   };
 }
@@ -54,8 +54,8 @@ function buildSchema(cs, slug) {
     headline: cs.title,
     description: cs.description,
     url: pageUrl,
-    author: { '@type': 'Organization', name: 'Santhya Infotech', url: SITE_URL },
-    publisher: { '@type': 'Organization', name: 'Santhya Infotech', url: SITE_URL },
+    author: { '@type': 'Organization', name: 'Arshanemi', url: SITE_URL },
+    publisher: { '@type': 'Organization', name: 'Arshanemi', url: SITE_URL },
     ...(cs.image ? { image: cs.image } : {}),
   };
 }

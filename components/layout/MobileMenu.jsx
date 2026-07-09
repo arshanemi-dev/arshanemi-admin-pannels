@@ -133,13 +133,13 @@ export default function MobileMenu({ open, onClose, navLinks }) {
         <div className="flex items-center justify-between px-5 py-4 border-b border-divider">
           <Link href="/" onClick={onClose} className="flex items-center gap-2.5">
             <Image
-              src="/images/santhya-infotech-logo.png"
-              alt="Santhya Infotech"
+              src="/images/arshanemi-infotech-logo.png"
+              alt="Arshanemi"
               width={32}
               height={32}
               className="rounded-lg"
             />
-            <span className="text-foreground font-bold text-base">Santhya Infotech</span>
+            <span className="text-foreground font-bold text-base">Arshanemi</span>
           </Link>
           <button
             onClick={onClose}

@@ -150,7 +150,7 @@ export default function CaseStudiesClient({ caseStudies, caseStudyStats, seoProc
               <span className="gradient-text">Real Results.</span>
             </h1>
             <p className="text-lg text-muted max-w-2xl mx-auto mb-8 leading-relaxed">
-              We let our work speak. Browse case studies across industries and see exactly how Santhya Infotech drives organic traffic, leads, and revenue.
+              We let our work speak. Browse case studies across industries and see exactly how Arshanemi drives organic traffic, leads, and revenue.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Button href="#case-studies" size="lg">View Case Studies <ArrowRight size={17} /></Button>

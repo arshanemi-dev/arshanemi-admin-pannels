@@ -3,9 +3,9 @@ import CTABanner from '@/components/sections/CTABanner';
 import { getPublishedBlogs } from '@/lib/blog';
 
 export const metadata = {
-  title: 'Blog | SEO Insights & Digital Marketing Guides — Santhya Infotech',
+  title: 'Blog | SEO Insights & Digital Marketing Guides — Arshanemi',
   description:
-    'Read the latest SEO tips, digital marketing strategies, and technology insights from the Santhya Infotech team. Actionable guides for real business growth.',
+    'Read the latest SEO tips, digital marketing strategies, and technology insights from the Arshanemi team. Actionable guides for real business growth.',
 };
 
 export default async function BlogPage() {
@@ -32,7 +32,7 @@ export default async function BlogPage() {
           </h1>
           <p className="text-base sm:text-lg text-muted max-w-2xl mx-auto">
             Actionable SEO strategies, digital marketing playbooks, and
-            technology insights from the team at Santhya Infotech.
+            technology insights from the team at Arshanemi.
           </p>
         </div>
       </section>

@@ -11,7 +11,7 @@ const SITE_URL = 'https://www.santhyainfotech.com';
 export const metadata = {
   title: 'SEO & Digital Marketing Services in Surat | All Services',
   description:
-    "Explore Santhya Infotech's complete SEO and digital marketing services — Local SEO, eCommerce SEO, Shopify SEO, Link Building, Google Ads, Social Media Marketing, Content Writing, and more.",
+    "Explore Arshanemi's complete SEO and digital marketing services — Local SEO, eCommerce SEO, Shopify SEO, Link Building, Google Ads, Social Media Marketing, Content Writing, and more.",
   keywords: [
     'SEO services Surat', 'digital marketing services', 'local SEO', 'ecommerce SEO services',
     'link building India', 'Google Ads management', 'social media marketing',
@@ -19,16 +19,16 @@ export const metadata = {
   ],
   alternates: { canonical: `${SITE_URL}/services` },
   openGraph: {
-    title: 'SEO & Digital Marketing Services | Santhya Infotech',
+    title: 'SEO & Digital Marketing Services | Arshanemi',
     description:
       "Complete SEO and digital marketing services from Surat's leading agency. Local SEO, eCommerce SEO, Google Ads, Link Building & more.",
     url: `${SITE_URL}/services`,
-    images: [{ url: `${SITE_URL}/images/santhya-infotech-logo.png`, width: 1200, height: 630, alt: 'Santhya Infotech Services' }],
+    images: [{ url: `${SITE_URL}/images/arshanemi-infotech-logo.png`, width: 1200, height: 630, alt: 'Arshanemi Services' }],
   },
   twitter: {
-    title: 'SEO & Digital Marketing Services | Santhya Infotech',
+    title: 'SEO & Digital Marketing Services | Arshanemi',
     description: 'Complete SEO and digital marketing solutions for businesses in India & UAE.',
-    images: [`${SITE_URL}/images/santhya-infotech-logo.png`],
+    images: [`${SITE_URL}/images/arshanemi-infotech-logo.png`],
   },
 };
 

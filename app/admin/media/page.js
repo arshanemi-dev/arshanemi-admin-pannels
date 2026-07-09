@@ -327,7 +327,7 @@ export default function MediaPage() {
   // ─── File upload ──────────────────────────────────────────────────────────
 
   function uploadSubfolder() {
-    if (activeFolder.startsWith('santhya-media/')) return activeFolder.replace('santhya-media/', '')
+    if (activeFolder.startsWith('arshanemi-media/')) return activeFolder.replace('arshanemi-media/', '')
     return 'general'
   }
 
@@ -391,7 +391,7 @@ export default function MediaPage() {
           <div className="bg-card rounded-2xl px-8 py-6 shadow-xl flex flex-col items-center gap-3">
             <Upload className="w-10 h-10 text-accent" />
             <p className="text-base font-semibold text-muted">
-              Drop to upload → <strong>santhya-media/{uploadSubfolder()}</strong>
+              Drop to upload → <strong>arshanemi-media/{uploadSubfolder()}</strong>
             </p>
           </div>
         </div>
