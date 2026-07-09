@@ -1,4 +1,4 @@
-// Default tenant company + admin accounts, seeded by scripts/seed-defaults.mjs.
+// Default tenant company + admin accounts, seeded by scripts/seed.mjs.
 // These are convenience defaults for a fresh environment — change the
 // passwords after first login (both accounts can update their own password
 // from Admin → Profile, or a master_admin can reset either from Admin → Users).

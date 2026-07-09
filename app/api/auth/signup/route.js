@@ -5,10 +5,41 @@ import { signToken, makeAuthCookie } from '@/lib/auth'
 import { getUserByEmail, getUserByMobile, createUser, getCompanyByEmail, createCompany, createUserSettings } from '@/lib/db'
 import { initCompanyFolders } from '@/lib/media'
 import { validatePassword } from '@/lib/validation'
+import { DEFAULT_COMPANY } from '@/data/default'
+
+// Direct self-signup no longer spins up a new tenant company per user —
+// every signup joins the single shared DEFAULT_COMPANY (see data/default.js,
+// also seeded by scripts/seed.mjs) as a plain 'user'. Admin-managed companies
+// and 'admin' accounts are created from Admin → Companies / Admin → Users.
+async function getOrCreateDefaultCompany() {
+  const email = DEFAULT_COMPANY.email.toLowerCase().trim()
+  const existing = await getCompanyByEmail(email)
+  if (existing) return existing
+
+  let folderId = DEFAULT_COMPANY.name
+    ?.toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_|_$/g, '')
+  if (!folderId) folderId = `co_${nanoid(8)}`
+
+  const company = await createCompany({
+    name: DEFAULT_COMPANY.name || null,
+    email,
+    phone: DEFAULT_COMPANY.phone || null,
+    website: DEFAULT_COMPANY.website || null,
+    address: DEFAULT_COMPANY.address || null,
+    folderId,
+  })
+  await initCompanyFolders(folderId)
+  return company
+}
 
 export async function POST(req) {
   const body = await req.json()
-  const { name, email, mobile, password, confirm, company: companyInput } = body
+  const { name, email, mobile, password, confirm } = body
 
   if (!name?.trim()) return NextResponse.json({ error: 'Name is required' }, { status: 400 })
   if (!email && !mobile) return NextResponse.json({ error: 'Provide at least an email or mobile number' }, { status: 400 })
@@ -16,11 +47,6 @@ export async function POST(req) {
 
   const pwError = validatePassword(password)
   if (pwError) return NextResponse.json({ error: pwError }, { status: 400 })
-
-  // Company email is required
-  if (!companyInput?.email?.trim()) {
-    return NextResponse.json({ error: 'Company email is required' }, { status: 400 })
-  }
 
   try {
     // Check user duplicates
@@ -33,42 +59,9 @@ export async function POST(req) {
       if (existing) return NextResponse.json({ error: 'An account with this mobile number already exists' }, { status: 409 })
     }
 
-    // Check company email uniqueness
-    const existingCompany = await getCompanyByEmail(companyInput.email)
-    if (existingCompany) {
-      return NextResponse.json({ error: 'A company with this email already exists' }, { status: 409 })
-    }
+    const company = await getOrCreateDefaultCompany()
 
-    // Derive folder_id: use slug if company name provided, else random
-    let folderId
-    if (companyInput.name?.trim()) {
-      folderId = companyInput.name
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s]/g, '')
-        .replace(/\s+/g, '_')
-        .replace(/_+/g, '_')
-        .replace(/^_|_$/g, '')
-      // guard against empty result
-      if (!folderId) folderId = `co_${nanoid(8)}`
-    } else {
-      folderId = `co_${nanoid(8)}`
-    }
-
-    // Create company row
-    const company = await createCompany({
-      name: companyInput.name?.trim() || null,
-      email: companyInput.email,
-      phone: companyInput.phone?.trim() || null,
-      website: companyInput.website?.trim() || null,
-      address: companyInput.address?.trim() || null,
-      folderId,
-    })
-
-    // Initialise blob folders: companies/<folderId>/ + tools/<folderId>/
-    await initCompanyFolders(folderId)
-
-    // Create user linked to company
+    // Create user linked to the default company
     const passwordHash = await bcrypt.hash(password, 10)
     const user = await createUser({
       name: name.trim(),

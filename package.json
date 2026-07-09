@@ -10,7 +10,6 @@
     "lint": "eslint",
     "fetch-blogs": "node scripts/fetch-blogs.mjs",
     "seed": "node --env-file=.env scripts/seed.mjs",
-    "seed:defaults": "node --env-file=.env scripts/seed-defaults.mjs",
     "cron": "node --env-file=.env scripts/cron-cleanup.mjs"
   },
   "dependencies": {

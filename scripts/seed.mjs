@@ -12,6 +12,7 @@ import { fileURLToPath, pathToFileURL } from 'url'
 import { createHash } from 'crypto'
 import path from 'path'
 import bcrypt from 'bcryptjs'
+import { nanoid } from 'nanoid'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(__dirname, '..')
@@ -55,6 +56,16 @@ async function nid() {
   return nanoid()
 }
 
+function toCompanySlug(name) {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_|_$/g, '')
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -87,6 +98,7 @@ async function main() {
   const { aboutValues, aboutServices, whyUs, aboutStats } = await imp('data/about.js')
   const { navLinks, footerLinks, socialLinks }            = await imp('data/navigation.js')
   const { defaultToolsAccessByRole }                      = await imp('data/tools.js')
+  const { DEFAULT_COMPANY, MASTER_ADMIN, DEFAULT_COMPANY_ADMIN } = await imp('data/default.js')
 
   // ── List collections ────────────────────────────────────────────────────────
   console.log('📦  Seeding list collections...\n')
@@ -174,18 +186,65 @@ async function main() {
     socialLinks: socialLinks || [],
   })
 
-  // ── Default master admin ────────────────────────────────────────────────────
-  // Only the master admin is seeded by default — no demo 'admin'/'user' accounts.
-  // Regular users are created through /signup instead.
-  console.log('\n👤  Seeding default master admin...\n')
+  // ── Default tenant company ──────────────────────────────────────────────────
+  // This is the multi-tenant `companies` row (users/roles/companies system) —
+  // distinct from the `company` singleton seeded above, which is the site's
+  // own public contact-info block.
+  console.log('\n🏢  Seeding default company...\n')
+
+  const defaultCompanyEmail = DEFAULT_COMPANY.email.toLowerCase().trim()
+  let { data: defaultCompany } = await supabase
+    .from('companies')
+    .select('*')
+    .eq('email', defaultCompanyEmail)
+    .single()
+
+  if (!defaultCompany) {
+    const slug = toCompanySlug(DEFAULT_COMPANY.name)
+    const folderId = slug || `co_${nanoid(8)}`
+    const { data: createdCompany, error: companyErr } = await supabase
+      .from('companies')
+      .insert({
+        name: DEFAULT_COMPANY.name,
+        slug,
+        email: defaultCompanyEmail,
+        phone: DEFAULT_COMPANY.phone || null,
+        website: DEFAULT_COMPANY.website || null,
+        address: DEFAULT_COMPANY.address || null,
+        folder_id: folderId,
+      })
+      .select()
+      .single()
+    if (companyErr) {
+      console.warn('  ⚠ Default company:', companyErr.message)
+    } else {
+      defaultCompany = createdCompany
+      console.log(`  ✓ Created company "${defaultCompany.name}" (${defaultCompany.email})`)
+      try {
+        const { initCompanyFolders } = await imp('lib/media.js')
+        await initCompanyFolders(folderId)
+        console.log(`  ✓ Initialised blob storage folders for "${folderId}"`)
+      } catch (err) {
+        console.warn('  ⚠ Could not initialise blob storage folders (Vercel Blob not configured?):', err.message)
+      }
+    }
+  } else {
+    console.log(`  ✓ Company "${defaultCompany.name}" already exists (${defaultCompany.email})`)
+  }
+
+  // ── Default master admin + company admin ────────────────────────────────────
+  // master_admin has full platform access; the company admin is scoped to
+  // DEFAULT_COMPANY (role 'admin'). Regular 'user' accounts are created
+  // through /signup or Admin → Users instead.
+  console.log('\n👤  Seeding default admin accounts...\n')
 
   const SALT_ROUNDS = 10
-  const masterAdminHash = await bcrypt.hash('Admin@1234', SALT_ROUNDS)
+  const masterAdminHash = await bcrypt.hash(MASTER_ADMIN.password, SALT_ROUNDS)
 
   const { data: masterAdmin, error: masterAdminErr } = await supabase.from('users').upsert(
     {
-      name: 'Master Admin',
-      email: 'arshanemi@gmail.com',
+      name: MASTER_ADMIN.name,
+      email: MASTER_ADMIN.email.toLowerCase().trim(),
       mobile: null,
       password_hash: masterAdminHash,
       role: 'master_admin',
@@ -194,7 +253,32 @@ async function main() {
     { onConflict: 'email', ignoreDuplicates: false }
   ).select().single()
   if (masterAdminErr) console.warn('  ⚠ Master admin:', masterAdminErr.message)
-  else console.log('  ✓ arshanemi@gmail.com  (Admin@1234)')
+  else console.log(`  ✓ ${masterAdmin.email}  (${MASTER_ADMIN.password})`)
+
+  let companyAdmin = null
+  if (defaultCompany) {
+    const companyAdminHash = await bcrypt.hash(DEFAULT_COMPANY_ADMIN.password, SALT_ROUNDS)
+    const { data: createdCompanyAdmin, error: companyAdminErr } = await supabase.from('users').upsert(
+      {
+        name: DEFAULT_COMPANY_ADMIN.name,
+        email: DEFAULT_COMPANY_ADMIN.email.toLowerCase().trim(),
+        mobile: null,
+        password_hash: companyAdminHash,
+        role: 'admin',
+        company_id: defaultCompany.id,
+        is_active: true,
+        // otp_enabled intentionally omitted — defaults to FALSE once
+        // scripts/otp_enabled_migration.sql has been run; omitting it keeps
+        // this script working before that migration too.
+      },
+      { onConflict: 'email', ignoreDuplicates: false }
+    ).select().single()
+    if (companyAdminErr) console.warn('  ⚠ Company admin:', companyAdminErr.message)
+    else {
+      companyAdmin = createdCompanyAdmin
+      console.log(`  ✓ ${companyAdmin.email}  (${DEFAULT_COMPANY_ADMIN.password})  — role: admin, company: ${defaultCompany.name}`)
+    }
+  }
 
   // ── Default user_settings (tools access) ───────────────────────────────────
   console.log('\n🔧  Seeding default user_settings...\n')
@@ -211,6 +295,7 @@ async function main() {
   }
 
   await seedUserSettings(masterAdmin, 'master_admin')
+  await seedUserSettings(companyAdmin, 'admin')
 
   console.log('\n✅  Seed complete — all data is live in PostgreSQL!\n')
 }
