@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useMemo, useState } from 'react'
-import { Loader2, CreditCard, Wallet, CheckCircle2, XCircle } from 'lucide-react'
+import { Pencil, Loader2, CreditCard, Wallet, CheckCircle2, XCircle } from 'lucide-react'
 import { TableSkeleton, LoadError } from '@/components/admin/Skeleton'
 import { useToast } from '@/components/admin/Toast'
 import FormField from '@/components/admin/FormField'
@@ -69,6 +69,17 @@ function SubscriptionCard({ subscription }) {
   )
 }
 
+function InfoRow({ label, value }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-xs font-medium text-subtle uppercase tracking-wide">{label}</span>
+      <span className={value ? 'text-sm font-medium text-foreground' : 'text-sm text-subtle italic'}>
+        {value || 'Not provided'}
+      </span>
+    </div>
+  )
+}
+
 function WalletCard({ profile }) {
   const total = profile.walletCreditsTotal ?? 0
   const used = profile.walletCreditsUsed ?? 0
@@ -109,6 +120,7 @@ export default function ProfilePage() {
   const [subscription, setSubscription] = useState(null)
   const [error, setError] = useState(false)
   const [tab, setTab] = useState('profile')
+  const [editing, setEditing] = useState(false)
   const [form, setForm] = useState(null)
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState('')
@@ -138,15 +150,25 @@ export default function ProfilePage() {
     setForm((f) => ({ ...f, [key]: value }))
   }
 
+  function startEdit() {
+    setForm(formFromProfile(profile))
+    setFormError('')
+    setPincodeStatus('idle')
+    setPincodeMessage('')
+    setEditing(true)
+  }
+
   function cancelEdit() {
     setForm(formFromProfile(profile))
     setFormError('')
     setPincodeStatus('idle')
     setPincodeMessage('')
+    setEditing(false)
   }
 
-  // Debounced pincode → state/city lookup.
+  // Debounced pincode → state/city lookup while editing.
   useEffect(() => {
+    if (!editing) return
     const code = form?.addressPincode?.trim()
     if (!code || code.length !== 6) { setPincodeStatus('idle'); setPincodeMessage(''); return }
 
@@ -174,7 +196,7 @@ export default function ProfilePage() {
     }, 500)
 
     return () => clearTimeout(timer)
-  }, [form?.addressPincode])
+  }, [form?.addressPincode, editing])
 
   const stateOptions = useMemo(() => {
     const names = new Set(INDIA_STATES)
@@ -214,6 +236,7 @@ export default function ProfilePage() {
       if (!res.ok) { setFormError(data.error || 'Failed to save'); return }
       setProfile(data)
       setForm(formFromProfile(data))
+      setEditing(false)
       addToast('Profile updated')
     } catch {
       setFormError('Network error')
@@ -245,79 +268,123 @@ export default function ProfilePage() {
       </div>
 
       {tab === 'profile' && (
-        <div className="flex flex-col gap-5 max-w-3xl">
+        <div className="flex flex-col gap-6 max-w-3xl">
           {formError && (
             <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">{formError}</div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-            <FormField label="Name" name="name" required value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Your name" />
-            <FormField label="Company Name (Optional)" name="businessName" value={form.businessName} onChange={(e) => set('businessName', e.target.value)} placeholder="Company Name" />
-          </div>
-
-          <FormField
-            label="GST Number (Optional)" name="gstNumber"
-            value={form.gstNumber} onChange={(e) => set('gstNumber', e.target.value)}
-            placeholder="GST Number" className="sm:w-[calc(50%-0.75rem)]"
-          />
-
-          <div>
-            <p className="text-sm font-semibold text-foreground mb-3">Address (Optional)</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-              <FormField label="Line 1" name="address1" value={form.address1} onChange={(e) => set('address1', e.target.value)} placeholder="Line 1" />
-              <FormField label="Line 2" name="address2" value={form.address2} onChange={(e) => set('address2', e.target.value)} placeholder="Line 2" />
-
-              <div className="flex flex-col gap-1.5">
-                <FormField
-                  label="Pin code / Zip code" name="addressPincode"
-                  value={form.addressPincode}
-                  onChange={(e) => set('addressPincode', e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  placeholder="6-digit pincode"
-                />
-                {pincodeStatus === 'checking' && (
-                  <p className="text-xs text-subtle flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> Checking pincode…</p>
-                )}
-                {pincodeStatus === 'valid' && (
-                  <p className="text-xs text-green-600 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Pincode found — state &amp; city filled below</p>
-                )}
-                {pincodeStatus === 'invalid' && (
-                  <p className="text-xs text-red-600 flex items-center gap-1"><XCircle className="w-3 h-3" /> {pincodeMessage || 'Invalid pincode'}</p>
-                )}
-              </div>
-
-              <FormField
-                label="Country" name="addressCountry" type="select"
-                options={countryOptions} value={form.addressCountry}
-                onChange={(e) => set('addressCountry', e.target.value)}
-              />
-              <FormField
-                label="State" name="addressState" type="select"
-                options={stateOptions} value={form.addressState}
-                onChange={(e) => set('addressState', e.target.value)}
-              />
-              <FormField
-                label="City" name="addressCity" type="select"
-                options={cityOptions} value={form.addressCity}
-                onChange={(e) => set('addressCity', e.target.value)}
-              />
+          {/* Header — avatar, name, contact, edit trigger */}
+          <div className="bg-card rounded-2xl border border-divider p-6 flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
+              <span className="text-white text-xl font-bold">{(profile.name || '?').charAt(0).toUpperCase()}</span>
             </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-lg font-bold text-foreground truncate">{profile.name}</p>
+              <p className="text-sm text-subtle truncate">
+                {[profile.email, profile.mobile].filter(Boolean).join('  ·  ') || 'No contact info on file'}
+              </p>
+            </div>
+            {!editing && (
+              <button
+                onClick={startEdit}
+                className="flex items-center gap-1.5 rounded-xl border border-divider-light px-4 py-2 text-sm font-medium text-muted hover:bg-surface hover:text-accent hover:border-accent/30 transition-colors flex-shrink-0"
+              >
+                <Pencil className="w-3.5 h-3.5" /> Edit
+              </button>
+            )}
           </div>
 
-          <div className="flex gap-3">
-            <button
-              onClick={handleSaveProfile}
-              disabled={saving}
-              className="flex items-center gap-2 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold px-6 py-2.5 transition-colors disabled:opacity-60"
-            >
-              {saving && <Loader2 className="w-4 h-4 animate-spin" />} Save
-            </button>
-            <button
-              onClick={cancelEdit}
-              className="rounded-xl border border-divider-light text-muted text-sm font-medium px-6 py-2.5 hover:bg-surface transition-colors"
-            >
-              Cancel
-            </button>
+          {/* Basic information */}
+          <div className="bg-card rounded-2xl border border-divider p-6">
+            <h3 className="text-sm font-semibold text-foreground mb-4">Basic Information</h3>
+            {editing ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
+                <FormField label="Name" name="name" required value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Your name" />
+                <FormField label="Company Name (Optional)" name="businessName" value={form.businessName} onChange={(e) => set('businessName', e.target.value)} placeholder="Company Name" />
+                <FormField label="GST Number (Optional)" name="gstNumber" value={form.gstNumber} onChange={(e) => set('gstNumber', e.target.value)} placeholder="GST Number" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
+                <InfoRow label="Full Name" value={profile.name} />
+                <InfoRow label="Company Name" value={profile.businessName} />
+                <InfoRow label="GST Number" value={profile.gstNumber} />
+              </div>
+            )}
           </div>
+
+          {/* Address */}
+          <div className="bg-card rounded-2xl border border-divider p-6">
+            <h3 className="text-sm font-semibold text-foreground mb-4">Address <span className="font-normal text-subtle">(Optional)</span></h3>
+            {editing ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                <FormField label="Line 1" name="address1" value={form.address1} onChange={(e) => set('address1', e.target.value)} placeholder="Line 1" />
+                <FormField label="Line 2" name="address2" value={form.address2} onChange={(e) => set('address2', e.target.value)} placeholder="Line 2" />
+
+                <div className="flex flex-col gap-1.5">
+                  <FormField
+                    label="Pin code / Zip code" name="addressPincode"
+                    value={form.addressPincode}
+                    onChange={(e) => set('addressPincode', e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    placeholder="6-digit pincode"
+                  />
+                  {pincodeStatus === 'checking' && (
+                    <p className="text-xs text-subtle flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> Checking pincode…</p>
+                  )}
+                  {pincodeStatus === 'valid' && (
+                    <p className="text-xs text-green-600 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Pincode found — state &amp; city filled below</p>
+                  )}
+                  {pincodeStatus === 'invalid' && (
+                    <p className="text-xs text-red-600 flex items-center gap-1"><XCircle className="w-3 h-3" /> {pincodeMessage || 'Invalid pincode'}</p>
+                  )}
+                </div>
+
+                <FormField
+                  label="Country" name="addressCountry" type="select"
+                  options={countryOptions} value={form.addressCountry}
+                  onChange={(e) => set('addressCountry', e.target.value)}
+                />
+                <FormField
+                  label="State" name="addressState" type="select"
+                  options={stateOptions} value={form.addressState}
+                  onChange={(e) => set('addressState', e.target.value)}
+                />
+                <FormField
+                  label="City" name="addressCity" type="select"
+                  options={cityOptions} value={form.addressCity}
+                  onChange={(e) => set('addressCity', e.target.value)}
+                />
+              </div>
+            ) : [profile.address1, profile.address2, profile.addressCity, profile.addressState, profile.addressPincode, profile.addressCountry].some(Boolean) ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
+                <InfoRow label="Line 1" value={profile.address1} />
+                <InfoRow label="Line 2" value={profile.address2} />
+                <InfoRow label="Pin code / Zip code" value={profile.addressPincode} />
+                <InfoRow label="Country" value={profile.addressCountry} />
+                <InfoRow label="State" value={profile.addressState} />
+                <InfoRow label="City" value={profile.addressCity} />
+              </div>
+            ) : (
+              <p className="text-sm text-subtle">No address on file. Click Edit to add one.</p>
+            )}
+          </div>
+
+          {editing && (
+            <div className="flex gap-3">
+              <button
+                onClick={handleSaveProfile}
+                disabled={saving}
+                className="flex items-center gap-2 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold px-6 py-2.5 transition-colors disabled:opacity-60"
+              >
+                {saving && <Loader2 className="w-4 h-4 animate-spin" />} Save
+              </button>
+              <button
+                onClick={cancelEdit}
+                className="rounded-xl border border-divider-light text-muted text-sm font-medium px-6 py-2.5 hover:bg-surface transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
       )}
 
