@@ -1,12 +1,13 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
-import { Search } from 'lucide-react'
+import { Search, Info } from 'lucide-react'
 import { PageHeader } from '@/components/admin/PageHeader'
 import { useToast } from '@/components/admin/Toast'
 import { TableSkeleton, LoadError } from '@/components/admin/Skeleton'
 import ToolAccessCard from './ToolAccessCard'
 
 export default function SettingsPage() {
+  const [viewerRole, setViewerRole] = useState(null)
   const [users, setUsers] = useState(null)
   const [tools, setTools] = useState(null)
   const [access, setAccess] = useState({}) // { [userId]: { [slug]: boolean } }
@@ -16,36 +17,50 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false)
   const { addToast } = useToast()
 
-  function load() {
-    setError(false)
-    setUsers(null)
-    setTools(null)
-    Promise.all([
-      fetch('/api/admin/users').then((r) => { if (!r.ok) throw new Error(); return r.json() }),
-      fetch('/api/admin/tools').then((r) => { if (!r.ok) throw new Error(); return r.json() }),
-      fetch('/api/admin/user-settings').then((r) => { if (!r.ok) throw new Error(); return r.json() }),
-    ])
-      .then(([usersData, toolsData, accessMap]) => {
-        setUsers(usersData)
-        setTools(toolsData)
-        setAccess(buildAccess(usersData, toolsData, accessMap || {}))
-      })
-      .catch(() => setError(true))
-  }
-
-  useEffect(load, [])
-
   function buildAccess(usersData, toolsData, accessMap) {
     const next = {}
     usersData.forEach((u) => {
       const granted = accessMap[u.id]
       const map = {}
-      // No explicit record yet = full access by default.
-      toolsData.forEach((t) => { map[t.slug] = granted ? granted.includes(t.slug) : true })
+      // No explicit record yet = no access by default (new users start with none).
+      toolsData.forEach((t) => { map[t.slug] = granted ? granted.includes(t.slug) : false })
       next[u.id] = map
     })
     return next
   }
+
+  async function load() {
+    setError(false)
+    setUsers(null)
+    setTools(null)
+    try {
+      const [me, usersData, toolsData, accessMap] = await Promise.all([
+        fetch('/api/auth/me').then((r) => { if (!r.ok) throw new Error(); return r.json() }),
+        fetch('/api/admin/users').then((r) => { if (!r.ok) throw new Error(); return r.json() }),
+        fetch('/api/admin/tools').then((r) => { if (!r.ok) throw new Error(); return r.json() }),
+        fetch('/api/admin/user-settings').then((r) => { if (!r.ok) throw new Error(); return r.json() }),
+      ])
+
+      // A company-scoped admin can only grant tools they themselves have —
+      // narrow the catalog down to the admin's own allowed tools first.
+      let effectiveTools = toolsData
+      if (me.role === 'admin') {
+        const myToolsRes = await fetch('/api/tools/my')
+        const myTools = myToolsRes.ok ? await myToolsRes.json() : []
+        const mySlugs = new Set(myTools.map((t) => t.slug))
+        effectiveTools = toolsData.filter((t) => mySlugs.has(t.slug))
+      }
+
+      setViewerRole(me.role)
+      setUsers(usersData)
+      setTools(effectiveTools)
+      setAccess(buildAccess(usersData, effectiveTools, accessMap || {}))
+    } catch {
+      setError(true)
+    }
+  }
+
+  useEffect(() => { load() }, [])
 
   function toggleTool(userId, slug) {
     setAccess((prev) => ({ ...prev, [userId]: { ...prev[userId], [slug]: !prev[userId]?.[slug] } }))
@@ -110,8 +125,15 @@ export default function SettingsPage() {
     <div className="flex flex-col gap-6 pb-24">
       <PageHeader
         title="Tools Access"
-        description="Control which tools each registered user can access. New signups get every tool by default."
+        description="Control which tools each registered user can access. New users start with no tools until granted here."
       />
+
+      {viewerRole === 'admin' && (
+        <div className="flex items-center gap-2 bg-accent/10 border border-accent/20 text-accent-hover text-xs rounded-xl px-4 py-3">
+          <Info className="w-4 h-4 flex-shrink-0" />
+          You can only grant tools you yourself have access to.
+        </div>
+      )}
 
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="relative w-full max-w-xs">

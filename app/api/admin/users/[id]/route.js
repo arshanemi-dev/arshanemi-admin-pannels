@@ -3,13 +3,15 @@ import { getStaffFromRequest } from '@/lib/auth'
 import { getUserById, updateUser, deleteUser, getUserByEmail, getUserByMobile, getCompanyById } from '@/lib/db'
 
 // Loads the target user and enforces company scoping for the 'admin' role.
+// Admins only ever manage plain 'user' accounts — never master_admin, and
+// never a fellow 'admin', matching what they can see in the Users list.
 // Returns { user } or { error, status } (error already NextResponse-ready).
 async function loadScopedTarget(staff, id) {
   const target = await getUserById(id)
   if (!target || target.role === 'master_admin') {
     return { error: NextResponse.json({ error: 'User not found' }, { status: 404 }) }
   }
-  if (staff.role === 'admin' && target.company_id !== staff.companyId) {
+  if (staff.role === 'admin' && (target.company_id !== staff.companyId || target.role !== 'user')) {
     return { error: NextResponse.json({ error: 'User not found' }, { status: 404 }) }
   }
   return { user: target }

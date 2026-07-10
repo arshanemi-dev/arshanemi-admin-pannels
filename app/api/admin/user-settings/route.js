@@ -4,7 +4,7 @@ import { getAllUserSettingsMap, upsertUserToolsAccess, getAllUsers } from '@/lib
 
 async function allowedUserIds(staff) {
   if (staff.role !== 'admin') return null // null = no restriction (master_admin)
-  const companyUsers = await getAllUsers({ companyId: staff.companyId })
+  const companyUsers = await getAllUsers({ companyId: staff.companyId, role: 'user' })
   return new Set(companyUsers.map((u) => u.id))
 }
 

@@ -144,16 +144,18 @@ export default function UserFormModal({ open, mode, viewer, companies, initial, 
         </>
       )}
 
-      <div className="grid grid-cols-2 gap-3">
-        <FormField
-          label="Wallet Credits (Total)" name="walletCreditsTotal" type="number" min={0}
-          value={form.walletCreditsTotal} onChange={(e) => set('walletCreditsTotal', e.target.value)}
-        />
-        <FormField
-          label="Wallet Credits (Used)" name="walletCreditsUsed" type="number" min={0}
-          value={form.walletCreditsUsed} onChange={(e) => set('walletCreditsUsed', e.target.value)}
-        />
-      </div>
+      {mode === 'edit' && (
+        <div className="grid grid-cols-2 gap-3">
+          <FormField
+            label="Wallet Credits (Total)" name="walletCreditsTotal" type="number" min={0}
+            value={form.walletCreditsTotal} onChange={(e) => set('walletCreditsTotal', e.target.value)}
+          />
+          <FormField
+            label="Wallet Credits (Used)" name="walletCreditsUsed" type="number" min={0}
+            value={form.walletCreditsUsed} onChange={(e) => set('walletCreditsUsed', e.target.value)}
+          />
+        </div>
+      )}
 
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium text-muted">Require OTP on login</label>

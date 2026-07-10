@@ -8,8 +8,10 @@ export async function GET(req) {
   const staff = await getStaffFromRequest(req)
   if (!staff) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  // Company-scoped admins only ever manage plain 'user' accounts in their own
+  // company, never fellow admins — master_admin still sees every role.
   const users = staff.role === 'admin'
-    ? await getAllUsers({ companyId: staff.companyId })
+    ? await getAllUsers({ companyId: staff.companyId, role: 'user' })
     : await getAllUsers()
 
   return NextResponse.json(users)

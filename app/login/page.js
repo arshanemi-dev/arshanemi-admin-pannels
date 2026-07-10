@@ -35,7 +35,10 @@ export default function LoginPage() {
         expiresIn: data.expiresIn,
         user: data.user,
       })
-      router.push(data.user?.role === 'master_admin' ? '/admin' : '/tools')
+      // master_admin and the company-scoped 'admin' role both land in the
+      // admin panel (which then routes each to its own home page); only a
+      // plain 'user' goes to the public tools app.
+      router.push(data.user?.role === 'user' ? '/tools' : '/admin')
       router.refresh()
     } catch {
       setError('Network error — please try again')

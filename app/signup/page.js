@@ -72,7 +72,7 @@ export default function SignupPage() {
             Join 12,000+<br />smart sellers<br />on Arshanemi.
           </h1>
           <ul className="space-y-3 text-orange-200 text-sm">
-            {['Free account — no credit card required', 'Access 6 powerful ecommerce tools', 'Real-time product & market data', 'Secure & private — your data stays yours'].map((t) => (
+            {['Free account — no credit card required', 'Explore our suite of ecommerce tools', 'Real-time product & market data', 'Secure & private — your data stays yours'].map((t) => (
               <li key={t} className="flex items-center gap-2">
                 <CheckCircle2 size={14} className="text-orange-300 shrink-0" />
                 {t}
