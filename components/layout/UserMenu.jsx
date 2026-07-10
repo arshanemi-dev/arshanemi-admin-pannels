@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Settings, LogOut } from 'lucide-react';
 import { clearAuthTokens } from '@/lib/tokenStore';
 
@@ -10,7 +9,6 @@ export default function UserMenu({ user, onLogout }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const ref = useRef(null);
-  const router = useRouter();
 
   useEffect(() => {
     const handler = (e) => {
@@ -28,8 +26,9 @@ export default function UserMenu({ user, onLogout }) {
       clearAuthTokens();
       setOpen(false);
       onLogout?.();
-      router.push('/login');
-      router.refresh();
+      // Hard redirect (not router.push) so every server component re-renders
+      // logged-out — client-side nav would leave stale authed state cached.
+      window.location.href = '/';
     }
   }
 

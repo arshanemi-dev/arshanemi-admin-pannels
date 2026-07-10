@@ -122,7 +122,7 @@ export default function Sidebar({ role = 'master_admin' }) {
           </div>
           <div>
             <p className="text-white font-semibold text-sm leading-tight">Arshanemi</p>
-            <p className="text-white/50 text-[11px]">Admin Panel</p>
+            <p className="text-white/50 text-[11px]">Settings</p>
           </div>
         </Link>
       </div>

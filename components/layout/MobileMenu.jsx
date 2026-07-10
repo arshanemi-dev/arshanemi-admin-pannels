@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { X, ChevronDown, Phone, ArrowRight, Settings, LogOut } from 'lucide-react';
 import { navLinks as defaultNavLinks } from '@/data/navigation';
 import { cn } from '@/lib/utils';
@@ -107,7 +106,6 @@ function MobileNavItem({ link, onClose }) {
 
 export default function MobileMenu({ open, onClose, navLinks }) {
   const links = navLinks || defaultNavLinks;
-  const router = useRouter();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -123,10 +121,10 @@ export default function MobileMenu({ open, onClose, navLinks }) {
   async function handleLogout() {
     await fetch('/api/auth/logout', { method: 'POST' });
     clearAuthTokens();
-    setUser(null);
     onClose();
-    router.push('/login');
-    router.refresh();
+    // Hard redirect (not router.push) so every server component re-renders
+    // logged-out — client-side nav would leave stale authed state cached.
+    window.location.href = '/';
   }
 
   return (

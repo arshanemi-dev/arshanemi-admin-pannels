@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { LogOut, User, ChevronRight } from 'lucide-react'
 import { useToast } from './Toast'
 import { clearAuthTokens } from '@/lib/tokenStore'
@@ -19,7 +19,6 @@ function buildBreadcrumb(pathname) {
 }
 
 export default function Topbar({ username }) {
-  const router = useRouter()
   const pathname = usePathname()
   const { addToast } = useToast()
   const [loading, setLoading] = useState(false)
@@ -30,8 +29,9 @@ export default function Topbar({ username }) {
     await fetch('/api/auth/logout', { method: 'POST' })
     clearAuthTokens()
     addToast('Logged out successfully')
-    router.push('/settings/login')
-    router.refresh()
+    // Hard redirect (not router.push) so every server component re-renders
+    // logged-out — client-side nav would leave stale authed state cached.
+    window.location.href = '/'
   }
 
   return (

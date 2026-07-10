@@ -28,14 +28,16 @@ export async function proxy(req) {
 
   const isAdminPath = pathname.startsWith('/settings') || pathname.startsWith('/api/admin')
 
-  // Non-admin API routes (e.g. /api/auth/*): inject CORS headers and pass through
+  // Non-admin API routes (e.g. /api/auth/*) and the standalone auth pages
+  // (/login, /signup, ...): inject CORS headers where relevant and pass
+  // through, but still stamp x-pathname so the root layout can tell these
+  // full-bleed auth screens apart from regular public pages and skip the
+  // site Header/Footer for them.
   if (!isAdminPath) {
-    if (pathname.startsWith('/api/')) {
-      const res = NextResponse.next()
-      setCorsHeaders(res, origin)
-      return res
-    }
-    return NextResponse.next()
+    const res = NextResponse.next()
+    res.headers.set('x-pathname', pathname)
+    if (pathname.startsWith('/api/')) setCorsHeaders(res, origin)
+    return res
   }
 
   // Theme is read by the public site (ThemeContext) for every visitor, so GET
@@ -84,5 +86,5 @@ export async function proxy(req) {
 }
 
 export const config = {
-  matcher: ['/settings/:path*', '/api/:path*'],
+  matcher: ['/settings/:path*', '/api/:path*', '/login', '/signup', '/forgot-password', '/reset-password'],
 }

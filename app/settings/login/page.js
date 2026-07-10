@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Loader2, ShieldCheck } from 'lucide-react'
 import { saveAuthTokens } from '@/lib/tokenStore'
 import OtpPasswordResetModal from '@/components/admin/OtpPasswordResetModal'
@@ -8,7 +7,6 @@ import OtpPasswordResetModal from '@/components/admin/OtpPasswordResetModal'
 const OTP_SECONDS = 60
 
 export default function LoginPage() {
-  const router = useRouter()
   const [step, setStep] = useState('credentials') // 'credentials' | 'otp'
   const [form, setForm] = useState({ username: '', password: '' })
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
@@ -33,8 +31,11 @@ export default function LoginPage() {
       expiresIn: data.expiresIn,
       user: data.user,
     })
-    router.push('/settings')
-    router.refresh()
+    // Full navigation, not the client router: /settings is gated by a
+    // server-side cookie check (middleware + layout), and the client Router
+    // Cache can still be holding the pre-login "redirect to /settings/login"
+    // response for this URL, which would bounce us straight back here.
+    window.location.href = '/settings'
   }
 
   async function handleSubmit(e) {
