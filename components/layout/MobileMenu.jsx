@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { X, ChevronDown, Phone, ArrowRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { X, ChevronDown, Phone, ArrowRight, Settings, LogOut } from 'lucide-react';
 import { navLinks as defaultNavLinks } from '@/data/navigation';
 import { cn } from '@/lib/utils';
 import Button from '@/components/ui/Button';
 import { COMPANY_PHONE_PRIMARY } from '@/data/company';
+import { isLoggedIn, getStoredUser, clearAuthTokens } from '@/lib/tokenStore';
 
 function MobileNavItem({ link, onClose }) {
   const [open, setOpen] = useState(false);
@@ -105,11 +107,27 @@ function MobileNavItem({ link, onClose }) {
 
 export default function MobileMenu({ open, onClose, navLinks }) {
   const links = navLinks || defaultNavLinks;
+  const router = useRouter();
+  const [user, setUser] = useState(null);
+
   useEffect(() => {
     if (open) document.body.style.overflow = 'hidden';
     else document.body.style.overflow = '';
     return () => { document.body.style.overflow = ''; };
   }, [open]);
+
+  useEffect(() => {
+    setUser(isLoggedIn() ? getStoredUser() : null);
+  }, [open]);
+
+  async function handleLogout() {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    clearAuthTokens();
+    setUser(null);
+    onClose();
+    router.push('/login');
+    router.refresh();
+  }
 
   return (
     <>
@@ -159,9 +177,34 @@ export default function MobileMenu({ open, onClose, navLinks }) {
 
         {/* Bottom CTAs */}
         <div className="px-5 py-5 space-y-3 border-t border-divider">
-          <Button href="/contact" className="w-full" onClick={onClose}>
-            Get Free SEO Audit
-          </Button>
+          {user ? (
+            <>
+              <Link
+                href="/settings"
+                onClick={onClose}
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold text-foreground border border-divider hover:border-accent/50 transition-all duration-200"
+              >
+                <Settings size={16} />
+                Settings
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold text-red-500 border border-divider hover:border-red-400/50 transition-all duration-200"
+              >
+                <LogOut size={16} />
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Button href="/login" variant="secondary" className="w-full" onClick={onClose}>
+                Login
+              </Button>
+              <Button href="/contact" className="w-full" onClick={onClose}>
+                Get Free SEO Audit
+              </Button>
+            </>
+          )}
           <a
             href={`tel:${COMPANY_PHONE_PRIMARY}`}
             className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm text-muted border border-divider hover:border-accent/50 hover:text-foreground transition-all duration-200"

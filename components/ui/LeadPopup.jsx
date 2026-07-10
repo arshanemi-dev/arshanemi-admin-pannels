@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { X, Sparkles, CheckCircle, Loader2, ArrowRight, Gift } from 'lucide-react';
+import { isLoggedIn } from '@/lib/tokenStore';
 
 const SUBMITTED_KEY = 'si-lead-submitted';
 const TIMER_DONE_KEY = 'si-lead-timer-done';
@@ -28,6 +29,9 @@ export default function LeadPopup() {
   const timerRef = useRef(null);
 
   useEffect(() => {
+    // Signed-in users never see the lead capture popup
+    if (isLoggedIn()) return;
+
     // Already submitted once — never show again
     if (localStorage.getItem(SUBMITTED_KEY)) return;
 

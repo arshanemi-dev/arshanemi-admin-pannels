@@ -12,82 +12,82 @@ import {
 const masterAdminGroups = [
   {
     label: null,
-    items: [{ label: 'Dashboard', href: '/admin', icon: LayoutDashboard }],
+    items: [{ label: 'Dashboard', href: '/settings', icon: LayoutDashboard }],
   },
   {
     label: 'SERVICES',
     items: [
-      { label: 'Services', href: '/admin/services', icon: Briefcase },
+      { label: 'Services', href: '/settings/services', icon: Briefcase },
     ],
   },
   {
     label: 'Industries & Content',
     items: [
-      { label: 'Industries',      href: '/admin/industries',      icon: Factory },
-       { label: 'SEO Packages',   href: '/admin/seo-packages',     icon: Package },
+      { label: 'Industries',      href: '/settings/industries',      icon: Factory },
+       { label: 'SEO Packages',   href: '/settings/seo-packages',     icon: Package },
     ],
   },
   {
     label: 'CONTENT',
     items: [
-      { label: 'Blog Posts',      href: '/admin/blogs',           icon: FileText },
-      { label: 'Blog Categories', href: '/admin/blog-categories', icon: Tag },
-      { label: 'Case Studies',    href: '/admin/case-studies',    icon: BookOpen },
-      { label: 'Media Library',   href: '/admin/media',           icon: Images },
+      { label: 'Blog Posts',      href: '/settings/blogs',           icon: FileText },
+      { label: 'Blog Categories', href: '/settings/blog-categories', icon: Tag },
+      { label: 'Case Studies',    href: '/settings/case-studies',    icon: BookOpen },
+      { label: 'Media Library',   href: '/settings/media',           icon: Images },
     ],
   },
   {
     label: 'COMPANIES & USERS',
     items: [
-      { label: 'Companies',     href: '/admin/companies', icon: Building2 },
-      { label: 'Users',         href: '/admin/users',     icon: Users },
-      { label: 'Tools Access',  href: '/admin/settings',  icon: Settings },
+      { label: 'Companies',     href: '/settings/companies', icon: Building2 },
+      { label: 'Users',         href: '/settings/users',     icon: Users },
+      { label: 'Tools Access',  href: '/settings/tools',  icon: Settings },
     ],
   },
   {
     label: 'LEADS & HR',
     items: [
-      { label: 'Leads History',      href: '/admin/leads',      icon: TrendingUp },
-      { label: 'Candidates',         href: '/admin/candidates', icon: UserCheck },
+      { label: 'Leads History',      href: '/settings/leads',      icon: TrendingUp },
+      { label: 'Candidates',         href: '/settings/candidates', icon: UserCheck },
     ],
   },
   {
     label: 'TEAM & SOCIAL',
     items: [
-      { label: 'Team Members', href: '/admin/team',         icon: Users },
-      { label: 'Testimonials', href: '/admin/testimonials', icon: MessageSquare },
-      { label: 'Partners',     href: '/admin/partners',     icon: Handshake },
+      { label: 'Team Members', href: '/settings/team',         icon: Users },
+      { label: 'Testimonials', href: '/settings/testimonials', icon: MessageSquare },
+      { label: 'Partners',     href: '/settings/partners',     icon: Handshake },
     ],
   },
   {
     label: 'SITE CONFIG',
     items: [
-      { label: 'Stats',          href: '/admin/stats',      icon: BarChart2 },
-      { label: 'FAQs',           href: '/admin/faqs',       icon: HelpCircle },
-      { label: 'Trust Badges',   href: '/admin/badges',     icon: Shield },
-      { label: 'Hero Content',   href: '/admin/hero',       icon: Layers },
-      { label: 'CTA Banner',     href: '/admin/cta-banner', icon: Megaphone },
-      { label: 'Company Info',   href: '/admin/company',    icon: Cog },
-      { label: 'Theme Settings', href: '/admin/theme',      icon: Palette },
+      { label: 'Stats',          href: '/settings/stats',      icon: BarChart2 },
+      { label: 'FAQs',           href: '/settings/faqs',       icon: HelpCircle },
+      { label: 'Trust Badges',   href: '/settings/badges',     icon: Shield },
+      { label: 'Hero Content',   href: '/settings/hero',       icon: Layers },
+      { label: 'CTA Banner',     href: '/settings/cta-banner', icon: Megaphone },
+      { label: 'Company Info',   href: '/settings/company',    icon: Cog },
+      { label: 'Theme Settings', href: '/settings/theme',      icon: Palette },
     ],
   },
   {
     label: 'PAGES',
     items: [
-      { label: 'About Page',     href: '/admin/about',            icon: Layers },
-      { label: 'Process Steps',  href: '/admin/process',          icon: Settings },
+      { label: 'About Page',     href: '/settings/about',            icon: Layers },
+      { label: 'Process Steps',  href: '/settings/process',          icon: Settings },
 
-      { label: 'Careers',        href: '/admin/careers',          icon: Briefcase },
-      { label: 'Life at Santhya',href: '/admin/life-at-arshanemi',  icon: Heart },
-      { label: 'Contact Page',   href: '/admin/contact',          icon: Phone },
-      { label: 'Navigation',     href: '/admin/navigation',       icon: Map },
+      { label: 'Careers',        href: '/settings/careers',          icon: Briefcase },
+      { label: 'Life at Arshanemi',href: '/settings/life-at-arshanemi',  icon: Heart },
+      { label: 'Contact Page',   href: '/settings/contact',          icon: Phone },
+      { label: 'Navigation',     href: '/settings/navigation',       icon: Map },
 
     ],
   },
   {
     label: 'ACCOUNT',
     items: [
-      { label: 'My Profile', href: '/admin/profile', icon: UserCircle },
+      { label: 'My Profile', href: '/settings/profile', icon: UserCircle },
     ],
   },
 ]
@@ -96,9 +96,9 @@ const adminGroups = [
   {
     label: null,
     items: [
-      { label: 'Users',        href: '/admin/users',    icon: Users },
-      { label: 'Tools Access', href: '/admin/settings', icon: Settings },
-      { label: 'My Profile',   href: '/admin/profile',  icon: UserCircle },
+      { label: 'Users',        href: '/settings/users',    icon: Users },
+      { label: 'Tools Access', href: '/settings/tools', icon: Settings },
+      { label: 'My Profile',   href: '/settings/profile',  icon: UserCircle },
     ],
   },
 ]
@@ -108,7 +108,7 @@ export default function Sidebar({ role = 'master_admin' }) {
   const groups = role === 'admin' ? adminGroups : masterAdminGroups
 
   const isActive = (href) => {
-    if (href === '/admin') return pathname === '/admin'
+    if (href === '/settings') return pathname === '/settings'
     return pathname.startsWith(href)
   }
 
@@ -116,12 +116,12 @@ export default function Sidebar({ role = 'master_admin' }) {
     <aside className="w-60 flex-shrink-0 h-full bg-accent flex flex-col overflow-hidden">
       {/* Logo */}
       <div className="px-4 py-5 border-b border-accent-hover flex-shrink-0">
-        <Link href="/admin" className="flex items-center gap-3">
+        <Link href="/settings" className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
             <span className="text-white font-bold text-sm">S</span>
           </div>
           <div>
-            <p className="text-white font-semibold text-sm leading-tight">Santhya</p>
+            <p className="text-white font-semibold text-sm leading-tight">Arshanemi</p>
             <p className="text-white/50 text-[11px]">Admin Panel</p>
           </div>
         </Link>

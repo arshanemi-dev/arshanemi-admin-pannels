@@ -8,8 +8,10 @@ import { navLinks as defaultNavLinks } from '@/data/navigation';
 import { useScrollHeader } from '@/hooks/useScrollHeader';
 import { useTheme } from '@/context/ThemeContext';
 import { cn } from '@/lib/utils';
+import { isLoggedIn, getStoredUser } from '@/lib/tokenStore';
 import MobileMenu from './MobileMenu';
 import ToolsLauncher from './ToolsLauncher';
+import UserMenu from './UserMenu';
 import Button from '@/components/ui/Button';
 
 function DropdownMenu({ items }) {
@@ -119,7 +121,12 @@ export default function Header({ navLinks: navLinksProp, tools = [] }) {
   const navLinks = navLinksProp || defaultNavLinks;
   const isScrolled = useScrollHeader(50);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const { theme } = useTheme();
+
+  useEffect(() => {
+    setUser(isLoggedIn() ? getStoredUser() : null);
+  }, []);
 
   return (
     <>
@@ -158,9 +165,18 @@ export default function Header({ navLinks: navLinksProp, tools = [] }) {
             <div className="flex items-center gap-2">
               <ToolsLauncher tools={tools} />
 
-              <Button href="/contact" size="sm" className="hidden sm:inline-flex">
-                Get Free Audit
-              </Button>
+              {user ? (
+                <UserMenu user={user} onLogout={() => setUser(null)} />
+              ) : (
+                <>
+                  <Button href="/login" variant="outline" size="sm" className="hidden sm:inline-flex">
+                    Login
+                  </Button>
+                  <Button href="/contact" size="sm" className="hidden sm:inline-flex">
+                    Get Free Audit
+                  </Button>
+                </>
+              )}
               <button
                 onClick={() => setMobileOpen(true)}
                 className="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl text-muted hover:text-foreground hover:bg-card-hover transition-colors"

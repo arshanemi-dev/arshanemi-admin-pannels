@@ -49,6 +49,12 @@ CREATE TABLE IF NOT EXISTS users (
   otp_enabled   BOOLEAN      NOT NULL DEFAULT FALSE,     -- require login OTP for this user
   address1      VARCHAR(255),
   address2      VARCHAR(255),
+  address_city    VARCHAR(255),
+  address_state   VARCHAR(255),
+  address_country VARCHAR(255) DEFAULT 'India',
+  address_pincode VARCHAR(20),
+  company_name  VARCHAR(255),                            -- invoicing/GST business name (not the tenant company_id)
+  gst_number    VARCHAR(50),
   wallet_credits_total INTEGER NOT NULL DEFAULT 0,       -- credits granted (admin-managed)
   wallet_credits_used  INTEGER NOT NULL DEFAULT 0,       -- credits consumed
   created_at    TIMESTAMPTZ  DEFAULT NOW(),

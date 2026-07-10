@@ -18,11 +18,12 @@ export async function GET(req) {
   return res
 }
 
-// Self-service profile edit — name/address only. Email and mobile require
-// OTP verification of the NEW value (see /api/auth/send-contact-otp +
-// /api/auth/verify-contact-change) rather than a direct edit here. Role,
-// company, active status, OTP requirement and wallet credits stay
-// admin-managed (Admin → Users), never editable by the account owner.
+// Self-service profile edit — name, invoicing details (business name, GST
+// number) and address only. Email and mobile require OTP verification of the
+// NEW value (see /api/auth/send-contact-otp + /api/auth/verify-contact-change)
+// rather than a direct edit here. Role, company, active status, OTP
+// requirement and wallet credits stay admin-managed (Admin → Users), never
+// editable by the account owner.
 export async function PATCH(req) {
   const payload = await getUserFromRequest(req)
   if (!payload) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -36,6 +37,12 @@ export async function PATCH(req) {
   }
   if ('address1' in body) patch.address1 = body.address1
   if ('address2' in body) patch.address2 = body.address2
+  if ('addressCity' in body) patch.addressCity = body.addressCity
+  if ('addressState' in body) patch.addressState = body.addressState
+  if ('addressCountry' in body) patch.addressCountry = body.addressCountry
+  if ('addressPincode' in body) patch.addressPincode = body.addressPincode
+  if ('businessName' in body) patch.businessName = body.businessName
+  if ('gstNumber' in body) patch.gstNumber = body.gstNumber
 
   try {
     const updated = await updateUser(payload.userId, patch)

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getUserByEmail, getUserByMobile, createOTP } from '@/lib/db'
 import { sendOtpEmail } from '@/lib/mailer'
+import { sendSmsOtp } from '@/lib/sms'
 
 function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString()
@@ -29,8 +30,7 @@ export async function POST(req) {
     if (type === 'email') {
       await sendOtpEmail({ to: identifier.trim(), otpCode, name: user.name })
     } else {
-      // SMS integration placeholder — log in dev
-      console.log(`[SMS OTP] To: ${identifier}  Code: ${otpCode}`)
+      await sendSmsOtp({ to: identifier.trim(), otpCode })
     }
 
     return NextResponse.json({ ok: true, message: 'OTP sent successfully.' })

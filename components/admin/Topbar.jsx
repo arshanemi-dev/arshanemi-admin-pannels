@@ -6,10 +6,10 @@ import { useToast } from './Toast'
 import { clearAuthTokens } from '@/lib/tokenStore'
 
 function buildBreadcrumb(pathname) {
-  const parts = pathname.replace('/admin', '').split('/').filter(Boolean)
-  if (!parts.length) return [{ label: 'Dashboard', href: '/admin' }]
-  const crumbs = [{ label: 'Dashboard', href: '/admin' }]
-  let path = '/admin'
+  const parts = pathname.replace('/settings', '').split('/').filter(Boolean)
+  if (!parts.length) return [{ label: 'Dashboard', href: '/settings' }]
+  const crumbs = [{ label: 'Dashboard', href: '/settings' }]
+  let path = '/settings'
   parts.forEach((p) => {
     path += `/${p}`
     const label = p.charAt(0).toUpperCase() + p.slice(1).replace(/-/g, ' ')
@@ -30,7 +30,7 @@ export default function Topbar({ username }) {
     await fetch('/api/auth/logout', { method: 'POST' })
     clearAuthTokens()
     addToast('Logged out successfully')
-    router.push('/admin/login')
+    router.push('/settings/login')
     router.refresh()
   }
 

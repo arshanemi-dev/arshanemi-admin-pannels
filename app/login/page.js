@@ -25,8 +25,8 @@ export default function LoginPage() {
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Invalid credentials'); return }
       if (data.otpRequired) {
-        // Master admin accounts need the OTP step — that only lives on /admin/login
-        router.push('/admin/login')
+        // Master admin accounts need the OTP step — that only lives on /settings/login
+        router.push('/settings/login')
         return
       }
       saveAuthTokens({
@@ -35,10 +35,9 @@ export default function LoginPage() {
         expiresIn: data.expiresIn,
         user: data.user,
       })
-      // master_admin and the company-scoped 'admin' role both land in the
-      // admin panel (which then routes each to its own home page); only a
-      // plain 'user' goes to the public tools app.
-      router.push(data.user?.role === 'user' ? '/tools' : '/admin')
+      // Land back on the public homepage — the navbar's profile menu is
+      // where a signed-in user goes on to reach /settings or /tools from here.
+      router.push('/')
       router.refresh()
     } catch {
       setError('Network error — please try again')

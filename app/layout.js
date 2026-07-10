@@ -161,7 +161,7 @@ const websiteSchema = {
 export default async function RootLayout({ children }) {
   const headersList = await headers()
   const pathname = headersList.get('x-pathname') || ''
-  const isAdmin = pathname.startsWith('/admin')
+  const isAdmin = pathname.startsWith('/settings')
 
   const [company, navigation, blobTools, savedTheme] = await Promise.all([
     getCachedSingleton('company').catch(() => ({})),

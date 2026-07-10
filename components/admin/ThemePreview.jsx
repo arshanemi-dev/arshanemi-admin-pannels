@@ -36,7 +36,7 @@ export default function ThemePreview({ theme, mode }) {
           className="flex items-center justify-between px-4 py-2.5">
           <div className="flex items-center gap-1.5">
             <div className="w-5 h-5 rounded" style={{ backgroundColor: accent }} />
-            <span className="text-[11px] font-bold" style={{ color: c.foreground }}>Santhya</span>
+            <span className="text-[11px] font-bold" style={{ color: c.foreground }}>Arshanemi</span>
           </div>
           <div className="flex items-center gap-3">
             {['Services', 'About', 'Contact'].map(n => (

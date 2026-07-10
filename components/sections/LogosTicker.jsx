@@ -59,7 +59,7 @@ export default function LogosTicker({ partners }) {
             </div>
 
             <div className="leading-tight flex space-x-4 justify-center w-full" style={{ justifyContent: 'center' }}>
-              <p className="text-4xl xl:text-5xl font-bold text-foreground ">Santhya</p>
+              <p className="text-4xl xl:text-5xl font-bold text-foreground ">Arshanemi</p>
               <p className="text-4xl xl:text-5xl font-bold  text-foreground ">Infotech</p>
             </div>
 <div className="flex flex-col items-center justify-center gap-3 w-full" style={{ justifyContent: 'center' }}>

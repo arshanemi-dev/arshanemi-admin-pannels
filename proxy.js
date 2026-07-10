@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { jwtVerify } from 'jose'
 
 const SECRET = new TextEncoder().encode(process.env.JWT_SECRET)
-const PUBLIC_PATHS = ['/admin/login', '/api/auth/login']
+const PUBLIC_PATHS = ['/settings/login', '/api/auth/login']
 
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:3001').split(',').map((o) => o.trim())
 
@@ -26,7 +26,7 @@ export async function proxy(req) {
     return res
   }
 
-  const isAdminPath = pathname.startsWith('/admin') || pathname.startsWith('/api/admin')
+  const isAdminPath = pathname.startsWith('/settings') || pathname.startsWith('/api/admin')
 
   // Non-admin API routes (e.g. /api/auth/*): inject CORS headers and pass through
   if (!isAdminPath) {
@@ -51,7 +51,7 @@ export async function proxy(req) {
 
   // Any authenticated role (master_admin / admin / user) gets an
   // 'arshanemi-token' cookie on login; only master_admin additionally gets
-  // 'admin-token'. Structural access to /admin is granted to any logged-in
+  // 'admin-token'. Structural access to /settings is granted to any logged-in
   // role here — the layout and API routes below decide what each role can
   // actually see/do, same defense-in-depth pattern already used elsewhere.
   const token = req.cookies.get('admin-token')?.value || req.cookies.get('arshanemi-token')?.value
@@ -61,7 +61,7 @@ export async function proxy(req) {
       setCorsHeaders(res, origin)
       return res
     }
-    const loginUrl = new URL('/admin/login', req.url)
+    const loginUrl = new URL('/settings/login', req.url)
     return NextResponse.redirect(loginUrl)
   }
 
@@ -78,11 +78,11 @@ export async function proxy(req) {
       setCorsHeaders(res, origin)
       return res
     }
-    const loginUrl = new URL('/admin/login', req.url)
+    const loginUrl = new URL('/settings/login', req.url)
     return NextResponse.redirect(loginUrl)
   }
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/:path*'],
+  matcher: ['/settings/:path*', '/api/:path*'],
 }
