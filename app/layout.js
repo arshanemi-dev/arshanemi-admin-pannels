@@ -8,10 +8,10 @@ import LeadPopup from '@/components/ui/LeadPopup';
 import SplashScreen from '@/components/ui/SplashScreen';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { COMPANY_EMAIL, COMPANY_PHONE_PRIMARY, COMPANY_PHONE_SECONDARY, COMPANY_NAME } from '@/data/company';
-import { getCachedSingleton, getCachedCollection } from '@/lib/db';
+import { getCachedSingleton } from '@/lib/db';
+import { getAllTools } from '@/lib/tools';
 import { buildNavLinks } from '@/data/navigation';
 import { defaultTheme } from '@/data/defaultTheme';
-import { tools as staticTools } from '@/data/tools';
 
 const SITE_URL = 'https://www.arshanemi.com';
 const SITE_NAME = 'Arshanemi';
@@ -169,15 +169,14 @@ export default async function RootLayout({ children }) {
   // layout — the site Header/Footer would just duplicate/clash with that.
   const hideChrome = isAdmin || AUTH_ONLY_PATHS.includes(pathname)
 
-  const [company, navigation, blobTools, savedTheme] = await Promise.all([
+  const [company, navigation, liveTools, savedTheme] = await Promise.all([
     getCachedSingleton('company').catch(() => ({})),
     getCachedSingleton('navigation').catch(() => ({})),
-    getCachedCollection('tools').catch(() => []),
+    getAllTools(),
     getCachedSingleton('theme').catch(() => null),
   ])
   const siteTheme = (savedTheme?.mode) ? savedTheme : defaultTheme
 
-  const liveTools = blobTools.length ? blobTools : staticTools;
   const dynamicNavLinks = buildNavLinks(liveTools);
 
   return (

@@ -1,6 +1,8 @@
 /**
  * Arshanemi — PostgreSQL Seed Script
- * Seeds all content into Supabase layout_settings table + creates default users.
+ * Seeds all content into Supabase layout_settings table (tools go into their
+ * own `tools` table instead — see scripts/tools_table_migration.sql) +
+ * creates default users.
  *
  * Usage:
  *   node --env-file=.env scripts/seed.mjs
@@ -47,6 +49,36 @@ async function seedList(supabase, name, array) {
 
 async function seedSingleton(supabase, name, obj) {
   await upsertSetting(supabase, name, obj)
+}
+
+// tools live in their own table now (not layout_settings) — see
+// lib/db.js's toolItemToRow/toolRowToItem for the same flat+content split
+// used by the app's runtime CRUD. Upserts on `slug` (the stable business
+// key); `id` gets a fresh nanoid on every reseed, which is harmless since
+// nothing references a tool by id — Tools Access grants store slugs.
+const TOOLS_CONTENT_FIELDS = ['features', 'hero', 'stats', 'steps', 'advantages', 'faqs']
+
+async function seedTools(supabase, tools) {
+  const rows = await Promise.all(tools.map(async (t) => {
+    const content = {}
+    for (const key of TOOLS_CONTENT_FIELDS) if (t[key] !== undefined) content[key] = t[key]
+    return {
+      id: await nid(),
+      slug: t.slug,
+      title: t.title,
+      icon: t.icon ?? null,
+      short_desc: t.shortDesc ?? null,
+      category: t.category ?? null,
+      badge: t.badge ?? null,
+      tool_url: t.toolUrl ?? null,
+      requires_login: !!t.requiresLogin,
+      content,
+      updated_at: new Date().toISOString(),
+    }
+  }))
+  const { error } = await supabase.from('tools').upsert(rows, { onConflict: 'slug' })
+  if (error) throw new Error(`Failed to upsert tools: ${error.message}`)
+  console.log(`  ✓ tools (${rows.length} items)`)
 }
 
 // ─── nanoid shim ─────────────────────────────────────────────────────────────
@@ -106,8 +138,7 @@ async function main() {
   await seedList(supabase, 'services',
     await Promise.all(services.map(async (s) => ({ ...s, id: await nid() }))))
 
-  await seedList(supabase, 'tools',
-    await Promise.all(tools.map(async (t) => ({ ...t, id: await nid() }))))
+  await seedTools(supabase, tools)
 
   await seedList(supabase, 'industries',
     await Promise.all(industries.map(async (i) => ({ ...i, id: await nid() }))))

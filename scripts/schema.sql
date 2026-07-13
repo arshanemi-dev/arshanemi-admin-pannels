@@ -160,6 +160,38 @@ CREATE POLICY "Service role manages files_expiry"
   ON files_expiry FOR ALL
   USING (auth.role() = 'service_role');
 
+-- 5. tools — the tools catalog (was a single JSONB blob under layout_settings,
+--    key='tools'; moved to its own table since every edit was rewriting the
+--    whole array). Flat columns are the fields the admin CRUD form actually
+--    edits (see app/settings/tools-catalog/ToolsAdminClient.jsx); `content` is
+--    the rich marketing bundle (features/hero/stats/steps/advantages/faqs)
+--    that's only ever set at seed time, never edited through the admin UI —
+--    kept as JSONB since it's nested, variable-shape, and never queried by
+--    any of its inner fields.
+-- ──────────────────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS tools (
+  id             TEXT         PRIMARY KEY,          -- nanoid, carried over from the old JSONB items
+  slug           VARCHAR(255) UNIQUE NOT NULL,
+  title          VARCHAR(255) NOT NULL,
+  icon           VARCHAR(100),
+  short_desc     TEXT,
+  category       VARCHAR(50),
+  badge          VARCHAR(100),
+  tool_url       VARCHAR(500),
+  requires_login BOOLEAN      NOT NULL DEFAULT FALSE,
+  content        JSONB        NOT NULL DEFAULT '{}', -- { features, hero, stats, steps, advantages, faqs }
+  created_at     TIMESTAMPTZ  DEFAULT NOW(),
+  updated_at     TIMESTAMPTZ  DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_tools_slug     ON tools(slug);
+CREATE INDEX IF NOT EXISTS idx_tools_category ON tools(category);
+
+ALTER TABLE tools ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Service role manages tools"
+  ON tools FOR ALL
+  USING (auth.role() = 'service_role');
+
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Seed default admin user (password: Admin@1234  — change after first login)
 -- Run: SELECT crypt('Admin@1234', gen_salt('bf')) to get the hash, then insert.

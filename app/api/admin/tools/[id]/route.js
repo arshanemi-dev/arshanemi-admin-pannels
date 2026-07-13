@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { revalidateTag, revalidatePath } from 'next/cache'
 import { getAdminFromRequest } from '@/lib/auth'
-import { getItem, updateItem, deleteItem } from '@/lib/db'
+import { getToolByIdFromDB, updateTool, deleteTool } from '@/lib/db'
 
 function revalidatePublicPages(item) {
   revalidatePath('/', 'layout')
@@ -16,7 +16,7 @@ export async function GET(req, { params }) {
   const admin = await getAdminFromRequest(req)
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
-  const tool = await getItem('tools', id)
+  const tool = await getToolByIdFromDB(id)
   if (!tool) return NextResponse.json({ error: 'Not found' }, { status: 404 })
   return NextResponse.json(tool)
 }
@@ -26,7 +26,7 @@ export async function PUT(req, { params }) {
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
   const data = await req.json()
-  const updated = await updateItem('tools', id, data)
+  const updated = await updateTool(id, data)
   if (!updated) return NextResponse.json({ error: 'Not found' }, { status: 404 })
   revalidateTag('tools')
   revalidatePublicPages(updated)
@@ -37,8 +37,8 @@ export async function DELETE(req, { params }) {
   const admin = await getAdminFromRequest(req)
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
-  const item = await getItem('tools', id)
-  await deleteItem('tools', id)
+  const item = await getToolByIdFromDB(id)
+  await deleteTool(id)
   revalidateTag('tools')
   revalidatePublicPages(item)
   return NextResponse.json({ ok: true })
