@@ -23,13 +23,13 @@ export async function POST(req) {
       ...(payload.companyId !== undefined ? { companyId: payload.companyId } : {}),
     }
 
-    const accessToken = await signToken(tokenPayload, '15m')
+    const accessToken = await signToken(tokenPayload, '1d')
     const cookie      = makeAuthCookie(accessToken)
 
     const res = NextResponse.json({
       ok: true,
       accessToken,
-      expiresIn: 900,
+      expiresIn: 86400,
     })
 
     res.cookies.set(cookie)

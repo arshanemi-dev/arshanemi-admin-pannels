@@ -60,10 +60,10 @@ export async function POST(req) {
 
     const tokenPayload = { userId: user.id, email: user.email, role: user.role, name: user.name, companyId: user.company_id ?? null }
 
-    // Short-lived access token (15 min) + long-lived refresh token (7 days).
-    // Refresh token carries the same identity fields so a silent refresh
-    // doesn't drop email/name/companyId from the re-signed access token.
-    const accessToken  = await signToken(tokenPayload, '15m')
+    // Access token (1 day) + long-lived refresh token (7 days). Refresh token
+    // carries the same identity fields so a silent refresh doesn't drop
+    // email/name/companyId from the re-signed access token.
+    const accessToken  = await signToken(tokenPayload, '1d')
     const refreshToken = await signRefreshToken(tokenPayload)
 
     const cookie = makeAuthCookie(accessToken)
@@ -72,7 +72,7 @@ export async function POST(req) {
       ok: true,
       accessToken,
       refreshToken,
-      expiresIn: 900, // seconds (15 min)
+      expiresIn: 86400, // seconds (1 day)
       user: { id: user.id, name: user.name, email: user.email, role: user.role },
     })
 

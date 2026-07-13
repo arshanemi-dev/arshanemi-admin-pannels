@@ -5,6 +5,7 @@ import { isPathAllowed, getLandingPageForRole } from '@/lib/permissions'
 import Sidebar from '@/components/admin/Sidebar'
 import Topbar from '@/components/admin/Topbar'
 import { ToastProvider } from '@/components/admin/Toast'
+import SessionManager from '@/components/admin/SessionManager'
 
 export const metadata = {
   title: 'Admin — Arshanemi',
@@ -41,6 +42,7 @@ export default async function AdminLayout({ children }) {
   if (role === 'user') {
     return (
       <ToastProvider>
+        <SessionManager />
         <div className="flex flex-col h-screen overflow-hidden bg-surface">
           <Topbar username={payload.name} />
           <main className="flex-1 overflow-y-auto flex justify-center">
@@ -53,6 +55,7 @@ export default async function AdminLayout({ children }) {
 
   return (
     <ToastProvider>
+      <SessionManager />
       {/* Fixed full-viewport shell — nothing outside this scrolls */}
       <div className="flex h-screen overflow-hidden bg-surface">
         <Sidebar role={role} />

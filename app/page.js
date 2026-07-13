@@ -1,4 +1,3 @@
-import SplashScreen from '@/components/ui/SplashScreen';
 import HeroSection from '@/components/sections/HeroSection';
 import LogosTicker from '@/components/sections/LogosTicker';
 import StatsSection from '@/components/sections/StatsSection';
@@ -118,7 +117,6 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageFaqSchema) }}
       />
-      <SplashScreen />
       <HeroSection
         phone={company?.phonePrimary}
         bullets={hero?.bullets}

@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 import { tools } from '@/data/tools';
 
-const SESSION_KEY = 'arshanemi-splash-seen';
 const ITEM_DURATION = 220; // ms each project name stays on screen
 const MIN_VISIBLE = 2200; // ms the splash stays up at minimum
 
@@ -18,31 +17,25 @@ function ProjectIcon({ name, size = 16 }) {
   return <Icon size={size} strokeWidth={1.75} />;
 }
 
+// Lives in the root layout, so it only mounts once per hard navigation
+// (full page load / refresh) — Next.js keeps the layout instance alive
+// across client-side <Link> navigations, so it never replays on those.
 export default function SplashScreen() {
   const [visible, setVisible] = useState(true);
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    // Only run the full intro once per browser tab session; repeat visits
-    // within the same session resolve the closeTimer on the next tick
-    // instead of calling setVisible synchronously in the effect body.
-    const alreadySeen = sessionStorage.getItem(SESSION_KEY);
-    if (!alreadySeen) sessionStorage.setItem(SESSION_KEY, '1');
-    const duration = alreadySeen ? 0 : TOTAL_DURATION;
-
-    const cycleTimer = alreadySeen
-      ? null
-      : setInterval(() => {
-          setIndex((i) => (i + 1) % PROJECTS.length);
-        }, ITEM_DURATION);
+    const cycleTimer = setInterval(() => {
+      setIndex((i) => (i + 1) % PROJECTS.length);
+    }, ITEM_DURATION);
 
     const closeTimer = setTimeout(() => {
-      if (cycleTimer) clearInterval(cycleTimer);
+      clearInterval(cycleTimer);
       setVisible(false);
-    }, duration);
+    }, TOTAL_DURATION);
 
     return () => {
-      if (cycleTimer) clearInterval(cycleTimer);
+      clearInterval(cycleTimer);
       clearTimeout(closeTimer);
     };
   }, []);
