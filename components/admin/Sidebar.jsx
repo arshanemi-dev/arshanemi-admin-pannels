@@ -1,111 +1,25 @@
 'use client'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import {
-  LayoutDashboard, Briefcase, Factory, FileText, Tag, BookOpen,
-  Users, MessageSquare, Handshake, BarChart2, HelpCircle, Shield,
-  Cog, Package, Heart, Phone, Map, Settings, ChevronRight,
-  Layers, ExternalLink, Images, TrendingUp, UserCheck, Palette,
-  Megaphone, Building2, UserCircle,
-} from 'lucide-react'
+import { ChevronRight, ExternalLink } from 'lucide-react'
+import { NAV_ICONS } from './navIcons'
 
-const masterAdminGroups = [
-  {
-    label: null,
-    items: [{ label: 'Dashboard', href: '/settings', icon: LayoutDashboard }],
-  },
-  {
-    label: 'SERVICES',
-    items: [
-      { label: 'Services', href: '/settings/services', icon: Briefcase },
-    ],
-  },
-  {
-    label: 'Industries & Content',
-    items: [
-      { label: 'Industries',      href: '/settings/industries',      icon: Factory },
-       { label: 'SEO Packages',   href: '/settings/seo-packages',     icon: Package },
-    ],
-  },
-  {
-    label: 'CONTENT',
-    items: [
-      { label: 'Blog Posts',      href: '/settings/blogs',           icon: FileText },
-      { label: 'Blog Categories', href: '/settings/blog-categories', icon: Tag },
-      { label: 'Case Studies',    href: '/settings/case-studies',    icon: BookOpen },
-      { label: 'Media Library',   href: '/settings/media',           icon: Images },
-    ],
-  },
-  {
-    label: 'COMPANIES & USERS',
-    items: [
-      { label: 'Companies',     href: '/settings/companies', icon: Building2 },
-      { label: 'Users',         href: '/settings/users',     icon: Users },
-      { label: 'Tools Access',  href: '/settings/tools',  icon: Settings },
-    ],
-  },
-  {
-    label: 'LEADS & HR',
-    items: [
-      { label: 'Leads History',      href: '/settings/leads',      icon: TrendingUp },
-      { label: 'Candidates',         href: '/settings/candidates', icon: UserCheck },
-    ],
-  },
-  {
-    label: 'TEAM & SOCIAL',
-    items: [
-      { label: 'Team Members', href: '/settings/team',         icon: Users },
-      { label: 'Testimonials', href: '/settings/testimonials', icon: MessageSquare },
-      { label: 'Partners',     href: '/settings/partners',     icon: Handshake },
-    ],
-  },
-  {
-    label: 'SITE CONFIG',
-    items: [
-      { label: 'Stats',          href: '/settings/stats',      icon: BarChart2 },
-      { label: 'FAQs',           href: '/settings/faqs',       icon: HelpCircle },
-      { label: 'Trust Badges',   href: '/settings/badges',     icon: Shield },
-      { label: 'Hero Content',   href: '/settings/hero',       icon: Layers },
-      { label: 'CTA Banner',     href: '/settings/cta-banner', icon: Megaphone },
-      { label: 'Company Info',   href: '/settings/company',    icon: Cog },
-      { label: 'Theme Settings', href: '/settings/theme',      icon: Palette },
-    ],
-  },
-  {
-    label: 'PAGES',
-    items: [
-      { label: 'About Page',     href: '/settings/about',            icon: Layers },
-      { label: 'Process Steps',  href: '/settings/process',          icon: Settings },
-
-      { label: 'Careers',        href: '/settings/careers',          icon: Briefcase },
-      { label: 'Life at Arshanemi',href: '/settings/life-at-arshanemi',  icon: Heart },
-      { label: 'Contact Page',   href: '/settings/contact',          icon: Phone },
-      { label: 'Navigation',     href: '/settings/navigation',       icon: Map },
-
-    ],
-  },
-  {
-    label: 'ACCOUNT',
-    items: [
-      { label: 'My Profile', href: '/settings/profile', icon: UserCircle },
-    ],
-  },
-]
-
-const adminGroups = [
-  {
-    label: null,
-    items: [
-      { label: 'Users',        href: '/settings/users',    icon: Users },
-      { label: 'Tools Access', href: '/settings/tools', icon: Settings },
-      { label: 'My Profile',   href: '/settings/profile',  icon: UserCircle },
-    ],
-  },
-]
-
+// Nav groups are no longer hardcoded here — they come from the backend
+// (GET /api/auth/permissions, backed by lib/permissions.js) so a route this
+// session isn't allowed to see is never fetched, let alone rendered.
 export default function Sidebar({ role = 'master_admin' }) {
   const pathname = usePathname()
-  const groups = role === 'admin' ? adminGroups : masterAdminGroups
+  const [nav, setNav] = useState(null)
+
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/auth/permissions', { credentials: 'include' })
+      .then((res) => (res.ok ? res.json() : { nav: [] }))
+      .then((data) => { if (!cancelled) setNav(data.nav || []) })
+      .catch(() => { if (!cancelled) setNav([]) })
+    return () => { cancelled = true }
+  }, [role])
 
   const isActive = (href) => {
     if (href === '/settings') return pathname === '/settings'
@@ -133,8 +47,16 @@ export default function Sidebar({ role = 'master_admin' }) {
         [&::-webkit-scrollbar-track]:transparent
         [&::-webkit-scrollbar-thumb]:bg-white/30
         [&::-webkit-scrollbar-thumb]:rounded-full">
-        {groups.map((group, gi) => (
-          <div key={gi}>
+        {nav === null && (
+          <div className="space-y-2 px-2 animate-pulse" aria-hidden="true">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-7 rounded-lg bg-white/10" />
+            ))}
+          </div>
+        )}
+
+        {nav?.map((group, gi) => (
+          <div key={group.label ?? gi}>
             {group.label && (
               <p className="text-white/40 text-[10px] font-semibold tracking-widest uppercase px-2 mb-1">
                 {group.label}
@@ -142,6 +64,7 @@ export default function Sidebar({ role = 'master_admin' }) {
             )}
             <ul className="space-y-0.5">
               {group.items.map((item) => {
+                const Icon = NAV_ICONS[item.icon]
                 const active = isActive(item.href)
                 return (
                   <li key={item.href}>
@@ -153,7 +76,7 @@ export default function Sidebar({ role = 'master_admin' }) {
                           : 'text-white/70 hover:bg-white/10 hover:text-white'
                       }`}
                     >
-                      <item.icon className="w-4 h-4 flex-shrink-0" />
+                      {Icon && <Icon className="w-4 h-4 flex-shrink-0" />}
                       <span className="flex-1 truncate">{item.label}</span>
                       {active && <ChevronRight className="w-3.5 h-3.5 opacity-50 flex-shrink-0" />}
                     </Link>

@@ -1,6 +1,7 @@
 import { redirect, notFound } from 'next/navigation'
 import { headers, cookies } from 'next/headers'
 import { verifyToken } from '@/lib/auth'
+import { isPathAllowed, getLandingPageForRole } from '@/lib/permissions'
 import Sidebar from '@/components/admin/Sidebar'
 import Topbar from '@/components/admin/Topbar'
 import { ToastProvider } from '@/components/admin/Toast'
@@ -8,17 +9,6 @@ import { ToastProvider } from '@/components/admin/Toast'
 export const metadata = {
   title: 'Admin — Arshanemi',
   robots: { index: false },
-}
-
-// master_admin has no entry here — unrestricted access to every /settings/* path.
-const ALLOWED_PREFIXES = {
-  admin: ['/settings/users', '/settings/tools', '/settings/profile'],
-  user: ['/settings/profile'],
-}
-
-const LANDING_PAGE = {
-  admin: '/settings/users',
-  user: '/settings/profile',
 }
 
 export default async function AdminLayout({ children }) {
@@ -43,9 +33,8 @@ export default async function AdminLayout({ children }) {
   // other page outside their allowlist is a 404 — they're logged in, just
   // not permitted here, so a login redirect would be the wrong signal.
   if (role !== 'master_admin') {
-    if (pathname === '/settings') redirect(LANDING_PAGE[role] || '/settings/profile')
-    const allowed = ALLOWED_PREFIXES[role] || []
-    if (!allowed.some((prefix) => pathname.startsWith(prefix))) notFound()
+    if (pathname === '/settings') redirect(getLandingPageForRole(role))
+    if (!isPathAllowed(pathname, role)) notFound()
   }
 
   // Plain 'user' role has exactly one page — no sidebar to navigate with.
