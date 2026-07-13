@@ -177,14 +177,15 @@ export default function MobileMenu({ open, onClose, navLinks }) {
         <div className="px-5 py-5 space-y-3 border-t border-divider">
           {user ? (
             <>
-              <Link
+              {/* Plain <a>, not next/link — see UserMenu.jsx for why. */}
+              <a
                 href="/settings"
                 onClick={onClose}
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold text-foreground border border-divider hover:border-accent/50 transition-all duration-200"
               >
                 <Settings size={16} />
                 Settings
-              </Link>
+              </a>
               <button
                 onClick={handleLogout}
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold text-red-500 border border-divider hover:border-red-400/50 transition-all duration-200"

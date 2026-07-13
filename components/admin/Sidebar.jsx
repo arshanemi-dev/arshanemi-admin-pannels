@@ -90,15 +90,17 @@ export default function Sidebar({ role = 'master_admin' }) {
 
       {/* Bottom */}
       <div className="px-4 py-3 border-t border-accent-hover flex-shrink-0">
-        <Link
+        {/* Plain <a>, not next/link — hard navigation back to the public
+            site on purpose (same reasoning as the Settings link in
+            UserMenu.jsx: crossing the /settings shell boundary with
+            client-side nav leaves stale state behind). */}
+        <a
           href="/"
-          target="_blank"
-          rel="noopener noreferrer"
           className="flex items-center gap-2 text-white/50 text-xs hover:text-white transition-colors"
         >
           <ExternalLink className="w-3.5 h-3.5" />
           View Website
-        </Link>
+        </a>
       </div>
     </aside>
   )

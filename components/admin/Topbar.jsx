@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { LogOut, User, ChevronRight } from 'lucide-react'
+import { LogOut, User, ChevronRight, ExternalLink } from 'lucide-react'
 import { useToast } from './Toast'
 import { clearAuthTokens } from '@/lib/tokenStore'
 
@@ -18,7 +18,7 @@ function buildBreadcrumb(pathname) {
   return crumbs
 }
 
-export default function Topbar({ username }) {
+export default function Topbar({ username, role }) {
   const pathname = usePathname()
   const { addToast } = useToast()
   const [loading, setLoading] = useState(false)
@@ -54,6 +54,20 @@ export default function Topbar({ username }) {
 
       {/* Right side */}
       <div className="flex items-center gap-2 flex-shrink-0">
+        {/* Plain 'user' role has no sidebar, so no "View Website" link to
+            find otherwise — surface it here instead. Plain <a>, not
+            next/link — hard navigation back to the public site on purpose
+            (see Sidebar.jsx's "View Website" for the same reasoning). */}
+        {role === 'user' && (
+          <a
+            href="/"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted hover:bg-surface hover:text-foreground border border-divider transition-all"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            Main Site
+          </a>
+        )}
+
         {/* User chip */}
         <div className="flex items-center gap-2 bg-surface border border-divider rounded-full pl-1.5 pr-3 py-1">
           <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
