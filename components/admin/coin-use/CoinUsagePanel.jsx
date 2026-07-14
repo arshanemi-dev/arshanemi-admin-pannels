@@ -2,13 +2,15 @@
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import ToolCoinTable from './ToolCoinTable'
-import { TOKEN_USE_RANGES, tokenUsageByRange } from '@/data/tokenUsage'
+import { COIN_USE_RANGES, coinUsageByRange } from '@/data/coinUsage'
 
-// "Token Use" tab content for the plain 'user' role — a Time-range filter
+// "Coin Use" tab content for the plain 'user' role — a Time-range filter
 // driving a Total figure and a per-tool coin breakdown below it.
-export default function TokenUsagePanel() {
-  const [range, setRange] = useState(TOKEN_USE_RANGES[0].id)
-  const { total, tools } = tokenUsageByRange[range]
+// Named CoinUsagePanel (not TokenUsagePanel) deliberately — "token" is
+// reserved elsewhere in this codebase for JWT auth tokens.
+export default function CoinUsagePanel() {
+  const [range, setRange] = useState(COIN_USE_RANGES[0].id)
+  const { total, tools } = coinUsageByRange[range]
 
   return (
     <div className="flex flex-col gap-6">
@@ -21,7 +23,7 @@ export default function TokenUsagePanel() {
               onChange={(e) => setRange(e.target.value)}
               className="w-full appearance-none rounded-xl border border-divider bg-surface pl-4 pr-10 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
             >
-              {TOKEN_USE_RANGES.map((r) => (
+              {COIN_USE_RANGES.map((r) => (
                 <option key={r.id} value={r.id}>{r.label}</option>
               ))}
             </select>

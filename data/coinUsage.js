@@ -1,14 +1,20 @@
-// Dummy per-tool coin usage report shown on Settings → Profile → "Token
+// Dummy per-tool coin usage report shown on Settings → Profile → "Coin
 // Use" tab for the plain 'user' role. Keyed by time range so the dropdown
 // is functionally meaningful. Replace with real tools_usage_history
 // aggregates once that table exists (see plan/my-payment-management.md).
-export const TOKEN_USE_RANGES = [
+//
+// Named coinUsage (not tokenUsage) deliberately — "token" is reserved
+// elsewhere in this codebase for JWT auth tokens (lib/auth.js,
+// lib/tokenStore.js, app/api/auth/*). Reusing it here for an unrelated
+// concept (coin consumption) was a naming collision; see the "Naming"
+// section in plan/my-payment-management.md.
+export const COIN_USE_RANGES = [
   { id: 'this-month', label: 'This Month' },
   { id: 'last-month', label: 'Last Month' },
   { id: 'all-time', label: 'All Time' },
 ]
 
-export const tokenUsageByRange = {
+export const coinUsageByRange = {
   'this-month': {
     total: 600,
     tools: [

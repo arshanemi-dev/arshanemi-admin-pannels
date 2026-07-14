@@ -6,14 +6,14 @@ import { useToast } from '@/components/admin/Toast'
 import FormField from '@/components/admin/FormField'
 import ChangeContactSection from './ChangeContactSection'
 import ChangePasswordSection from './ChangePasswordSection'
-import { TokenUsagePanel } from '@/components/admin/token-use'
+import { CoinUsagePanel } from '@/components/admin/coin-use'
 import { UserWalletPanel } from '@/components/admin/wallet'
 import { COUNTRIES, DEFAULT_COUNTRY, INDIA_STATES } from '@/data/geoIndia'
 
 const TABS = [
   { id: 'profile', label: 'Profile' },
   { id: 'setting', label: 'Setting' },
-  { id: 'tokenUse', label: 'Token Use' },
+  { id: 'coinUse', label: 'Coin Use' },
   { id: 'wallet', label: 'Wallet' },
 ]
 
@@ -93,7 +93,7 @@ function WalletCard({ profile }) {
     <div className="bg-card rounded-2xl border border-divider p-6">
       <div className="flex items-center gap-2 mb-4">
         <Wallet className="w-4 h-4 text-accent" />
-        <h2 className="text-sm font-semibold text-foreground">Token Use</h2>
+        <h2 className="text-sm font-semibold text-foreground">Coin Balance</h2>
       </div>
       <div className="grid grid-cols-3 gap-3 text-center mb-4">
         <div>
@@ -408,9 +408,9 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {tab === 'tokenUse' && (
+      {tab === 'coinUse' && (
         profile.role === 'user' ? (
-          <TokenUsagePanel />
+          <CoinUsagePanel />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <SubscriptionCard subscription={subscription} />

@@ -13,9 +13,10 @@ const STATUS_FILTER = {
 
 // "Customer Dashboard" table — per-customer status/usage/balance overview,
 // built on the shared DataTable (search, status filter, date range on
-// first login, export). The "Report" action smooth-scrolls to the Report
-// table below (both components share one page) instead of a fake per-user route.
-export default function CustomerDashboardTable({ data }) {
+// first login, export). The "Report" action hands the clicked row up to
+// the page, which opens the per-customer drill-down below the Report table
+// (both components share one page) instead of a fake per-user route.
+export default function CustomerDashboardTable({ data, onSelectCustomer }) {
   const columns = [
     { key: 'userId', label: 'User ID', sortable: true },
     { key: 'email', label: 'Email', sortable: true },
@@ -28,10 +29,10 @@ export default function CustomerDashboardTable({ data }) {
       key: 'report',
       label: 'Report',
       exportable: false,
-      render: () => (
+      render: (_, row) => (
         <button
           type="button"
-          onClick={() => document.getElementById('customer-report')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          onClick={() => onSelectCustomer?.(row)}
           className="font-bold text-foreground hover:text-accent hover:underline transition-colors"
         >
           Report

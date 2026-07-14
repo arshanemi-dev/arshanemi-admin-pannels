@@ -1,4 +1,4 @@
-// "Tools Name / Coin Use" list — the bottom half of the Token Use panel.
+// "Tools Name / Coin Use" list — the bottom half of the Coin Use panel.
 export default function ToolCoinTable({ tools }) {
   return (
     <div className="rounded-2xl border border-divider overflow-hidden overflow-x-auto">
