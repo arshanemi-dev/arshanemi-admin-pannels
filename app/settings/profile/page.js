@@ -1,11 +1,12 @@
 'use client'
 import { useEffect, useMemo, useState } from 'react'
-import { Pencil, Loader2, CreditCard, Wallet, CheckCircle2, XCircle } from 'lucide-react'
+import { Pencil, Loader2, Wallet, CheckCircle2, XCircle } from 'lucide-react'
 import { TableSkeleton, LoadError } from '@/components/admin/Skeleton'
 import { useToast } from '@/components/admin/Toast'
 import FormField from '@/components/admin/FormField'
 import ChangeContactSection from './ChangeContactSection'
 import ChangePasswordSection from './ChangePasswordSection'
+import ProfileBanner from './ProfileBanner'
 import { CoinUsagePanel } from '@/components/admin/coin-use'
 import { UserWalletPanel } from '@/components/admin/wallet'
 import { COUNTRIES, DEFAULT_COUNTRY, INDIA_STATES } from '@/data/geoIndia'
@@ -16,14 +17,6 @@ const TABS = [
   { id: 'coinUse', label: 'Coin Use' },
   { id: 'wallet', label: 'Wallet' },
 ]
-
-const SUBSCRIPTION_STATUS_STYLES = {
-  active: 'bg-green-50 text-green-700',
-  trialing: 'bg-blue-50 text-blue-700',
-  past_due: 'bg-amber-50 text-amber-700',
-  cancelled: 'bg-red-50 text-red-700',
-  inactive: 'bg-surface text-subtle',
-}
 
 function formFromProfile(p) {
   return {
@@ -37,39 +30,6 @@ function formFromProfile(p) {
     addressCountry: p.addressCountry || DEFAULT_COUNTRY,
     addressPincode: p.addressPincode || '',
   }
-}
-
-function SubscriptionCard({ subscription }) {
-  if (!subscription) return null
-  const plan = subscription.planDetails
-  const status = subscription.status || 'inactive'
-
-  return (
-    <div className="bg-card rounded-2xl border border-divider p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <CreditCard className="w-4 h-4 text-accent" />
-        <h2 className="text-sm font-semibold text-foreground">Subscription</h2>
-      </div>
-      <div className="flex items-center justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-lg font-bold text-foreground truncate">{plan?.name || subscription.plan || 'No plan'}</p>
-          {plan && (
-            <p className="text-xs text-subtle mt-0.5">
-              {plan.price === 0 ? 'Free' : `₹${plan.price} / ${plan.interval}`}
-            </p>
-          )}
-        </div>
-        <span className={`text-xs font-medium px-2.5 py-1 rounded-full capitalize flex-shrink-0 ${SUBSCRIPTION_STATUS_STYLES[status] || SUBSCRIPTION_STATUS_STYLES.inactive}`}>
-          {status.replace('_', ' ')}
-        </span>
-      </div>
-      {subscription.currentPeriodEnd && (
-        <p className="text-xs text-subtle mt-3">
-          {subscription.cancelAtPeriodEnd ? 'Ends' : 'Renews'} on {new Date(subscription.currentPeriodEnd).toLocaleDateString()}
-        </p>
-      )}
-    </div>
-  )
 }
 
 function InfoRow({ label, value }) {
@@ -120,7 +80,6 @@ function WalletCard({ profile }) {
 export default function ProfilePage() {
   const { addToast } = useToast()
   const [profile, setProfile] = useState(null)
-  const [subscription, setSubscription] = useState(null)
   const [error, setError] = useState(false)
   const [tab, setTab] = useState('profile')
   const [editing, setEditing] = useState(false)
@@ -133,15 +92,11 @@ export default function ProfilePage() {
   async function load() {
     setError(false)
     try {
-      const [profileRes, subRes] = await Promise.all([
-        fetch('/api/auth/me'),
-        fetch('/api/admin/subscription').catch(() => null),
-      ])
+      const profileRes = await fetch('/api/auth/me')
       if (!profileRes.ok) throw new Error()
       const data = await profileRes.json()
       setProfile(data)
       setForm(formFromProfile(data))
-      setSubscription(subRes?.ok ? await subRes.json() : null)
     } catch {
       setError(true)
     }
@@ -253,6 +208,8 @@ export default function ProfilePage() {
 
   return (
     <div className="flex flex-col gap-6">
+      <ProfileBanner profile={profile} />
+
       {/* Tabs */}
       <div className="flex items-center justify-between border-b border-divider">
         <div className="flex items-center gap-6">
@@ -276,30 +233,19 @@ export default function ProfilePage() {
             <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">{formError}</div>
           )}
 
-          {/* Header — avatar, name, contact, edit trigger */}
-          <div className="bg-card rounded-2xl border border-divider p-6 flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-xl font-bold">{(profile.name || '?').charAt(0).toUpperCase()}</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-lg font-bold text-foreground truncate">{profile.name}</p>
-              <p className="text-sm text-subtle truncate">
-                {[profile.email, profile.mobile].filter(Boolean).join('  ·  ') || 'No contact info on file'}
-              </p>
-            </div>
-            {!editing && (
-              <button
-                onClick={startEdit}
-                className="flex items-center gap-1.5 rounded-xl border border-divider-light px-4 py-2 text-sm font-medium text-muted hover:bg-surface hover:text-accent hover:border-accent/30 transition-colors flex-shrink-0"
-              >
-                <Pencil className="w-3.5 h-3.5" /> Edit
-              </button>
-            )}
-          </div>
-
           {/* Basic information */}
           <div className="bg-card rounded-2xl border border-divider p-6">
-            <h3 className="text-sm font-semibold text-foreground mb-4">Basic Information</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-foreground">Basic Information</h3>
+              {!editing && (
+                <button
+                  onClick={startEdit}
+                  className="flex items-center gap-1.5 rounded-xl border border-divider-light px-4 py-2 text-sm font-medium text-muted hover:bg-surface hover:text-accent hover:border-accent/30 transition-colors flex-shrink-0"
+                >
+                  <Pencil className="w-3.5 h-3.5" /> Edit
+                </button>
+              )}
+            </div>
             {editing ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
                 <FormField label="Name" name="name" required value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Your name" />
@@ -409,14 +355,7 @@ export default function ProfilePage() {
       )}
 
       {tab === 'coinUse' && (
-        profile.role === 'user' ? (
-          <CoinUsagePanel />
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <SubscriptionCard subscription={subscription} />
-            <WalletCard profile={profile} />
-          </div>
-        )
+        profile.role === 'user' ? <CoinUsagePanel /> : <WalletCard profile={profile} />
       )}
 
       {tab === 'wallet' && <UserWalletPanel profile={profile} />}
