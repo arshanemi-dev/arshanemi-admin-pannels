@@ -1,5 +1,5 @@
 // Dummy cross-user transaction ledger for the admin Wallet page's filterable
-// history table. Positive amount = credit (top-up), negative = debit (usage).
+// history table. Positive amount = coins added (top-up), negative = coins spent (usage).
 export const WALLET_TXN_TYPES = [
   { id: 'all', label: 'All Types' },
   { id: 'topup', label: 'Top-up' },

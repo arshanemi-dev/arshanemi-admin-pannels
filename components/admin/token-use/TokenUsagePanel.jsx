@@ -1,11 +1,11 @@
 'use client'
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
-import ToolCreditTable from './ToolCreditTable'
+import ToolCoinTable from './ToolCoinTable'
 import { TOKEN_USE_RANGES, tokenUsageByRange } from '@/data/tokenUsage'
 
 // "Token Use" tab content for the plain 'user' role — a Time-range filter
-// driving a Total figure and a per-tool credit breakdown below it.
+// driving a Total figure and a per-tool coin breakdown below it.
 export default function TokenUsagePanel() {
   const [range, setRange] = useState(TOKEN_USE_RANGES[0].id)
   const { total, tools } = tokenUsageByRange[range]
@@ -37,7 +37,7 @@ export default function TokenUsagePanel() {
         </div>
       </div>
 
-      <ToolCreditTable tools={tools} />
+      <ToolCoinTable tools={tools} />
     </div>
   )
 }

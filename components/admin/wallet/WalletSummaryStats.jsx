@@ -2,9 +2,9 @@
 export default function WalletSummaryStats({ balances }) {
   const stats = [
     { label: 'Total Users', value: balances.length },
-    { label: 'Credits Issued', value: balances.reduce((sum, b) => sum + b.total, 0) },
-    { label: 'Credits Used', value: balances.reduce((sum, b) => sum + b.used, 0) },
-    { label: 'Credits Remaining', value: balances.reduce((sum, b) => sum + b.remaining, 0) },
+    { label: 'Coins Issued', value: balances.reduce((sum, b) => sum + b.total, 0) },
+    { label: 'Coins Used', value: balances.reduce((sum, b) => sum + b.used, 0) },
+    { label: 'Coins Remaining', value: balances.reduce((sum, b) => sum + b.remaining, 0) },
   ]
 
   return (

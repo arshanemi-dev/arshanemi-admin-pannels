@@ -4,7 +4,7 @@ import { Check } from 'lucide-react'
 import { useToast } from '@/components/admin/Toast'
 
 // "Plan" table — coin recharge options with single-select checkboxes and
-// an "Add Credit" CTA. Selection is local UI state only; wiring the actual
+// an "Add Coins" CTA. Selection is local UI state only; wiring the actual
 // Razorpay checkout is a separate backend task (see plan/my-payment-management.md).
 export default function CoinPlansTable({ data, note }) {
   const [selectedId, setSelectedId] = useState(null)
@@ -12,7 +12,7 @@ export default function CoinPlansTable({ data, note }) {
 
   const selectedPlan = data.find((plan) => plan.id === selectedId)
 
-  function handleAddCredit() {
+  function handleAddCoins() {
     if (!selectedPlan) {
       addToast('Select a plan first', 'error')
       return
@@ -73,10 +73,10 @@ export default function CoinPlansTable({ data, note }) {
         <p className="text-xs text-subtle max-w-md">{note}</p>
         <button
           type="button"
-          onClick={handleAddCredit}
+          onClick={handleAddCoins}
           className="shrink-0 px-8 py-3 rounded-xl bg-gradient-to-r from-[#4a5fd9] to-[#f0763f] text-white text-sm font-bold tracking-wide hover:opacity-90 transition-opacity"
         >
-          ADD CREDIT
+          ADD COINS
         </button>
       </div>
     </div>

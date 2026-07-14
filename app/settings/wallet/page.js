@@ -63,7 +63,7 @@ const columns = [
 export default function AdminWalletPage() {
   return (
     <div className="max-w-6xl mx-auto flex flex-col gap-8">
-      <PageHeader title="Wallet" description="Every customer's wallet balance and credit transaction history" />
+      <PageHeader title="Wallet" description="Every customer's wallet balance and coin transaction history" />
 
       <WalletSummaryStats balances={walletBalances} />
 

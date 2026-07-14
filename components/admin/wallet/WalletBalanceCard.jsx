@@ -23,7 +23,7 @@ export default function WalletBalanceCard({ total, used, remaining, title = 'Wal
       <div className="h-2 rounded-full bg-surface overflow-hidden">
         <div className="h-full bg-accent transition-all" style={{ width: `${pct}%` }} />
       </div>
-      <p className="text-[11px] text-subtle mt-2">{pct}% of credits used</p>
+      <p className="text-[11px] text-subtle mt-2">{pct}% of coins used</p>
     </div>
   )
 }

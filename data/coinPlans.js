@@ -1,7 +1,7 @@
 // Dummy coin recharge plans shown on the "Plan" table (Settings → Plan).
 // `selectable: false` marks the free-tier row, which has nothing to add
-// credit for. Replace with `credit_packages` once that table exists per
-// plan/my-payment-management.md.
+// coins for. Replace with a real coin-packages table (`credit_packages` in
+// plan/my-payment-management.md) once built.
 export const coinPlans = [
   { id: 'no-signup', amount: 'No sign up', coin: 'free tools Only', experience: 'Unlimited', selectable: false },
   { id: 'signup', amount: 'Sign Up', coin: '500', experience: '30 Days', selectable: true },

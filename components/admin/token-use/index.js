@@ -1,2 +1,2 @@
 export { default as TokenUsagePanel } from './TokenUsagePanel'
-export { default as ToolCreditTable } from './ToolCreditTable'
+export { default as ToolCoinTable } from './ToolCoinTable'
