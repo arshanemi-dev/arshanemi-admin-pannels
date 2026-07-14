@@ -6,12 +6,15 @@ import { useToast } from '@/components/admin/Toast'
 import FormField from '@/components/admin/FormField'
 import ChangeContactSection from './ChangeContactSection'
 import ChangePasswordSection from './ChangePasswordSection'
+import { TokenUsagePanel } from '@/components/admin/token-use'
+import { UserWalletPanel } from '@/components/admin/wallet'
 import { COUNTRIES, DEFAULT_COUNTRY, INDIA_STATES } from '@/data/geoIndia'
 
 const TABS = [
   { id: 'profile', label: 'Profile' },
   { id: 'setting', label: 'Setting' },
-  { id: 'tokenUse', label: 'Subscription' },
+  { id: 'tokenUse', label: 'Token Use' },
+  { id: 'wallet', label: 'Wallet' },
 ]
 
 const SUBSCRIPTION_STATUS_STYLES = {
@@ -406,11 +409,17 @@ export default function ProfilePage() {
       )}
 
       {tab === 'tokenUse' && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <SubscriptionCard subscription={subscription} />
-          <WalletCard profile={profile} />
-        </div>
+        profile.role === 'user' ? (
+          <TokenUsagePanel />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <SubscriptionCard subscription={subscription} />
+            <WalletCard profile={profile} />
+          </div>
+        )
       )}
+
+      {tab === 'wallet' && <UserWalletPanel profile={profile} />}
     </div>
   )
 }

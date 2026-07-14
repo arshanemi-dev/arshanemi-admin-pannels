@@ -5,12 +5,12 @@ import {
   LayoutDashboard, Briefcase, Factory, Package, FileText, Tag, BookOpen,
   Images, Building2, Users, Settings, TrendingUp, UserCheck, MessageSquare,
   Handshake, BarChart2, HelpCircle, Shield, Layers, Megaphone, Cog, Palette,
-  Heart, Phone, Map, UserCircle, CreditCard,
+  Heart, Phone, Map, UserCircle, CreditCard, Wallet,
 } from 'lucide-react'
 
 export const NAV_ICONS = {
   LayoutDashboard, Briefcase, Factory, Package, FileText, Tag, BookOpen,
   Images, Building2, Users, Settings, TrendingUp, UserCheck, MessageSquare,
   Handshake, BarChart2, HelpCircle, Shield, Layers, Megaphone, Cog, Palette,
-  Heart, Phone, Map, UserCircle, CreditCard,
+  Heart, Phone, Map, UserCircle, CreditCard, Wallet,
 }

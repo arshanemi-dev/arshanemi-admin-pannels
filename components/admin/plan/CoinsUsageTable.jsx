@@ -20,7 +20,7 @@ export default function CoinsUsageTable({ data }) {
                 <th className="text-left text-white font-semibold text-sm md:text-base px-5 py-4">Product Name</th>
                 <th className="text-left text-white font-semibold text-sm md:text-base px-5 py-4">Product Name</th>
                 <th className="text-left text-white font-semibold text-sm md:text-base px-5 py-4">Fix Fees</th>
-                <th className="text-left text-white font-semibold text-sm md:text-base px-5 py-4">Token Cost (Per Use)</th>
+                <th className="text-left text-white font-semibold text-sm md:text-base px-5 py-4">Coin Cost (Per Use)</th>
               </tr>
             </thead>
             <tbody>
@@ -38,7 +38,7 @@ export default function CoinsUsageTable({ data }) {
                       )}
                       <td className="px-5 py-3.5 text-sm text-muted">{variant.name}</td>
                       <td className="px-5 py-3.5 text-sm text-muted">{variant.fixFees}</td>
-                      <td className="px-5 py-3.5 text-sm text-muted">{variant.tokenCost}</td>
+                      <td className="px-5 py-3.5 text-sm text-muted">{variant.coinCost}</td>
                     </tr>
                   ))}
                 </Fragment>
