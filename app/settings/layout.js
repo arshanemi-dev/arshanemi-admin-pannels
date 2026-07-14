@@ -45,8 +45,8 @@ export default async function AdminLayout({ children }) {
         <SessionManager />
         <div className="flex flex-col h-screen overflow-hidden bg-surface">
           <Topbar username={payload.name} role={role} />
-          <main className="flex-1 overflow-y-auto flex justify-center">
-            <div className="p-6 lg:p-8 w-full max-w-2xl">{children}</div>
+          <main className="flex-1 overflow-y-auto">
+            <div className="p-6 lg:p-8 max-w-screen-2xl">{children}</div>
           </main>
         </div>
       </ToastProvider>

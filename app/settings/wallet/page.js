@@ -43,7 +43,11 @@ const columns = [
   { key: 'type', label: 'Type', sortable: true, render: (v) => (v === 'topup' ? 'Top-up' : 'Usage') },
   { key: 'description', label: 'Description' },
   {
-    key: 'amount', label: 'Amount', sortable: true,
+    key: 'priceAmount', label: 'Amount', sortable: true,
+    render: (v) => (v == null ? <span className="text-subtle">–</span> : `₹${v.toLocaleString('en-IN')}`),
+  },
+  {
+    key: 'coins', label: 'Coins', sortable: true,
     render: (v) => (
       <span className={`font-semibold ${v > 0 ? 'text-green-600' : 'text-foreground'}`}>{v > 0 ? `+${v}` : v}</span>
     ),
@@ -62,10 +66,10 @@ const columns = [
 
 export default function AdminWalletPage() {
   return (
-    <div className="max-w-6xl mx-auto flex flex-col gap-8">
+    <div className="flex flex-col gap-8">
       <PageHeader title="Wallet" description="Every customer's wallet balance and coin transaction history" />
 
-      <WalletSummaryStats balances={walletBalances} />
+      <WalletSummaryStats balances={walletBalances} transactions={walletHistory} />
 
       <div className="bg-card border border-divider rounded-3xl shadow-sm p-6 md:p-8">
         <DataTable

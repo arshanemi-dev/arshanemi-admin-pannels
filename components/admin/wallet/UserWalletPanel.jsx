@@ -32,7 +32,11 @@ const columns = [
   { key: 'type', label: 'Type', sortable: true, render: (v) => (v === 'topup' ? 'Top-up' : 'Usage') },
   { key: 'description', label: 'Description' },
   {
-    key: 'amount', label: 'Amount', sortable: true,
+    key: 'priceAmount', label: 'Amount', sortable: true,
+    render: (v) => (v == null ? <span className="text-subtle">–</span> : `₹${v.toLocaleString('en-IN')}`),
+  },
+  {
+    key: 'coins', label: 'Coins', sortable: true,
     render: (v) => (
       <span className={`font-semibold ${v > 0 ? 'text-green-600' : 'text-foreground'}`}>{v > 0 ? `+${v}` : v}</span>
     ),
@@ -58,7 +62,7 @@ export default function UserWalletPanel({ profile }) {
   const remaining = profile.walletCreditsRemaining ?? Math.max(0, total - used)
 
   return (
-    <div className="flex flex-col gap-6 max-w-3xl">
+    <div className="flex flex-col gap-6">
       <WalletBalanceCard total={total} used={used} remaining={remaining} />
       <DataTable
         title="Transaction History"

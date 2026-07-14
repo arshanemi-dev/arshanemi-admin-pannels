@@ -1,4 +1,5 @@
 'use client'
+import Link from 'next/link'
 import DataTable from '@/components/admin/DataTable'
 
 const STATUS_FILTER = {
@@ -13,10 +14,10 @@ const STATUS_FILTER = {
 
 // "Customer Dashboard" table — per-customer status/usage/balance overview,
 // built on the shared DataTable (search, status filter, date range on
-// first login, export). The "Report" action hands the clicked row up to
-// the page, which opens the per-customer drill-down below the Report table
-// (both components share one page) instead of a fake per-user route.
-export default function CustomerDashboardTable({ data, onSelectCustomer }) {
+// first login, export). The "Report" action navigates to that customer's
+// own page (app/settings/customer-dashboard/[userId]/page.js) — a real
+// route with a back button, not an inline expansion on this page.
+export default function CustomerDashboardTable({ data }) {
   const columns = [
     { key: 'userId', label: 'User ID', sortable: true },
     { key: 'email', label: 'Email', sortable: true },
@@ -30,13 +31,12 @@ export default function CustomerDashboardTable({ data, onSelectCustomer }) {
       label: 'Report',
       exportable: false,
       render: (_, row) => (
-        <button
-          type="button"
-          onClick={() => onSelectCustomer?.(row)}
+        <Link
+          href={`/settings/customer-dashboard/${row.userId.replace('#', '')}`}
           className="font-bold text-foreground hover:text-accent hover:underline transition-colors"
         >
           Report
-        </button>
+        </Link>
       ),
     },
   ]
