@@ -1,0 +1,84 @@
+'use client'
+import { useState } from 'react'
+import { Check } from 'lucide-react'
+import { useToast } from '@/components/admin/Toast'
+
+// "Plan" table — coin recharge options with single-select checkboxes and
+// an "Add Credit" CTA. Selection is local UI state only; wiring the actual
+// Razorpay checkout is a separate backend task (see plan/my-payment-management.md).
+export default function CoinPlansTable({ data, note }) {
+  const [selectedId, setSelectedId] = useState(null)
+  const { addToast } = useToast()
+
+  const selectedPlan = data.find((plan) => plan.id === selectedId)
+
+  function handleAddCredit() {
+    if (!selectedPlan) {
+      addToast('Select a plan first', 'error')
+      return
+    }
+    addToast(`${selectedPlan.amount} plan selected — ${selectedPlan.coin} coins`)
+  }
+
+  return (
+    <div className="bg-card border border-divider rounded-3xl shadow-sm p-6 md:p-8">
+      <div className="flex rounded-2xl border border-divider overflow-hidden">
+        <div className="w-1.5 bg-[#4a5fd9] shrink-0" aria-hidden="true" />
+        <div className="flex-1 overflow-x-auto">
+          <table className="w-full min-w-[520px] border-collapse">
+            <thead>
+              <tr className="bg-gradient-to-r from-[#4a5fd9] to-[#f0763f]">
+                <th className="text-left text-white font-semibold text-sm md:text-base px-5 py-4 w-2/5">Amount</th>
+                <th className="text-left text-white font-semibold text-sm md:text-base px-5 py-4">Coin</th>
+                <th className="text-left text-white font-semibold text-sm md:text-base px-5 py-4">Experience</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((plan) => {
+                const checked = selectedId === plan.id
+                return (
+                  <tr key={plan.id} className="border-t border-divider">
+                    <td className="px-5 py-3.5">
+                      <label
+                        className={`flex items-center gap-3 ${
+                          plan.selectable ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'
+                        }`}
+                      >
+                        <button
+                          type="button"
+                          disabled={!plan.selectable}
+                          onClick={() => setSelectedId(plan.id)}
+                          aria-pressed={checked}
+                          aria-label={`Select ${plan.amount} plan`}
+                          className={`w-5 h-5 shrink-0 rounded-[4px] border-2 flex items-center justify-center transition-colors ${
+                            checked ? 'bg-[#f0763f] border-[#f0763f]' : 'border-[#f0763f] bg-transparent'
+                          } disabled:border-subtle`}
+                        >
+                          {checked && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
+                        </button>
+                        <span className="text-sm font-semibold text-foreground">{plan.amount}</span>
+                      </label>
+                    </td>
+                    <td className="px-5 py-3.5 text-sm text-muted">{plan.coin}</td>
+                    <td className="px-5 py-3.5 text-sm text-muted">{plan.experience}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-5">
+        <p className="text-xs text-subtle max-w-md">{note}</p>
+        <button
+          type="button"
+          onClick={handleAddCredit}
+          className="shrink-0 px-8 py-3 rounded-xl bg-gradient-to-r from-[#4a5fd9] to-[#f0763f] text-white text-sm font-bold tracking-wide hover:opacity-90 transition-opacity"
+        >
+          ADD CREDIT
+        </button>
+      </div>
+    </div>
+  )
+}
