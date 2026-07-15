@@ -55,6 +55,34 @@ There used to be a third piece here — a generic `ReportTable` listing many dif
 
 ---
 
+## Access Control — who sees what
+
+Direct requirement, stated once here because it governs *every* report in this plan, not just one: **`master_admin` sees everything — all companies' users, all tools, every report. `admin` is scoped to their own company's users and their own granted tools. A plain `user` sees only their own data — their own wallet, their own tool usage, nothing belonging to anyone else.** This isn't a new mechanism to invent — it's the exact company-scoping pattern this codebase already uses for the Users list; it just isn't applied to any of this session's billing/reporting pages yet, because none of them talk to a real database.
+
+**The existing pattern, verified by reading the actual code — reuse it, don't reinvent it:**
+- `lib/auth.js`'s `getStaffFromRequest` (`['master_admin','admin']`) / `getAdminFromRequest` (`['master_admin']` only) return the verified JWT payload, which carries `role` and `companyId` from login. **`companyId` is never trusted from the client** — always `staff.companyId` off the verified payload, never a request body/query param of the same name.
+- `lib/db.js`'s `getAllUsers({ companyId, role })`, as called by `app/api/admin/users/route.js`, is the reference implementation: `admin` → `getAllUsers({ companyId: staff.companyId, role: 'user' })`; `master_admin` → `getAllUsers()`, no filter. Writes are scoped identically — that same route's POST handler hard-overrides any client-supplied `companyId`/`role` when the caller is an `admin` (so an admin literally cannot write a user into another company, even by tampering with the request body).
+- §2's `getAllUsageHistory({userIds, toolSlug, limit})` and §5's `usage-history`/`payment-history` routes already sketch this same shape (`getAllUsers({companyId}) → ids → getAllUsageHistory({userIds})`) — that part of the plan was already right. This section makes it an explicit, named rule and extends it to *every* admin-facing report below, not just those two routes.
+
+**"Tools" scoping is per-user, not per-company — worth stating precisely, since "admin allowed his tools" reads like it could mean a company-wide toggle, and that thing doesn't exist.** Checked `lib/db.js` and `scripts/schema.sql` directly: there is no `company_tools` table and no per-company "enabled tools" column anywhere. Tool access is granted **per user**, via `user_settings.tools_access` (a JSONB array), through the existing "Tools Access" page (`/settings/tools`, nav key `tools-access`). A new `user` starts with zero tools (`data/tools.js`'s `defaultToolsAccessByRole`) until explicitly granted some. An `admin`'s "own tools" concretely means: whichever tools were granted to *the admin's own user row*, which in turn caps what that admin can grant to users in their company — `/api/tools/my` narrows the admin's own grantable catalog before it ever reaches the assignment UI. **For this billing system specifically**: a tool's billable pricing (`coinCost`/`apiIdentifier`/`isActive`, §4) lives on the `tools` table itself, globally — every role that can see a tool at all sees the same price for it (Plan page, Coins Usage Rates). What's scoped per-role is *who fired it* (`tools_usage_history.user_id`), not the tool's existence or its price. Don't build a second, parallel "which tools can this company see" mechanism for billing — reuse `tools_access`, the one that already exists.
+
+**Gap, real and current, not hypothetical.** None of this session's dummy data carries a `companyId` at all — `data/customers.js`, `data/walletBalances.js`, `data/walletHistory.js`, `data/coinUsage.js` are flat arrays keyed only by `userId`, verified by reading all four. Today, an `admin` (not `master_admin`) opening `/settings/wallet` or `/settings/customer-dashboard` sees the **exact same rows** a `master_admin` would — the nav-level `roles: ['master_admin','admin']` check gates the *page*, but nothing scopes the *rows* on it, because there's no company field to scope by. This is consistent with "backend: 0% built" — there's no real per-company data yet — but it means **the dummy data itself needs a `companyId` (or at least a `companyName`) field added before this policy can be demonstrated in the UI at all**, as a small task separate from the real backend work in §1–§7.
+
+**Per-report, concretely, once wired:**
+
+| Report | `master_admin` | `admin` | `user` |
+|---|---|---|---|
+| `/settings/wallet` (admin ledger) | every company's transactions | own company's users' transactions only | no nav access — own history via Profile → Wallet tab |
+| `/settings/customer-dashboard` + `[userId]` detail | every company's customers | own company's customers only | no nav access |
+| Cross-customer tools/features usage report (§6, not built yet) | every company, every tool | own company's users, but every tool (tool pricing itself isn't company-scoped — see above) | no nav access |
+| Profile → Wallet tab | own personal balance (role is irrelevant here) | own personal balance | own balance + own history only, never another user's |
+| Profile → Coin Use tab | n/a (tab shows `WalletCard` instead for staff roles) | n/a | own usage only |
+| `/settings/plan` (Plan + Coins Usage Rates + Promo badge) | same content for everyone — pricing/marketing, not a report; nothing to scope | same | same |
+
+**When wiring §6**: every admin-facing report route calls `getStaffFromRequest`, then branches exactly like `app/api/admin/users/route.js` already does — `admin` always gets `{companyId: staff.companyId}` threaded into `getAllUsers`/`getAllUsageHistory`/`getAllWalletTopups`; `master_admin` gets no filter. Never accept a `companyId` from the client for this purpose. The Verification checklist's step 7 ("confirm a company-scoped `admin` only sees their own company's users' rows") is this rule in test form — don't consider §6 done until that step actually passes for a two-company test fixture, not just a single-company demo where the bug can't show up.
+
+---
+
 ## Context
 
 The admin panel already manages a catalog of standalone tools (PDF Cropper, Background Remover, etc. — each hosted on its own subdomain outside this repo) and already has `wallet_credits_total`/`wallet_credits_used` columns on `users`. What's missing is the part that turns this into a real billing system: per-tool-feature pricing that admins control, a way for users to buy coins via Razorpay, atomic deduction when a billable action fires in any tool, and full audit trails (usage history + payment history). This plan adds exactly that, fitting into the existing Next.js/Supabase conventions rather than introducing new patterns where existing ones already work.
@@ -272,8 +300,8 @@ No extra DB round-trip on every deduct call — this reuses the cache already in
 
 Balance itself needs no new endpoint — `GET /api/auth/me` already returns `walletCreditsTotal/walletCreditsUsed/walletCreditsRemaining` via `lib/profile.js`'s `serializeProfile()`; `UserWalletPanel.jsx` already reuses it and keeps doing so.
 
-**Admin — `app/api/admin/*`**:
-- `app/api/admin/coin-packages/route.js` (GET via `getStaffFromRequest`, POST via `getAdminFromRequest`) + `[id]/route.js` (GET/PUT/DELETE, `getAdminFromRequest`) — mirrors `app/api/admin/tools/[id]/route.js` exactly.
+**Admin — `app/api/admin/*`** — every route below is `master_admin`-vs-`admin` scoped exactly per the "Access Control" section above; don't re-derive the scoping logic per route, thread `staff.companyId` through the same way each time:
+- `app/api/admin/coin-packages/route.js` (GET via `getStaffFromRequest`, POST via `getAdminFromRequest`) + `[id]/route.js` (GET/PUT/DELETE, `getAdminFromRequest`) — mirrors `app/api/admin/tools/[id]/route.js` exactly. Not company-scoped — coin packages are global, same as tool pricing.
 - `app/api/admin/usage-history/route.js` (GET, `getStaffFromRequest`, `?userId=&toolSlug=&limit=`) — company-scoped for `admin` role via `getAllUsers({companyId})` → ids → `getAllUsageHistory({userIds})`, same scoping already used for the Users list. Add `?groupBy=feature` to serve the Customer Dashboard tools/features report via `getUsageHistoryGroupedByFeature()`.
 - `app/api/admin/payment-history/route.js` (GET, `getStaffFromRequest`, same scoping) — lists `wallet_topups`.
 
@@ -361,5 +389,5 @@ Implementation: `getToolFeature(toolSlug, featureApiIdentifier)` → validate ex
 4. Call `POST /api/wallet/deduct` with a valid Bearer token for that user (curl/Postman) using the tool slug + `apiIdentifier` just priced; confirm `wallet_credits_used` increments, a `tools_usage_history` row appears, and the response's `remainingCoins` is correct.
 5. Set the user's remaining balance below the feature's cost and call `deduct` again — confirm a clean `402 insufficient_coins` with no partial state change.
 6. Call `deduct` twice with the same `idempotencyKey` — confirm only one deduction happens and the second call returns `duplicate: true` with the same `usageId`.
-7. Confirm `/settings/wallet` (admin) and the new Customer Dashboard tools/features report show the rows from steps 3–6, and that a company-scoped `admin` only sees their own company's users' rows.
+7. Confirm `/settings/wallet` (admin) and the new Customer Dashboard tools/features report show the rows from steps 3–6, and that a company-scoped `admin` only sees their own company's users' rows — this is the "Access Control" section's rule in test form; use a **two-company** fixture, since a single-company demo can't surface a scoping bug even if one exists.
 8. Confirm `admin`-role navigation to `/settings/tools-catalog` or `/settings/coin-packages` directly by URL 404s for `admin` (verifies the `isPathAllowed` fix once done).
