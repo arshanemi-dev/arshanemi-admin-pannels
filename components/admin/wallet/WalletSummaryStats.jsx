@@ -1,6 +1,7 @@
-// Admin-only KPI row above the wallet history table — `balances` (data/walletBalances.js)
-// drives the coin totals; `transactions` (data/walletHistory.js) drives Total Paid, since
-// ₹ paid and coins issued are different numbers (a ₹1000 plan grants 1100 coins).
+// Admin-only KPI row above the wallet history table — `balances` (from
+// GET /api/admin/users) drives the coin totals; `transactions` (merged
+// usage-history + payment-history) drives Total Paid, since ₹ paid and coins
+// issued are different numbers (a ₹1000 plan grants 1100 coins).
 export default function WalletSummaryStats({ balances, transactions }) {
   const totalPaid = transactions
     .filter((t) => t.type === 'topup' && t.status === 'success')

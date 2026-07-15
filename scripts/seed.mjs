@@ -1,8 +1,9 @@
 /**
  * Arshanemi — PostgreSQL Seed Script
  * Seeds all content into Supabase layout_settings table (tools go into their
- * own `tools` table instead — see scripts/tools_table_migration.sql) +
- * creates default users.
+ * own `tools` table instead — see scripts/tools_table_migration.sql — and
+ * coin_packages go into its own table too — see
+ * scripts/wallet_system_migration.sql) + creates default users.
  *
  * Usage:
  *   node --env-file=.env scripts/seed.mjs
@@ -81,6 +82,26 @@ async function seedTools(supabase, tools) {
   console.log(`  ✓ tools (${rows.length} items)`)
 }
 
+// coin_packages — Coin-Wallet Billing System's buy packs (see
+// scripts/wallet_system_migration.sql, unique on `name`). Re-running this
+// upserts by name, so hand-edited price/coins changes made through the admin
+// Coin Packages CRUD get overwritten on reseed — same pre-existing risk as
+// seedTools above, not new.
+async function seedCoinPackages(supabase, packages) {
+  const rows = packages.map((p) => ({
+    name: p.name,
+    coins: p.coins,
+    price_paise: p.pricePaise,
+    badge: p.badge ?? null,
+    is_active: p.isActive ?? true,
+    display_order: p.displayOrder ?? 0,
+    updated_at: new Date().toISOString(),
+  }))
+  const { error } = await supabase.from('coin_packages').upsert(rows, { onConflict: 'name' })
+  if (error) throw new Error(`Failed to upsert coin_packages: ${error.message}`)
+  console.log(`  ✓ coin_packages (${rows.length} items)`)
+}
+
 // ─── nanoid shim ─────────────────────────────────────────────────────────────
 
 async function nid() {
@@ -115,8 +136,8 @@ async function main() {
   const { faqs }            = await imp('data/faqs.js')
   const { partners }        = await imp('data/partners.js')
   const { openings, perks } = await imp('data/careers.js')
-  const { seoPackages }     = await imp('data/seoPackages.js')
   const { tools }           = await imp('data/tools.js')
+  const { coinPackages }    = await imp('data/coinPackages.js')
 
   const {
     COMPANY_EMAIL, COMPANY_PHONE_PRIMARY, COMPANY_PHONE_SECONDARY,
@@ -183,8 +204,10 @@ async function main() {
   ]
   await seedList(supabase, 'careers', await Promise.all(careersItems))
 
-  await seedList(supabase, 'seo-packages',
-    await Promise.all(seoPackages.map(async (p) => ({ ...p, id: await nid() }))))
+  // ── Coin-Wallet Billing System ──────────────────────────────────────────────
+  console.log('\n💰  Seeding coin packages...\n')
+
+  await seedCoinPackages(supabase, coinPackages)
 
   // ── Singletons ──────────────────────────────────────────────────────────────
   console.log('\n⚙️   Seeding singletons...\n')

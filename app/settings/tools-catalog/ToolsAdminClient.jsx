@@ -18,7 +18,7 @@ const ICON_OPTIONS = [
 
 const EMPTY_FORM = {
   slug: '', title: '', icon: 'Search', shortDesc: '', category: 'research', badge: '',
-  toolUrl: '', requiresLogin: false,
+  toolUrl: '', requiresLogin: false, features: [],
 }
 
 function isValidUrl(value) {
@@ -65,6 +65,7 @@ export default function ToolsAdminClient({ initialTools }) {
       badge: tool.badge || '',
       toolUrl: tool.toolUrl || '',
       requiresLogin: !!tool.requiresLogin,
+      features: tool.features || [],
     })
     setUrlError('')
     setShowForm(true)
@@ -72,6 +73,30 @@ export default function ToolsAdminClient({ initialTools }) {
 
   function autoSlug(title) {
     return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  }
+
+  function addFeature() {
+    setForm((f) => ({
+      ...f,
+      features: [
+        ...(f.features || []),
+        { id: `feature-${Date.now()}`, icon: 'Star', title: '', desc: '', apiIdentifier: '', coinCost: 0, isActive: false },
+      ],
+    }))
+  }
+
+  function updateFeature(index, key, value) {
+    setForm((f) => {
+      const features = [...f.features]
+      const row = { ...features[index], [key]: value }
+      if (key === 'title') row.id = autoSlug(value) || row.id
+      features[index] = row
+      return { ...f, features }
+    })
+  }
+
+  function removeFeature(index) {
+    setForm((f) => ({ ...f, features: f.features.filter((_, i) => i !== index) }))
   }
 
   async function handleSave() {
@@ -82,16 +107,30 @@ export default function ToolsAdminClient({ initialTools }) {
       setUrlError('Enter a valid http:// or https:// URL')
       return
     }
+    for (const feature of form.features || []) {
+      if (feature.isActive && (!feature.apiIdentifier?.trim() || !(+feature.coinCost > 0))) {
+        showToast(`"${feature.title || 'Untitled feature'}" is Active but needs an API Identifier and a Coin Cost above 0`, 'error')
+        return
+      }
+    }
     setLoading(true)
     try {
       const url = editing
         ? `/api/admin/tools/${editing}`
         : '/api/admin/tools'
       const method = editing ? 'PUT' : 'POST'
+      const body = {
+        ...form,
+        features: (form.features || []).map((f) => ({
+          ...f,
+          coinCost: Math.max(0, +f.coinCost || 0),
+          apiIdentifier: f.apiIdentifier?.trim() || null,
+        })),
+      }
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(body),
       })
       if (!res.ok) { showToast('Save failed', 'error'); return }
       const saved = await res.json()
@@ -369,6 +408,106 @@ export default function ToolsAdminClient({ initialTools }) {
                     }`}
                   />
                 </button>
+              </div>
+
+              {/* Features & Pricing — coinCost/isActive per feature (plan/my-payment-management.md §6 item 3).
+                  Title/icon/desc are editable too since this is the only place features can be
+                  authored past the initial seed; apiIdentifier is what POST /api/wallet/deduct matches on. */}
+              <div className="rounded-xl border border-divider">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-divider">
+                  <div>
+                    <p className="text-sm font-medium text-muted">Features & Pricing</p>
+                    <p className="text-xs text-subtle">Active features are billable — external tool apps deduct coins against them.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addFeature}
+                    className="flex items-center gap-1 text-xs font-medium text-accent hover:text-accent-hover"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add Feature
+                  </button>
+                </div>
+
+                {(form.features || []).length === 0 ? (
+                  <p className="text-xs text-subtle px-4 py-4">No features yet.</p>
+                ) : (
+                  <div className="flex flex-col divide-y divide-divider">
+                    {form.features.map((feature, index) => (
+                      <div key={feature.id || index} className="p-4 flex flex-col gap-3">
+                        <div className="grid grid-cols-[1fr_auto] gap-3 items-start">
+                          <input
+                            value={feature.title}
+                            onChange={(e) => updateFeature(index, 'title', e.target.value)}
+                            placeholder="Feature title"
+                            className="admin-input"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeFeature(index)}
+                            className="p-2 text-subtle hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <textarea
+                          value={feature.desc}
+                          onChange={(e) => updateFeature(index, 'desc', e.target.value)}
+                          placeholder="Feature description"
+                          rows={2}
+                          className="admin-input resize-none"
+                        />
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <select
+                            value={feature.icon}
+                            onChange={(e) => updateFeature(index, 'icon', e.target.value)}
+                            className="admin-input"
+                          >
+                            {ICON_OPTIONS.map((i) => <option key={i} value={i}>{i}</option>)}
+                          </select>
+                          <input
+                            value={feature.apiIdentifier || ''}
+                            onChange={(e) => updateFeature(index, 'apiIdentifier', e.target.value)}
+                            placeholder="API identifier (e.g. crop-batch)"
+                            className="admin-input font-mono"
+                          />
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="flex-1">
+                            <label className="text-xs text-subtle">Coin Cost</label>
+                            <input
+                              type="number"
+                              min={0}
+                              value={feature.coinCost}
+                              onChange={(e) => updateFeature(index, 'coinCost', e.target.value)}
+                              className="admin-input"
+                            />
+                          </div>
+                          <div className="flex items-center gap-2 pt-4">
+                            <label className="text-xs text-subtle">Active</label>
+                            <button
+                              type="button"
+                              role="switch"
+                              aria-checked={feature.isActive}
+                              onClick={() => updateFeature(index, 'isActive', !feature.isActive)}
+                              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0 ${
+                                feature.isActive ? 'bg-accent' : 'bg-divider-light'
+                              }`}
+                            >
+                              <span
+                                className={`inline-block h-4 w-4 transform rounded-full bg-card shadow-sm transition-transform ${
+                                  feature.isActive ? 'translate-x-6' : 'translate-x-1'
+                                }`}
+                              />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 

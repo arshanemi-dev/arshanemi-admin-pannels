@@ -9,7 +9,6 @@ const RESOURCES_DROPDOWN = [
   { label: 'Testimonials',  href: '/testimonials' },
   { label: 'About Us',      href: '/about' },
   { label: 'Careers',       href: '/careers' },
-  { label: 'Pricing Plans', href: '/seo-packages' },
 ];
 
 const COMPANY_LINKS = [
@@ -19,7 +18,6 @@ const COMPANY_LINKS = [
   { label: 'Blog',          href: '/blog' },
   { label: 'Contact',       href: '/contact' },
   { label: 'Careers',       href: '/careers' },
-  { label: 'Pricing',       href: '/seo-packages' },
 ];
 
 /**

@@ -1,7 +1,8 @@
 'use client'
+import { useEffect, useState } from 'react'
 import DataTable from '@/components/admin/DataTable'
 import WalletBalanceCard from './WalletBalanceCard'
-import { myWalletHistory } from '@/data/myWalletHistory'
+import { TableSkeleton, LoadError } from '@/components/admin/Skeleton'
 
 const TYPE_FILTER = {
   key: 'type',
@@ -53,26 +54,83 @@ const columns = [
   },
 ]
 
-// "Wallet" tab on the Profile page — real balance from /api/auth/me, dummy
-// own-transaction history (via the shared DataTable) until
-// tools_usage_history/wallet_topups exist.
+function prettifySlug(slug) {
+  return (slug || '').replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+function statusFor(topupStatus) {
+  if (topupStatus === 'paid') return 'success'
+  if (topupStatus === 'created') return 'pending'
+  return 'failed'
+}
+
+// "Wallet" tab on the Profile page — real balance from /api/auth/me (passed
+// in as `profile`) plus real own-transaction history from
+// /api/wallet/history/usage + /api/wallet/history/topups, merged client-side.
 export default function UserWalletPanel({ profile }) {
   const total = profile.walletCreditsTotal ?? 0
   const used = profile.walletCreditsUsed ?? 0
   const remaining = profile.walletCreditsRemaining ?? Math.max(0, total - used)
 
+  const [transactions, setTransactions] = useState(null)
+  const [error, setError] = useState(false)
+
+  async function load() {
+    setError(false)
+    setTransactions(null)
+    try {
+      const [usageRes, topupsRes] = await Promise.all([
+        fetch('/api/wallet/history/usage?limit=200'),
+        fetch('/api/wallet/history/topups?limit=200'),
+      ])
+      if (!usageRes.ok || !topupsRes.ok) throw new Error()
+      const [usage, topups] = await Promise.all([usageRes.json(), topupsRes.json()])
+
+      const usageRows = usage.map((u) => ({
+        id: u.id,
+        type: 'usage',
+        description: `${prettifySlug(u.toolSlug)} — ${u.featureTitle || u.featureApiIdentifier}`,
+        priceAmount: null,
+        coins: -u.coinsCost,
+        status: 'success',
+        date: u.createdAt,
+      }))
+      const topupRows = topups.map((t) => ({
+        id: t.id,
+        type: 'topup',
+        description: t.packageName,
+        priceAmount: t.amountPaise / 100,
+        coins: t.coinsGranted,
+        status: statusFor(t.status),
+        date: t.createdAt,
+      }))
+
+      setTransactions([...usageRows, ...topupRows].sort((a, b) => new Date(b.date) - new Date(a.date)))
+    } catch {
+      setError(true)
+    }
+  }
+
+  useEffect(() => { load() }, [])
+
   return (
     <div className="flex flex-col gap-6">
       <WalletBalanceCard total={total} used={used} remaining={remaining} />
-      <DataTable
-        title="Transaction History"
-        columns={columns}
-        data={myWalletHistory}
-        filters={[TYPE_FILTER, STATUS_FILTER]}
-        dateKey="date"
-        pageSize={5}
-        emptyText="No transactions yet."
-      />
+      {error ? (
+        <LoadError onRetry={load} />
+      ) : !transactions ? (
+        <TableSkeleton rows={5} />
+      ) : (
+        <DataTable
+          title="Transaction History"
+          columns={columns}
+          data={transactions}
+          filters={[TYPE_FILTER, STATUS_FILTER]}
+          dateKey="date"
+          pageSize={5}
+          emptyText="No transactions yet."
+        />
+      )}
     </div>
   )
 }

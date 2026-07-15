@@ -248,16 +248,6 @@ export default function CaseStudiesClient({ caseStudies, caseStudyStats, seoProc
                   </Button>
                 </div>
               </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}
-                className="mt-5 bg-card border border-divider rounded-2xl p-6 flex items-center justify-between gap-4"
-              >
-                <div>
-                  <p className="text-sm font-bold text-foreground mb-0.5">View SEO Packages</p>
-                  <p className="text-xs text-muted">Starting from $150/month — transparent pricing.</p>
-                </div>
-                <Button href="/seo-packages" size="sm" variant="outline">See Plans <ArrowRight size={13} /></Button>
-              </motion.div>
             </div>
           </div>
         </div>

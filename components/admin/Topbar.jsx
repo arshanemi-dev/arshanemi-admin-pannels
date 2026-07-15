@@ -1,7 +1,8 @@
 'use client'
 import { useState } from 'react'
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LogOut, User, ChevronRight, ExternalLink } from 'lucide-react'
+import { LogOut, User, ChevronRight, ExternalLink, CreditCard } from 'lucide-react'
 import { useToast } from './Toast'
 import { clearAuthTokens } from '@/lib/tokenStore'
 
@@ -54,6 +55,20 @@ export default function Topbar({ username, role }) {
 
       {/* Right side */}
       <div className="flex items-center gap-2 flex-shrink-0">
+        {/* Plain 'user' role has no sidebar, so NAV_CONFIG's 'plan' entry
+            (ACCOUNT group, roles includes 'user') has nothing to render it —
+            surface it here instead, same reasoning as "Main Site" below.
+            Internal route, so next/link (not a hard <a> nav). */}
+        {role === 'user' && (
+          <Link
+            href="/settings/plan"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted hover:bg-surface hover:text-foreground border border-divider transition-all"
+          >
+            <CreditCard className="w-3.5 h-3.5" />
+            Plan
+          </Link>
+        )}
+
         {/* Plain 'user' role has no sidebar, so no "View Website" link to
             find otherwise — surface it here instead. Plain <a>, not
             next/link — hard navigation back to the public site on purpose
