@@ -23,6 +23,9 @@ export async function PUT(req, { params }) {
   if ('pricePaise' in data && (!Number.isFinite(+data.pricePaise) || +data.pricePaise <= 0)) {
     return NextResponse.json({ error: 'Price must be a positive number' }, { status: 400 })
   }
+  if ('validityDays' in data && (!Number.isFinite(+data.validityDays) || +data.validityDays <= 0)) {
+    return NextResponse.json({ error: 'Validity days must be a positive number' }, { status: 400 })
+  }
 
   const updated = await updateCoinPackage(id, data)
   if (!updated) return NextResponse.json({ error: 'Not found' }, { status: 404 })

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getUserFromRequest } from '@/lib/auth'
-import { getUserById, getCompanyById, updateUser } from '@/lib/db'
+import { getUserById, getCompanyById, updateUser, getLatestWalletExpiry } from '@/lib/db'
 import { serializeProfile } from '@/lib/profile'
 
 // Current user's own profile — any authenticated role (master_admin, admin, user).
@@ -11,9 +11,12 @@ export async function GET(req) {
   const user = await getUserById(payload.userId)
   if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
-  const company = user.company_id ? await getCompanyById(user.company_id) : null
+  const [company, walletExpiresAt] = await Promise.all([
+    user.company_id ? getCompanyById(user.company_id) : null,
+    getLatestWalletExpiry(user.id),
+  ])
 
-  const res = NextResponse.json(serializeProfile(user, company))
+  const res = NextResponse.json(serializeProfile(user, company, walletExpiresAt))
   res.headers.set('Cache-Control', 'no-store')
   return res
 }
@@ -46,8 +49,11 @@ export async function PATCH(req) {
 
   try {
     const updated = await updateUser(payload.userId, patch)
-    const company = updated.company_id ? await getCompanyById(updated.company_id) : null
-    return NextResponse.json(serializeProfile(updated, company))
+    const [company, walletExpiresAt] = await Promise.all([
+      updated.company_id ? getCompanyById(updated.company_id) : null,
+      getLatestWalletExpiry(updated.id),
+    ])
+    return NextResponse.json(serializeProfile(updated, company, walletExpiresAt))
   } catch (err) {
     console.error('Self-edit profile error:', err)
     return NextResponse.json({ error: err.message || 'Could not update profile' }, { status: 500 })

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Settings, LogOut } from 'lucide-react';
+import { Settings, UserCircle, LogOut } from 'lucide-react';
 import { clearAuthTokens } from '@/lib/tokenStore';
 
 export default function UserMenu({ user, onLogout }) {
@@ -56,18 +56,32 @@ export default function UserMenu({ user, onLogout }) {
             </div>
           </div>
           <div className="py-2">
-            {/* Plain <a>, not next/link — /settings is a whole separate
-                shell (own providers, gated by a server-side cookie check);
+            {/* Plain 'user' role has no /settings sidebar (single page, by
+                design — see plan/my-payment-management.md) — send them to
+                the public /profile page instead of into the admin shell.
+                Plain <a>, not next/link — both destinations are separate
+                shells (own providers, gated by a server-side cookie check);
                 client-side nav here left stale state behind, so this is a
                 hard navigation on purpose, same as handleLogout below. */}
-            <a
-              href="/settings"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted hover:text-foreground hover:bg-card-hover transition-colors"
-            >
-              <Settings size={16} />
-              Settings
-            </a>
+            {user?.role === 'user' ? (
+              <a
+                href="/profile"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted hover:text-foreground hover:bg-card-hover transition-colors"
+              >
+                <UserCircle size={16} />
+                Profile
+              </a>
+            ) : (
+              <a
+                href="/settings"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted hover:text-foreground hover:bg-card-hover transition-colors"
+              >
+                <Settings size={16} />
+                Settings
+              </a>
+            )}
             <button
               onClick={handleLogout}
               disabled={loading}

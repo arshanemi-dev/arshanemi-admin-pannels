@@ -21,7 +21,10 @@ export async function POST(req) {
   if (!pkg || !pkg.isActive) return NextResponse.json({ error: 'Package not found' }, { status: 404 })
 
   try {
-    const receipt = `topup_${payload.userId}_${Date.now()}`
+    // Razorpay caps `receipt` at 40 chars — the full userId (a UUID) already
+    // lives in `notes` for real reconciliation, so this only needs to be
+    // short and distinctive, not a complete reference.
+    const receipt = `topup_${payload.userId.slice(0, 8)}_${Date.now()}`
     const order = await createOrder({
       amountPaise: pkg.pricePaise,
       notes: { userId: payload.userId, coinPackageId: pkg.id },
@@ -35,6 +38,7 @@ export async function POST(req) {
       amountPaise: pkg.pricePaise,
       coinsGranted: pkg.coins,
       razorpayOrderId: order.id,
+      validityDays: pkg.validityDays,
     })
 
     return NextResponse.json({

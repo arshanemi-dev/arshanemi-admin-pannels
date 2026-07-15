@@ -1,9 +1,18 @@
 'use client'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Script from 'next/script'
 import { Check } from 'lucide-react'
 import { useToast } from '@/components/admin/Toast'
 import { usePromoOffer } from '@/components/admin/promo'
+import { isLoggedIn } from '@/lib/tokenStore'
+
+function formatValidity(days) {
+  if (!days) return '—'
+  if (days % 365 === 0) return `${days / 365} Year${days === 365 ? '' : 's'}`
+  if (days % 30 === 0) return `${days / 30} Month${days === 30 ? '' : 's'}`
+  return `${days} Day${days === 1 ? '' : 's'}`
+}
 
 // "Plan" table — real coin_packages (admin-managed at Settings → Coin
 // Packages) with single-select checkboxes and an "Add Coins" CTA that opens
@@ -11,7 +20,11 @@ import { usePromoOffer } from '@/components/admin/promo'
 // /api/wallet/topup/verify (see plan/my-payment-management.md §6/§7).
 // When the promo badge (components/admin/promo) is active, discountable
 // rows show the original price struck through next to the discounted one.
+// Rendered both at /settings/plan (always logged in) and the public /plan
+// page (may be signed out) — a signed-out click goes to /signup instead of
+// attempting checkout, per direct instruction.
 export default function CoinPlansTable({ packages, note, onPurchased }) {
+  const router = useRouter()
   const [selectedId, setSelectedId] = useState(null)
   const [purchasing, setPurchasing] = useState(false)
   const { addToast } = useToast()
@@ -22,6 +35,10 @@ export default function CoinPlansTable({ packages, note, onPurchased }) {
   function handleAddCoins() {
     if (!selectedPlan) {
       addToast('Select a plan first', 'error')
+      return
+    }
+    if (!isLoggedIn()) {
+      router.push('/signup')
       return
     }
     if (typeof window === 'undefined' || !window.Razorpay) {
@@ -36,6 +53,12 @@ export default function CoinPlansTable({ packages, note, onPurchased }) {
       body: JSON.stringify({ coinPackageId: selectedPlan.id }),
     })
       .then(async (res) => {
+        if (res.status === 401) {
+          // Stale/expired local session — send them to log back in rather
+          // than signup again (they already have an account).
+          router.push('/login')
+          throw new Error('Please log in again to continue')
+        }
         const order = await res.json()
         if (!res.ok) throw new Error(order.error || 'Could not start checkout')
 
@@ -48,6 +71,23 @@ export default function CoinPlansTable({ packages, note, onPurchased }) {
           order_id: order.orderId,
           theme: { color: '#4a5fd9' },
           modal: { ondismiss: () => setPurchasing(false) },
+          // Explicitly surfaces a UPI block (collect/intent/QR flows — QR
+          // shows automatically on desktop) alongside cards. Checkout was
+          // only showing Cards without this — show_default_blocks stays
+          // true so any other method already enabled on the account (wallets,
+          // netbanking, etc.) keeps showing too; this only adds UPI on top.
+          config: {
+            display: {
+              blocks: {
+                upi: {
+                  name: 'Pay via UPI',
+                  instruments: [{ method: 'upi' }],
+                },
+              },
+              sequence: ['block.upi', 'block.other'],
+              preferences: { show_default_blocks: true },
+            },
+          },
           handler: async (response) => {
             try {
               const verifyRes = await fetch('/api/wallet/topup/verify', {
@@ -93,13 +133,14 @@ export default function CoinPlansTable({ packages, note, onPurchased }) {
               <tr className="bg-gradient-to-r from-[#4a5fd9] to-[#f0763f]">
                 <th className="text-left text-white font-semibold text-sm md:text-base px-5 py-4 w-2/5">Amount</th>
                 <th className="text-left text-white font-semibold text-sm md:text-base px-5 py-4">Coin</th>
+                <th className="text-left text-white font-semibold text-sm md:text-base px-5 py-4">Expiry</th>
                 <th className="text-left text-white font-semibold text-sm md:text-base px-5 py-4">Badge</th>
               </tr>
             </thead>
             <tbody>
               {packages.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="px-5 py-8 text-center text-sm text-subtle">No coin packages available right now.</td>
+                  <td colSpan={4} className="px-5 py-8 text-center text-sm text-subtle">No coin packages available right now.</td>
                 </tr>
               ) : (
                 packages.map((pkg) => {
@@ -132,6 +173,7 @@ export default function CoinPlansTable({ packages, note, onPurchased }) {
                         </label>
                       </td>
                       <td className="px-5 py-3.5 text-sm text-muted">{pkg.coins.toLocaleString('en-IN')}</td>
+                      <td className="px-5 py-3.5 text-sm text-muted">{formatValidity(pkg.validityDays)}</td>
                       <td className="px-5 py-3.5 text-sm text-muted">{pkg.badge || '—'}</td>
                     </tr>
                   )

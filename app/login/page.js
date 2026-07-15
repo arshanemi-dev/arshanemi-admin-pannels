@@ -35,6 +35,11 @@ export default function LoginPage() {
         expiresIn: data.expiresIn,
         user: data.user,
       })
+      // Fire-and-forget: resolve any coin top-ups this user left stuck in
+      // 'created' status from a previous session (e.g. closed the tab before
+      // Razorpay's success handler could call /topup/verify). Doesn't block
+      // the redirect either way — see lib/paymentReconciliation.js.
+      fetch('/api/wallet/reconcile', { method: 'POST' }).catch(() => {})
       // Land back on the public homepage — the navbar's profile menu is
       // where a signed-in user goes on to reach /settings or /tools from here.
       router.push('/')

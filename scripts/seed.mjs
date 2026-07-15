@@ -93,6 +93,7 @@ async function seedCoinPackages(supabase, packages) {
     coins: p.coins,
     price_paise: p.pricePaise,
     badge: p.badge ?? null,
+    validity_days: p.validityDays ?? 365,
     is_active: p.isActive ?? true,
     display_order: p.displayOrder ?? 0,
     updated_at: new Date().toISOString(),

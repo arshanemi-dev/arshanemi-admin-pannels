@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { X, ChevronDown, Phone, ArrowRight, Settings, LogOut } from 'lucide-react';
+import { X, ChevronDown, Phone, ArrowRight, Settings, UserCircle, LogOut } from 'lucide-react';
 import { navLinks as defaultNavLinks } from '@/data/navigation';
 import { cn } from '@/lib/utils';
 import Button from '@/components/ui/Button';
@@ -177,15 +177,28 @@ export default function MobileMenu({ open, onClose, navLinks }) {
         <div className="px-5 py-5 space-y-3 border-t border-divider">
           {user ? (
             <>
-              {/* Plain <a>, not next/link — see UserMenu.jsx for why. */}
-              <a
-                href="/settings"
-                onClick={onClose}
-                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold text-foreground border border-divider hover:border-accent/50 transition-all duration-200"
-              >
-                <Settings size={16} />
-                Settings
-              </a>
+              {/* Plain <a>, not next/link — see UserMenu.jsx for why. Plain
+                  'user' role has no /settings sidebar — send them to the
+                  public /profile page instead, same as UserMenu.jsx. */}
+              {user.role === 'user' ? (
+                <a
+                  href="/profile"
+                  onClick={onClose}
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold text-foreground border border-divider hover:border-accent/50 transition-all duration-200"
+                >
+                  <UserCircle size={16} />
+                  Profile
+                </a>
+              ) : (
+                <a
+                  href="/settings"
+                  onClick={onClose}
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold text-foreground border border-divider hover:border-accent/50 transition-all duration-200"
+                >
+                  <Settings size={16} />
+                  Settings
+                </a>
+              )}
               <button
                 onClick={handleLogout}
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold text-red-500 border border-divider hover:border-red-400/50 transition-all duration-200"

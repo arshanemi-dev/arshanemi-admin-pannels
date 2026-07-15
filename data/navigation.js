@@ -42,6 +42,7 @@ export function buildNavLinks(toolsArr = tools) {
   return [
     { label: 'Tools', href: '/tools', megaMenu: toolsMegaMenu },
     { label: 'Resources', href: '#', dropdown: RESOURCES_DROPDOWN },
+    { label: 'Product Pricing', href: '/plan' },
     { label: 'Contact',   href: '/contact' },
   ];
 }

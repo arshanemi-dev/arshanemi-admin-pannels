@@ -7,7 +7,7 @@ import ConfirmDialog from '@/components/admin/ConfirmDialog'
 import { useToast } from '@/components/admin/Toast'
 
 function emptyForm() {
-  return { name: '', coins: '', priceRupees: '', badge: '', displayOrder: 0, isActive: true }
+  return { name: '', coins: '', priceRupees: '', badge: '', validityDays: 365, displayOrder: 0, isActive: true }
 }
 
 function toForm(pkg) {
@@ -16,9 +16,17 @@ function toForm(pkg) {
     coins: pkg.coins ?? '',
     priceRupees: pkg.pricePaise != null ? pkg.pricePaise / 100 : '',
     badge: pkg.badge || '',
+    validityDays: pkg.validityDays ?? 365,
     displayOrder: pkg.displayOrder ?? 0,
     isActive: !!pkg.isActive,
   }
+}
+
+function formatValidity(days) {
+  if (!days) return '—'
+  if (days % 365 === 0) return `${days / 365} yr${days === 365 ? '' : 's'} validity`
+  if (days % 30 === 0) return `${days / 30} mo${days === 30 ? '' : 's'} validity`
+  return `${days}d validity`
 }
 
 // CRUD grid for buy packs (name, coins, price, badge, active) — the coins a
@@ -63,6 +71,7 @@ export default function CoinPackagesClient({ initialPackages }) {
     if (!form.name.trim()) { setError('Name is required'); return }
     if (!Number.isFinite(+form.coins) || +form.coins <= 0) { setError('Coins must be a positive number'); return }
     if (!Number.isFinite(+form.priceRupees) || +form.priceRupees <= 0) { setError('Price must be a positive number'); return }
+    if (!Number.isFinite(+form.validityDays) || +form.validityDays <= 0) { setError('Validity must be a positive number of days'); return }
 
     setSaving(true)
     try {
@@ -73,6 +82,7 @@ export default function CoinPackagesClient({ initialPackages }) {
         coins: +form.coins,
         pricePaise: Math.round(+form.priceRupees * 100),
         badge: form.badge.trim() || null,
+        validityDays: +form.validityDays,
         displayOrder: Number.isFinite(+form.displayOrder) ? +form.displayOrder : 0,
         isActive: form.isActive,
       }
@@ -157,6 +167,7 @@ export default function CoinPackagesClient({ initialPackages }) {
 
               <div className="flex flex-wrap gap-1.5">
                 <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-surface text-muted">{pkg.coins.toLocaleString('en-IN')} coins</span>
+                <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-surface text-muted">{formatValidity(pkg.validityDays)}</span>
                 {pkg.badge && (
                   <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-accent/10 text-accent">{pkg.badge}</span>
                 )}
@@ -201,6 +212,7 @@ export default function CoinPackagesClient({ initialPackages }) {
           <FormField label="Price (₹)" name="priceRupees" type="number" min={1} required value={form.priceRupees} onChange={(e) => set('priceRupees', e.target.value)} />
         </div>
         <FormField label="Badge" name="badge" value={form.badge} onChange={(e) => set('badge', e.target.value)} placeholder="e.g. Best Value (optional)" />
+        <FormField label="Validity (Days)" name="validityDays" type="number" min={1} required value={form.validityDays} onChange={(e) => set('validityDays', e.target.value)} hint="How long coins from this package stay valid after purchase" />
         <FormField label="Display Order" name="displayOrder" type="number" min={0} value={form.displayOrder} onChange={(e) => set('displayOrder', e.target.value)} hint="Lower numbers show first on the Plan page" />
 
         <div className="flex items-center justify-between">

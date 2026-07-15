@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS coin_packages (
   coins          INTEGER      NOT NULL CHECK (coins > 0),
   price_paise    INTEGER      NOT NULL CHECK (price_paise > 0),
   badge          VARCHAR(100),
+  validity_days  INTEGER      NOT NULL DEFAULT 365 CHECK (validity_days > 0), -- coins from this package stay valid this many days after crediting
   is_active      BOOLEAN      NOT NULL DEFAULT TRUE,
   display_order  INTEGER      NOT NULL DEFAULT 0,
   created_at     TIMESTAMPTZ  DEFAULT NOW(),
@@ -49,14 +50,18 @@ CREATE TABLE IF NOT EXISTS wallet_topups (
   razorpay_payment_id VARCHAR(255) UNIQUE,
   razorpay_signature  VARCHAR(500),
   failure_reason      TEXT,
+  validity_days       INTEGER      NOT NULL DEFAULT 365 CHECK (validity_days > 0), -- snapshot of the package's validity_days at purchase time
+  expires_at          TIMESTAMPTZ,                      -- set to credited_at + validity_days once paid (see credit_wallet_topup)
+  reconcile_attempts  INTEGER      NOT NULL DEFAULT 0,   -- how many times the reconciliation sweep has re-checked this order with Razorpay (see lib/paymentReconciliation.js)
   credited_at         TIMESTAMPTZ,
   created_at          TIMESTAMPTZ  DEFAULT NOW(),
   updated_at          TIMESTAMPTZ  DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_wallet_topups_user_id  ON wallet_topups(user_id);
-CREATE INDEX IF NOT EXISTS idx_wallet_topups_status    ON wallet_topups(status);
-CREATE INDEX IF NOT EXISTS idx_wallet_topups_order_id  ON wallet_topups(razorpay_order_id);
+CREATE INDEX IF NOT EXISTS idx_wallet_topups_user_id    ON wallet_topups(user_id);
+CREATE INDEX IF NOT EXISTS idx_wallet_topups_status     ON wallet_topups(status);
+CREATE INDEX IF NOT EXISTS idx_wallet_topups_order_id   ON wallet_topups(razorpay_order_id);
+CREATE INDEX IF NOT EXISTS idx_wallet_topups_expires_at ON wallet_topups(expires_at);
 
 ALTER TABLE wallet_topups ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Service role manages wallet_topups"
@@ -164,7 +169,8 @@ DECLARE
 BEGIN
   UPDATE wallet_topups
   SET status = 'paid', razorpay_payment_id = p_razorpay_payment_id,
-      razorpay_signature = p_razorpay_signature, credited_at = NOW(), updated_at = NOW()
+      razorpay_signature = p_razorpay_signature, credited_at = NOW(), updated_at = NOW(),
+      expires_at = NOW() + (validity_days || ' days')::interval
   WHERE razorpay_order_id = p_razorpay_order_id AND status = 'created'
   RETURNING * INTO v_topup;
 
@@ -181,6 +187,7 @@ BEGIN
   WHERE id = v_topup.user_id RETURNING wallet_credits_total INTO v_total;
 
   RETURN jsonb_build_object('ok', true, 'duplicate', false, 'topupId', v_topup.id,
-                             'coinsGranted', v_topup.coins_granted, 'newTotal', v_total);
+                             'coinsGranted', v_topup.coins_granted, 'newTotal', v_total,
+                             'expiresAt', v_topup.expires_at);
 END;
 $$;

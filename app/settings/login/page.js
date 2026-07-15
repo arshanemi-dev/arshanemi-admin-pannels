@@ -31,6 +31,9 @@ export default function LoginPage() {
       expiresIn: data.expiresIn,
       user: data.user,
     })
+    // Fire-and-forget: resolve any coin top-ups left stuck in 'created'
+    // status from a previous session — see lib/paymentReconciliation.js.
+    fetch('/api/wallet/reconcile', { method: 'POST' }).catch(() => {})
     // Full navigation, not the client router: /settings is gated by a
     // server-side cookie check (middleware + layout), and the client Router
     // Cache can still be holding the pre-login "redirect to /settings/login"

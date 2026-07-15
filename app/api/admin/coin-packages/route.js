@@ -16,7 +16,7 @@ export async function POST(req) {
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await req.json()
-  const { name, coins, pricePaise, badge, isActive, displayOrder } = body
+  const { name, coins, pricePaise, badge, validityDays, isActive, displayOrder } = body
 
   if (!name?.trim()) return NextResponse.json({ error: 'Name is required' }, { status: 400 })
   if (!Number.isFinite(+coins) || +coins <= 0) {
@@ -25,6 +25,9 @@ export async function POST(req) {
   if (!Number.isFinite(+pricePaise) || +pricePaise <= 0) {
     return NextResponse.json({ error: 'Price must be a positive number' }, { status: 400 })
   }
+  if (validityDays != null && (!Number.isFinite(+validityDays) || +validityDays <= 0)) {
+    return NextResponse.json({ error: 'Validity days must be a positive number' }, { status: 400 })
+  }
 
   try {
     const pkg = await createCoinPackage({
@@ -32,6 +35,7 @@ export async function POST(req) {
       coins: +coins,
       pricePaise: +pricePaise,
       badge: badge?.trim() || null,
+      validityDays: Number.isFinite(+validityDays) ? +validityDays : 365,
       isActive: isActive ?? true,
       displayOrder: Number.isFinite(+displayOrder) ? +displayOrder : 0,
     })

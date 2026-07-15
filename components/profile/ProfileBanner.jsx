@@ -41,18 +41,17 @@ const SOCIAL_STYLES = {
   YouTube: 'bg-[#FF0000]',
 }
 
-function placeholderExpiry() {
-  const d = new Date()
-  d.setFullYear(d.getFullYear() + 1)
-  return d.toLocaleDateString('en-GB') // DD/MM/YYYY
+function formatExpiry(iso) {
+  return new Date(iso).toLocaleDateString('en-GB') // DD/MM/YYYY
 }
 
 // Profile page hero banner — coin balance + expiry on the left, the
 // company's own social links on the right (not the user's — there's no
 // per-user social profile concept here). Sits above the tab bar so it's
-// visible on every tab. Expiry isn't backed by a real field yet — no
-// wallet-expiry column exists — so it's a placeholder (1 year out) until
-// the coin-wallet backend (plan/my-payment-management.md) adds one.
+// visible on every tab. Expiry is real now (profile.walletExpiresAt, from
+// wallet_topups.expires_at — see plan/my-payment-management.md) — the most
+// recent successful top-up's expiry date, since coin consumption isn't
+// tracked per-batch. No line shown at all if the user has never topped up.
 export default function ProfileBanner({ profile }) {
   const remaining = profile.walletCreditsRemaining
     ?? Math.max(0, (profile.walletCreditsTotal ?? 0) - (profile.walletCreditsUsed ?? 0))
@@ -72,7 +71,9 @@ export default function ProfileBanner({ profile }) {
           <span className="w-fit text-xs font-semibold text-white bg-white/20 rounded-full px-3 py-1.5">
             {remaining} Coins
           </span>
-          <p className="text-xs text-white/80">Expiry Date {placeholderExpiry()}</p>
+          {profile.walletExpiresAt && (
+            <p className="text-xs text-white/80">Valid till {formatExpiry(profile.walletExpiresAt)}</p>
+          )}
         </div>
       </div>
 

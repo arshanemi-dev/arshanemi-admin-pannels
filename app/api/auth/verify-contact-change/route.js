@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getUserFromRequest } from '@/lib/auth'
-import { verifyOTP, updateUser, getCompanyById, getUserByEmail, getUserByMobile } from '@/lib/db'
+import { verifyOTP, updateUser, getCompanyById, getUserByEmail, getUserByMobile, getLatestWalletExpiry } from '@/lib/db'
 import { serializeProfile } from '@/lib/profile'
 
 // Verifies the OTP sent by /api/auth/send-contact-otp for a NEW email/mobile,
@@ -35,8 +35,11 @@ export async function POST(req) {
     }
 
     const updated = await updateUser(payload.userId, { [type]: normalized })
-    const company = updated.company_id ? await getCompanyById(updated.company_id) : null
-    return NextResponse.json(serializeProfile(updated, company))
+    const [company, walletExpiresAt] = await Promise.all([
+      updated.company_id ? getCompanyById(updated.company_id) : null,
+      getLatestWalletExpiry(updated.id),
+    ])
+    return NextResponse.json(serializeProfile(updated, company, walletExpiresAt))
   } catch (err) {
     console.error('Verify contact-change error:', err)
     return NextResponse.json({ error: 'Could not update. Please try again.' }, { status: 500 })

@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import DataTable from '@/components/admin/DataTable'
 import WalletBalanceCard from './WalletBalanceCard'
 import { TableSkeleton, LoadError } from '@/components/admin/Skeleton'
@@ -112,6 +112,28 @@ export default function UserWalletPanel({ profile }) {
   }
 
   useEffect(() => { load() }, [])
+
+  // Bounded recheck: if a top-up is still showing 'pending' (server-side
+  // verify/webhook hasn't resolved it yet), poll /api/wallet/reconcile a few
+  // times so the row can flip to success/failed without a manual refresh —
+  // capped at 3 attempts per Wallet-tab visit (attemptsRef resets when this
+  // component remounts, e.g. switching tabs and back). Not a backend
+  // setInterval — this is ordinary client-side UI polling, scoped to one
+  // component's lifecycle, which is the safe place for this pattern.
+  const attemptsRef = useRef(0)
+  useEffect(() => {
+    if (!transactions) return
+    const hasPending = transactions.some((t) => t.type === 'topup' && t.status === 'pending')
+    if (!hasPending || attemptsRef.current >= 3) return
+
+    const timer = setTimeout(async () => {
+      attemptsRef.current += 1
+      try { await fetch('/api/wallet/reconcile', { method: 'POST' }) } catch { /* next attempt (or the cron sweep) will catch it */ }
+      load()
+    }, 10_000)
+
+    return () => clearTimeout(timer)
+  }, [transactions])
 
   return (
     <div className="flex flex-col gap-6">
