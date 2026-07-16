@@ -10,6 +10,7 @@
     "lint": "eslint",
     "fetch-blogs": "node scripts/fetch-blogs.mjs",
     "seed": "node --env-file=.env scripts/seed.mjs",
+    "db:clean": "node --env-file=.env scripts/clean-db.mjs",
     "cron": "node --env-file=.env scripts/cron-cleanup.mjs",
     "cron:reconcile": "node --env-file=.env scripts/cron-reconcile-topups.mjs"
   },

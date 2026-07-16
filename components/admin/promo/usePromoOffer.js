@@ -2,8 +2,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { defaultPromoOffer } from '@/data/promoOffer'
 
-const STORAGE_KEY = 'arshanemi_promo_offer'
-
 function todayIso() {
   return new Date().toISOString().slice(0, 10)
 }
@@ -19,36 +17,43 @@ export function getPromoStatus(offer) {
   return 'active'
 }
 
-// Reads/writes the promo offer config from localStorage — no backend for
-// this yet (see plan/my-payment-management.md for the coin-wallet system
-// this sits beside). Falls back to data/promoOffer.js defaults on first
-// load or if storage is unavailable/corrupt, so it degrades gracefully.
+// Reads/writes the promo offer config from the `promoOffer` singleton in
+// layout_settings via /api/admin/singleton/promoOffer (same generic
+// singleton route used for theme/company/stats/etc). Seeded from
+// data/promoOffer.js's defaultPromoOffer — see scripts/seed.mjs. Falls back
+// to those defaults if the fetch fails so the badge still renders something
+// sane offline/mid-outage.
 export function usePromoOffer() {
   const [offer, setOffer] = useState(defaultPromoOffer)
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY)
-      if (raw) setOffer((prev) => ({ ...prev, ...JSON.parse(raw) }))
-    } catch {
-      // corrupt/unavailable storage — keep defaults
-    } finally {
-      setLoaded(true)
-    }
+    let cancelled = false
+    fetch('/api/admin/singleton/promoOffer')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!cancelled && data) setOffer((prev) => ({ ...prev, ...data }))
+      })
+      .catch(() => {
+        // API unavailable — keep defaults
+      })
+      .finally(() => {
+        if (!cancelled) setLoaded(true)
+      })
+    return () => { cancelled = true }
   }, [])
 
-  const updateOffer = useCallback((patch) => {
-    setOffer((prev) => {
-      const next = { ...prev, ...patch }
-      try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-      } catch {
-        // storage unavailable — edit still applies for this session
-      }
-      return next
+  const updateOffer = useCallback(async (patch) => {
+    const next = { ...offer, ...patch }
+    const res = await fetch('/api/admin/singleton/promoOffer', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(next),
     })
-  }, [])
+    if (!res.ok) throw new Error('Failed to save promo offer')
+    setOffer(next)
+    return next
+  }, [offer])
 
   const status = getPromoStatus(offer)
   return { offer, updateOffer, loaded, status, active: status === 'active' }

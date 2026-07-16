@@ -40,10 +40,12 @@ export async function proxy(req) {
     return res
   }
 
-  // Theme is read by the public site (ThemeContext) for every visitor, so GET
-  // must be readable without an admin session — PUT/DELETE still require auth.
-  const isPublicThemeGet = pathname === '/api/admin/theme' && req.method === 'GET'
-  const isPublic = isPublicThemeGet || PUBLIC_PATHS.some((p) => pathname.startsWith(p))
+  // Theme is read by the public site (ThemeContext) for every visitor, and
+  // promoOffer by the public Plan page (PromoBadge), so GET must be readable
+  // without an admin session for both — PUT/DELETE still require auth.
+  const PUBLIC_ADMIN_GET_PATHS = ['/api/admin/theme', '/api/admin/singleton/promoOffer']
+  const isPublicAdminGet = PUBLIC_ADMIN_GET_PATHS.includes(pathname) && req.method === 'GET'
+  const isPublic = isPublicAdminGet || PUBLIC_PATHS.some((p) => pathname.startsWith(p))
   if (isPublic) {
     const res = NextResponse.next()
     res.headers.set('x-pathname', pathname)

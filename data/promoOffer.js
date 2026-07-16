@@ -1,7 +1,9 @@
 // Default promo offer shown as a badge on the Plan page and editable from
-// Settings → Promo Offers. No backend for this yet — components/admin/promo's
-// usePromoOffer hook persists edits to localStorage so admin changes survive
-// a refresh without needing a migration.
+// Settings → Promo Offers. This is the seed value for the `promoOffer`
+// singleton in layout_settings (see scripts/seed.mjs) — components/admin/promo's
+// usePromoOffer hook reads/writes the live value via
+// /api/admin/singleton/promoOffer, falling back to this default if that
+// fetch fails.
 export const defaultPromoOffer = {
   enabled: true,
   title: 'Limited Time Offer',

@@ -152,7 +152,8 @@ async function main() {
   const { aboutValues, aboutServices, whyUs, aboutStats } = await imp('data/about.js')
   const { navLinks, footerLinks, socialLinks }            = await imp('data/navigation.js')
   const { defaultToolsAccessByRole }                      = await imp('data/tools.js')
-  const { DEFAULT_COMPANY, MASTER_ADMIN, DEFAULT_COMPANY_ADMIN } = await imp('data/default.js')
+  const { defaultPromoOffer }                             = await imp('data/promoOffer.js')
+  const { DEFAULT_COMPANY, MASTER_ADMIN, DEFAULT_COMPANY_ADMIN, ADDITIONAL_ADMINS } = await imp('data/default.js')
 
   // ── List collections ────────────────────────────────────────────────────────
   console.log('📦  Seeding list collections...\n')
@@ -240,6 +241,8 @@ async function main() {
     footerLinks: footerLinks || [],
     socialLinks: socialLinks || [],
   })
+
+  await seedSingleton(supabase, 'promoOffer', defaultPromoOffer)
 
   // ── Default tenant company ──────────────────────────────────────────────────
   // This is the multi-tenant `companies` row (users/roles/companies system) —
@@ -335,6 +338,32 @@ async function main() {
     }
   }
 
+  // Extra default admins beyond the one above — see data/default.js's
+  // ADDITIONAL_ADMINS comment for how to add more.
+  const extraAdmins = []
+  if (defaultCompany) {
+    for (const admin of ADDITIONAL_ADMINS) {
+      const adminHash = await bcrypt.hash(admin.password, SALT_ROUNDS)
+      const { data: createdAdmin, error: adminErr } = await supabase.from('users').upsert(
+        {
+          name: admin.name,
+          email: admin.email.toLowerCase().trim(),
+          mobile: null,
+          password_hash: adminHash,
+          role: admin.role,
+          company_id: defaultCompany.id,
+          is_active: true,
+        },
+        { onConflict: 'email', ignoreDuplicates: false }
+      ).select().single()
+      if (adminErr) console.warn(`  ⚠ ${admin.email}:`, adminErr.message)
+      else {
+        extraAdmins.push(createdAdmin)
+        console.log(`  ✓ ${createdAdmin.email}  (${admin.password})  — role: ${admin.role}, company: ${defaultCompany.name}`)
+      }
+    }
+  }
+
   // ── Default user_settings (tools access) ───────────────────────────────────
   console.log('\n🔧  Seeding default user_settings...\n')
 
@@ -351,6 +380,7 @@ async function main() {
 
   await seedUserSettings(masterAdmin, 'master_admin')
   await seedUserSettings(companyAdmin, 'admin')
+  for (const admin of extraAdmins) await seedUserSettings(admin, admin.role)
 
   console.log('\n✅  Seed complete — all data is live in PostgreSQL!\n')
 }

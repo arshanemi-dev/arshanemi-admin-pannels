@@ -26,3 +26,16 @@ export const DEFAULT_COMPANY_ADMIN = {
   password: 'Admin@1234',
   role: 'admin',
 };
+
+// Additional default admins beyond DEFAULT_COMPANY_ADMIN — each gets
+// upserted by scripts/seed.mjs the same way (role 'admin', scoped to
+// DEFAULT_COMPANY). Add more entries here rather than duplicating seed.mjs
+// logic.
+export const ADDITIONAL_ADMINS = [
+  {
+    name: 'Satyam Baranwal',
+    email: 'satyambaranwalme998413@gmail.com',
+    password: 'India@123',
+    role: 'admin',
+  },
+];

@@ -31,9 +31,13 @@ export default function PromoOfferForm({ offer, updateOffer }) {
     setDraft((d) => ({ ...d, [key]: value }))
   }
 
-  function handleSave() {
-    updateOffer(draft)
-    addToast('Promo offer saved')
+  async function handleSave() {
+    try {
+      await updateOffer(draft)
+      addToast('Promo offer saved')
+    } catch {
+      addToast('Failed to save promo offer', 'error')
+    }
   }
 
   const draftStatus = getPromoStatus(draft)
