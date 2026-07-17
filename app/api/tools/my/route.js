@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getAuthPayload } from '@/lib/auth'
-import { getUserSettings } from '@/lib/db'
+import { getUserSettings, getPaidFeatureFeeKeys } from '@/lib/db'
 import { getAllTools } from '@/lib/tools'
 import { defaultToolsAccessByRole } from '@/data/tools'
 
@@ -20,7 +20,17 @@ export async function GET(req) {
   const access = settings?.tools_access ?? defaultToolsAccessByRole[payload.role] ?? defaultToolsAccessByRole.user
   const tools = allTools.filter((t) => access.includes(t.slug))
 
-  return NextResponse.json(tools, {
+  const paidKeys = await getPaidFeatureFeeKeys(payload.userId, tools.map((t) => t.slug))
+  const enriched = tools.map((t) => ({
+    ...t,
+    features: (t.features || []).map((f) => ({
+      ...f,
+      fixFeePaise: f.fixFeePaise ?? 0,
+      feePaid: !f.fixFeePaise || paidKeys.has(`${t.slug}::${f.apiIdentifier}`),
+    })),
+  }))
+
+  return NextResponse.json(enriched, {
     headers: { 'Cache-Control': 'no-store' },
   })
 }

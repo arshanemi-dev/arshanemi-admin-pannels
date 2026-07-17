@@ -1,11 +1,16 @@
 import { NextResponse } from 'next/server'
 import { getAuthPayload } from '@/lib/auth'
 import { getToolFeature } from '@/lib/tools'
-import { deductWalletCoins } from '@/lib/db'
+import { deductWalletCoins, hasUserPaidFeatureFee } from '@/lib/db'
 
 // The contract external tool apps (PDF Cropper, BG Remover, etc. — separate
 // subdomains) integrate against. They authenticate with the same Bearer JWT
-// the user already holds — see plan/my-payment-management.md §7.
+// the user already holds — see plan/tools-pricing-cut-paln.md §7.
+//
+// This is the one authoritative enforcement point for both the Fix-Fee gate
+// and the coin-cost gate — the client-side check in each tool app's
+// runBillingGate() is UX only, this route is truth (see the plan's security
+// note in §0).
 export async function POST(req) {
   const payload = await getAuthPayload(req)
   if (!payload) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -19,6 +24,11 @@ export async function POST(req) {
   if (!tool) return NextResponse.json({ error: 'Tool not found' }, { status: 404 })
   if (!feature || !feature.isActive) {
     return NextResponse.json({ error: 'Feature not found or not active' }, { status: 404 })
+  }
+
+  if (feature.fixFeePaise > 0) {
+    const paid = await hasUserPaidFeatureFee(payload.userId, toolSlug, featureApiIdentifier)
+    if (!paid) return NextResponse.json({ error: 'fee_required', fixFeePaise: feature.fixFeePaise }, { status: 402 })
   }
 
   try {
@@ -39,6 +49,9 @@ export async function POST(req) {
           { error: 'insufficient_coins', remainingCoins: result.remaining, requiredCoins: feature.coinCost },
           { status: 402 }
         )
+      }
+      if (result.error === 'coins_expired') {
+        return NextResponse.json({ error: 'coins_expired', expiredAt: result.expiredAt }, { status: 402 })
       }
       if (result.error === 'user_not_found') {
         return NextResponse.json({ error: 'user_not_found' }, { status: 404 })

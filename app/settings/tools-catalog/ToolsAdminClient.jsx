@@ -80,7 +80,7 @@ export default function ToolsAdminClient({ initialTools }) {
       ...f,
       features: [
         ...(f.features || []),
-        { id: `feature-${Date.now()}`, icon: 'Star', title: '', desc: '', apiIdentifier: '', coinCost: 0, isActive: false },
+        { id: `feature-${Date.now()}`, icon: 'Star', title: '', desc: '', apiIdentifier: '', coinCost: 0, fixFeePaise: 0, isActive: false },
       ],
     }))
   }
@@ -108,8 +108,12 @@ export default function ToolsAdminClient({ initialTools }) {
       return
     }
     for (const feature of form.features || []) {
-      if (feature.isActive && (!feature.apiIdentifier?.trim() || !(+feature.coinCost > 0))) {
-        showToast(`"${feature.title || 'Untitled feature'}" is Active but needs an API Identifier and a Coin Cost above 0`, 'error')
+      // Coin Cost is allowed to be 0 — a feature can be active and free
+      // (e.g. core navigation), it just skips the deduct call entirely.
+      // An apiIdentifier is still required so tool apps and
+      // /api/wallet/deduct have something to match the feature on.
+      if (feature.isActive && !feature.apiIdentifier?.trim()) {
+        showToast(`"${feature.title || 'Untitled feature'}" is Active but needs an API Identifier`, 'error')
         return
       }
     }
@@ -124,6 +128,7 @@ export default function ToolsAdminClient({ initialTools }) {
         features: (form.features || []).map((f) => ({
           ...f,
           coinCost: Math.max(0, +f.coinCost || 0),
+          fixFeePaise: Math.max(0, Math.round(+f.fixFeePaise || 0)),
           apiIdentifier: f.apiIdentifier?.trim() || null,
         })),
       }
@@ -410,14 +415,17 @@ export default function ToolsAdminClient({ initialTools }) {
                 </button>
               </div>
 
-              {/* Features & Pricing — coinCost/isActive per feature (plan/my-payment-management.md §6 item 3).
-                  Title/icon/desc are editable too since this is the only place features can be
-                  authored past the initial seed; apiIdentifier is what POST /api/wallet/deduct matches on. */}
+              {/* Features & Pricing — coinCost/fixFeePaise/isActive per feature
+                  (plan/tools-pricing-cut-paln.md §4). Title/icon/desc are editable
+                  too since this is the only place features can be authored past the
+                  initial seed; apiIdentifier is what POST /api/wallet/deduct matches
+                  on. Fixed Fee is a one-time unlock price, separate from per-use
+                  Coin Cost — 0 means no paywall on that feature. */}
               <div className="rounded-xl border border-divider">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-divider">
                   <div>
                     <p className="text-sm font-medium text-muted">Features & Pricing</p>
-                    <p className="text-xs text-subtle">Active features are billable — external tool apps deduct coins against them.</p>
+                    <p className="text-xs text-subtle">Active features are billable — external tool apps deduct coins against them, and can also carry a one-time Fixed Fee.</p>
                   </div>
                   <button
                     type="button"
@@ -482,6 +490,16 @@ export default function ToolsAdminClient({ initialTools }) {
                               min={0}
                               value={feature.coinCost}
                               onChange={(e) => updateFeature(index, 'coinCost', e.target.value)}
+                              className="admin-input"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <label className="text-xs text-subtle">Fixed Fee (₹)</label>
+                            <input
+                              type="number"
+                              min={0}
+                              value={feature.fixFeePaise ? feature.fixFeePaise / 100 : 0}
+                              onChange={(e) => updateFeature(index, 'fixFeePaise', Math.round((+e.target.value || 0) * 100))}
                               className="admin-input"
                             />
                           </div>

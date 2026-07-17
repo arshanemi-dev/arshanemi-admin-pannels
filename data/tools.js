@@ -17,12 +17,16 @@ export const tools = [
     toolUrl: 'https://pdf-cropper.freelax.in/',
     requiresLogin: false,
     features: [
-      { id: 'pixel-precise-cropping', icon: 'Crop',       title: 'Pixel-Precise Cropping', desc: 'Drag a crop box or enter exact margins in mm/inches — every page is trimmed to the same precision every time.', apiIdentifier: 'crop-precise', coinCost: 1, isActive: true },
-      { id: 'batch-processing', icon: 'Layers',     title: 'Batch Processing',       desc: 'Crop hundreds of pages across multiple PDFs in one pass instead of opening each file individually.', apiIdentifier: 'crop-batch', coinCost: 5, isActive: true },
-      { id: 'live-preview', icon: 'Eye',        title: 'Live Preview',           desc: 'See the exact crop applied to every page before you export — no surprises, no re-dos.', apiIdentifier: 'crop-preview', coinCost: 1, isActive: true },
-      { id: 'runs-in-your-browser', icon: 'Lock',       title: 'Runs in Your Browser',   desc: 'Files are processed locally — nothing is uploaded to a server, so sensitive documents never leave your device.', apiIdentifier: 'crop-local-process', coinCost: 1, isActive: true },
-      { id: 'auto-detect-margins', icon: 'Grid',       title: 'Auto-Detect Margins',    desc: 'One click scans the page content and suggests the tightest possible crop automatically.', apiIdentifier: 'crop-autodetect', coinCost: 2, isActive: true },
-      { id: 'instant-export', icon: 'Download',   title: 'Instant Export',         desc: 'Download your cropped PDF immediately — no waiting, no email links, no processing queue.', apiIdentifier: 'crop-export', coinCost: 1, isActive: true },
+      { id: 'pixel-precise-cropping', icon: 'Crop',       title: 'Pixel-Precise Cropping', desc: 'Drag a crop box or enter exact margins in mm/inches — every page is trimmed to the same precision every time.', apiIdentifier: 'crop-precise', coinCost: 1, fixFeePaise: 0, isActive: true },
+      { id: 'batch-processing', icon: 'Layers',     title: 'Batch Processing',       desc: 'Crop hundreds of pages across multiple PDFs in one pass instead of opening each file individually.', apiIdentifier: 'crop-batch', coinCost: 5, fixFeePaise: 0, isActive: true },
+      { id: 'live-preview', icon: 'Eye',        title: 'Live Preview',           desc: 'See the exact crop applied to every page before you export — no surprises, no re-dos.', apiIdentifier: 'crop-preview', coinCost: 1, fixFeePaise: 0, isActive: true },
+      { id: 'runs-in-your-browser', icon: 'Lock',       title: 'Runs in Your Browser',   desc: 'Files are processed locally — nothing is uploaded to a server, so sensitive documents never leave your device.', apiIdentifier: 'crop-local-process', coinCost: 1, fixFeePaise: 0, isActive: true },
+      { id: 'auto-detect-margins', icon: 'Grid',       title: 'Auto-Detect Margins',    desc: 'One click scans the page content and suggests the tightest possible crop automatically.', apiIdentifier: 'crop-autodetect', coinCost: 2, fixFeePaise: 0, isActive: true },
+      { id: 'instant-export', icon: 'Download',   title: 'Instant Export',         desc: 'Download your cropped PDF immediately — no waiting, no email links, no processing queue.', apiIdentifier: 'crop-export', coinCost: 1, fixFeePaise: 0, isActive: true },
+      // "Premium" master-sort mode in the PDF Cropper app's Sort Options panel
+      // (components/pdf-tool/SortOptions.jsx there) — gated by Fix Fee rather
+      // than coinCost, since it's a one-time unlock, not a per-use charge.
+      { id: 'master-sku-group-sort', icon: 'Layers2', title: 'Master SKU Group Sort', desc: 'Sort and group shipping labels by a master SKU list across multiple orders — built for high-volume sellers managing several storefronts at once.', apiIdentifier: 'crop-master-sku-group', coinCost: 0, fixFeePaise: 0, isActive: true },
     ],
     hero: {
       headline: 'Crop Every Page. Perfectly. Every Time.',
@@ -62,13 +66,16 @@ export const tools = [
     badge: 'AI-Powered',
     toolUrl: 'https://bg-remover.freelax.in/',
     requiresLogin: false,
+    // Features are keyed by server-side quality TIER, not by capability —
+    // matches components/bg-remover/TierSelector.jsx and BgRemoverTool.jsx's
+    // handleProcessImage/handleRemoveSelected in tools-3 (see
+    // plan/tools-pricing-cut-paln.md §7). The `normal` tier runs entirely
+    // client-side (Web Worker) and is never billed, so it has no feature row
+    // here — only medium/advanced/pro, the tiers that call a paid server API.
     features: [
-      { id: 'one-click-ai-removal', icon: 'Sparkles',  title: 'One-Click AI Removal',   desc: 'Our model detects the subject and strips the background automatically — no manual masking or lasso tools.', apiIdentifier: 'bg-remove-single', coinCost: 2, isActive: true },
-      { id: 'product-photo-ready', icon: 'Image',     title: 'Product-Photo Ready',    desc: 'Optimised for clean edges around products, packaging, and apparel — ideal for marketplace listings.', apiIdentifier: 'bg-remove-product', coinCost: 2, isActive: true },
-      { id: 'portrait-mode', icon: 'User',      title: 'Portrait Mode',          desc: 'Fine-tuned edge detection around hair and skin tones for natural-looking people cutouts.', apiIdentifier: 'bg-remove-portrait', coinCost: 2, isActive: true },
-      { id: 'transparent-png-export', icon: 'Download',  title: 'Transparent PNG Export', desc: 'Download a true transparent-background PNG, ready to drop onto any backdrop or template.', apiIdentifier: 'bg-remove-export', coinCost: 1, isActive: true },
-      { id: 'seconds-not-minutes', icon: 'Zap',       title: 'Seconds, Not Minutes',   desc: 'Processing typically finishes in under 5 seconds, even for high-resolution images.', apiIdentifier: 'bg-remove-fast', coinCost: 1, isActive: true },
-      { id: 'manual-touch-up', icon: 'RefreshCw', title: 'Manual Touch-Up',        desc: 'Erase or restore edges with a brush tool for the rare image the AI doesn\'t nail on the first pass.', apiIdentifier: 'bg-remove-touchup', coinCost: 1, isActive: true },
+      { id: 'medium-quality-removal', icon: 'Server', title: 'Medium Quality Removal', desc: 'Self-hosted AI background removal with sharper edges than the free client-side mode.', apiIdentifier: 'bg-remove-medium', coinCost: 1, fixFeePaise: 0, isActive: true },
+      { id: 'advanced-quality-removal', icon: 'Sparkles', title: 'Advanced Quality Removal', desc: 'Professional-grade edge detection powered by poof.bg — built for tricky edges like hair and fur.', apiIdentifier: 'bg-remove-advanced', coinCost: 3, fixFeePaise: 0, isActive: true },
+      { id: 'pro-quality-removal', icon: 'Crown', title: 'Pro Quality Removal', desc: 'Studio-quality cutouts powered by Photoroom — the best-in-class tier for client-facing product photography.', apiIdentifier: 'bg-remove-pro', coinCost: 5, fixFeePaise: 0, isActive: true },
     ],
     hero: {
       headline: 'Remove Any Background in One Click',
@@ -102,45 +109,49 @@ export const tools = [
     slug: 'link-generator',
     title: 'Link Generator',
     icon: 'Link2',
-    shortDesc: 'Generate clean short links, QR codes, and trackable URLs to share anywhere in a single click.',
+    shortDesc: 'Browse your uploaded files and folders, then copy shareable links — single or in bulk — with Excel and JSON export built in.',
     category: 'embedded',
     badge: 'Free',
     toolUrl: 'https://link-generator.freelax.in/',
     requiresLogin: false,
+    // apiIdentifiers below must match what's wired into FileExplorer.jsx's
+    // handleCopyUrls (single vs batch) and handleInlineCopyExcel — see
+    // plan/tools-pricing-cut-paln.md §7. `link-copy` is a pre-existing
+    // identifier, reused as-is so old usage history/grants stay meaningful.
     features: [
-      { id: 'instant-short-links', icon: 'Link2',    title: 'Instant Short Links', desc: 'Paste any long URL and get a clean, shareable short link in one click.', apiIdentifier: 'link-generate', coinCost: 1, isActive: true },
-      { id: 'built-in-qr-codes', icon: 'QrCode',   title: 'Built-In QR Codes',   desc: 'Every short link automatically comes with a downloadable QR code for print or offline sharing.', apiIdentifier: 'link-qr-code', coinCost: 1, isActive: true },
-      { id: 'click-tracking', icon: 'BarChart3', title: 'Click Tracking',     desc: 'See how many times each link has been clicked, right from your dashboard.', apiIdentifier: 'link-click-tracking', coinCost: 1, isActive: true },
-      { id: 'custom-slugs', icon: 'Edit',     title: 'Custom Slugs',        desc: 'Choose your own short link ending instead of a random string, for branded, memorable URLs.', apiIdentifier: 'link-custom-slug', coinCost: 1, isActive: true },
-      { id: 'link-expiry-options', icon: 'Clock',    title: 'Link Expiry Options', desc: 'Set links to expire after a date or click count for time-sensitive campaigns.', apiIdentifier: 'link-expiry', coinCost: 1, isActive: true },
-      { id: 'one-click-copy', icon: 'Copy',     title: 'One-Click Copy',      desc: 'Copy your new short link or QR code image straight to your clipboard instantly.', apiIdentifier: 'link-copy', coinCost: 1, isActive: true },
+      { id: 'browse-upload-files', icon: 'FolderOpen', title: 'Browse & Upload Files', desc: 'Navigate your cloud-stored files and folders in a familiar two-pane explorer, and upload new files straight from your browser.', apiIdentifier: 'link-browse', coinCost: 0, fixFeePaise: 0, isActive: true },
+      { id: 'copy-file-url', icon: 'Copy', title: 'Copy File URL', desc: 'Select a single file and copy its shareable link to your clipboard in one click — no dashboards, no waiting.', apiIdentifier: 'link-copy', coinCost: 1, fixFeePaise: 0, isActive: true },
+      { id: 'batch-copy-urls', icon: 'Layers2', title: 'Batch Copy URLs', desc: 'Select dozens of files at once and copy every shareable link together, grouped and sorted the way you need them.', apiIdentifier: 'link-batch-copy', coinCost: 2, fixFeePaise: 0, isActive: true },
+      { id: 'export-links-excel', icon: 'Table2', title: 'Export Links to Excel', desc: 'Copy your link list as tab-separated rows, ready to paste straight into a spreadsheet with custom column grouping.', apiIdentifier: 'link-export-excel', coinCost: 1, fixFeePaise: 0, isActive: true },
+      { id: 'export-links-json', icon: 'Braces', title: 'Export Links to JSON', desc: 'Copy the same grouped link list as structured JSON for feeding into another tool or script.', apiIdentifier: 'link-export-json', coinCost: 1, fixFeePaise: 0, isActive: true },
+      { id: 'folder-organization', icon: 'FolderTree', title: 'Folder Organization', desc: 'Create, rename, and move folders to keep uploads organized before you ever need to share a link.', apiIdentifier: 'link-folder-organize', coinCost: 0, fixFeePaise: 0, isActive: true },
     ],
     hero: {
-      headline: 'Turn Any Link Into a Short, Trackable One',
-      subtext: 'Paste a long URL, get a clean short link and QR code instantly, and track every click — perfect for social bios, print materials, and campaigns.',
+      headline: 'Browse Your Files. Copy Any Link. Instantly.',
+      subtext: 'Every file you\'ve already uploaded lives in one explorer — pick one file or a hundred, and copy shareable URLs single, batched, or exported straight to Excel and JSON.',
     },
     stats: [
-      { value: '1M+',    label: 'Links Generated' },
-      { value: 'Instant', label: 'Link & QR Creation' },
-      { value: '100%',   label: 'Click Tracking Included' },
-      { value: 'Free',   label: 'No Signup Required' },
+      { value: '1M+',    label: 'Links Copied' },
+      { value: 'Instant', label: 'Single & Batch Copy' },
+      { value: '2',      label: 'Export Formats (Excel, JSON)' },
+      { value: 'Free',   label: 'Browsing & Uploads' },
     ],
     steps: [
-      { step: '01', title: 'Paste Your URL',      desc: 'Drop in any long link you want to shorten.' },
-      { step: '02', title: 'Customise the Slug',  desc: 'Optionally choose your own short link ending for a branded look.' },
-      { step: '03', title: 'Generate the QR Code', desc: 'A scannable QR code is created automatically alongside your short link.' },
-      { step: '04', title: 'Copy or Download',    desc: 'Copy the link or download the QR code image with one click.' },
-      { step: '05', title: 'Track Performance',   desc: 'Watch click counts roll in as people use your link.' },
+      { step: '01', title: 'Open Your File Explorer', desc: 'Browse your uploaded files and folders in a familiar two-pane layout.' },
+      { step: '02', title: 'Select One or Many',      desc: 'Click a single file for a quick copy, or check several for a batch operation.' },
+      { step: '03', title: 'Group & Sort (Optional)', desc: 'For batch selections, group links into columns and sort by name or date before copying.' },
+      { step: '04', title: 'Copy to Clipboard',       desc: 'Copy the link list as plain text, Excel-ready rows, or JSON in one click.' },
+      { step: '05', title: 'Share Anywhere',          desc: 'Paste the copied links into an email, spreadsheet, or another tool — no re-uploading, no re-fetching.' },
     ],
     advantages: [
-      { icon: 'Share2',   title: 'Share anywhere, cleanly',    desc: 'Replace long, messy URLs with short links that look professional everywhere.' },
-      { icon: 'BarChart3', title: 'Know what\'s working',      desc: 'Click tracking shows exactly which links and campaigns are getting engagement.' },
-      { icon: 'QrCode',   title: 'Bridge print and digital',   desc: 'QR codes let offline materials — posters, packaging, business cards — link straight to your content.' },
+      { icon: 'Layers2',  title: 'Built for bulk, not just one link', desc: 'Select hundreds of files and copy every shareable link in one pass instead of opening each file individually.' },
+      { icon: 'Table2',   title: 'Spreadsheet-ready by default',      desc: 'Excel export copies tab-separated rows you can paste directly into a spreadsheet — no reformatting.' },
+      { icon: 'FolderOpen', title: 'Everything already in one place', desc: 'Files you\'ve already uploaded are the source — no separate shortening step, no broken links to a third-party shortener.' },
     ],
     faqs: [
-      { question: 'Do I need an account to generate links?', answer: 'No — you can generate short links and QR codes without signing up.' },
-      { question: 'Can I customise my short link?',          answer: 'Yes — choose a custom slug instead of a random one for branded links.' },
-      { question: 'Do links expire?',                        answer: 'By default links don\'t expire, but you can optionally set an expiry date or click limit.' },
+      { question: 'Do I need to upload a file every time I want its link?', answer: 'No — browse files you\'ve already uploaded and copy their link directly; uploading is only needed for new files.' },
+      { question: 'Can I copy links for many files at once?',               answer: 'Yes — select multiple files and use Batch Copy URLs, with optional grouping and sorting before you copy.' },
+      { question: 'What formats can I export a link list in?',              answer: 'Plain list, Excel-ready tab-separated rows, or JSON — pick whichever fits where you\'re pasting it.' },
     ],
   },
 ];
