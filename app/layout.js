@@ -2,6 +2,7 @@ import './globals.css';
 import Script from 'next/script';
 import { headers } from 'next/headers';
 import Header from '@/components/layout/Header';
+import ToolsNavbar from '@/components/layout/ToolsNavbar';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/ui/WhatsAppFloat';
 import LeadPopup from '@/components/ui/LeadPopup';
@@ -10,7 +11,6 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { COMPANY_EMAIL, COMPANY_PHONE_PRIMARY, COMPANY_PHONE_SECONDARY, COMPANY_NAME } from '@/data/company';
 import { getCachedSingleton } from '@/lib/db';
 import { getAllTools } from '@/lib/tools';
-import { buildNavLinks } from '@/data/navigation';
 import { defaultTheme } from '@/data/defaultTheme';
 
 const SITE_URL = 'https://www.arshanemi.com';
@@ -165,6 +165,7 @@ export default async function RootLayout({ children }) {
   const headersList = await headers()
   const pathname = headersList.get('x-pathname') || ''
   const isAdmin = pathname.startsWith('/settings')
+  const isToolsSection = pathname.startsWith('/tools')
   // Auth screens (/login, /signup, ...) render their own full-bleed branded
   // layout — the site Header/Footer would just duplicate/clash with that.
   const hideChrome = isAdmin || AUTH_ONLY_PATHS.includes(pathname)
@@ -176,8 +177,6 @@ export default async function RootLayout({ children }) {
     getCachedSingleton('theme').catch(() => null),
   ])
   const siteTheme = (savedTheme?.mode) ? savedTheme : defaultTheme
-
-  const dynamicNavLinks = buildNavLinks(liveTools);
 
   return (
     <html lang="en-IN" suppressHydrationWarning>
@@ -206,7 +205,11 @@ export default async function RootLayout({ children }) {
             children
           ) : (
             <>
-              <Header navLinks={dynamicNavLinks} tools={liveTools} />
+              {isToolsSection ? (
+                <ToolsNavbar tools={liveTools} />
+              ) : (
+                <Header tools={liveTools} />
+              )}
               <main className="flex-1">{children}</main>
               <Footer
                 socialLinks={navigation?.socialLinks}

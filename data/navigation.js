@@ -35,7 +35,7 @@ export function buildNavLinks(toolsArr = tools) {
     const known = toolCategories.find((c) => c.id === catId);
     return {
       category: known ? known.label : catId,
-      items: catTools.map((t) => ({ label: t.title, href: `/tools/${t.slug}` })),
+      items: catTools.map((t) => ({ label: t.title, href: t.toolUrl ? `/tools/${t.slug}/use` : `/tools/${t.slug}` })),
     };
   });
 
