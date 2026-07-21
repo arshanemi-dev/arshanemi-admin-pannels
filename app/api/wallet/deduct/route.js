@@ -15,9 +15,13 @@ export async function POST(req) {
   const payload = await getAuthPayload(req)
   if (!payload) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { toolSlug, featureApiIdentifier, idempotencyKey } = await req.json()
+  const { toolSlug, featureApiIdentifier, idempotencyKey, quantity } = await req.json()
   if (!toolSlug || !featureApiIdentifier) {
     return NextResponse.json({ error: 'toolSlug and featureApiIdentifier are required' }, { status: 400 })
+  }
+  const qty = quantity == null ? 1 : Number(quantity)
+  if (!Number.isInteger(qty) || qty < 1) {
+    return NextResponse.json({ error: 'quantity must be a positive integer' }, { status: 400 })
   }
 
   const { tool, feature } = await getToolFeature(toolSlug, featureApiIdentifier)
@@ -34,19 +38,20 @@ export async function POST(req) {
   try {
     const result = await deductWalletCoins({
       userId: payload.userId,
-      amount: feature.coinCost,
+      amount: feature.coinCost * qty,
       toolId: tool.id,
       toolSlug,
       featureId: feature.id ?? null,
       featureApiIdentifier,
       featureTitle: feature.title ?? null,
       idempotencyKey: idempotencyKey ?? null,
+      quantity: qty,
     })
 
     if (!result.ok) {
       if (result.error === 'insufficient_coins') {
         return NextResponse.json(
-          { error: 'insufficient_coins', remainingCoins: result.remaining, requiredCoins: feature.coinCost },
+          { error: 'insufficient_coins', remainingCoins: result.remaining, requiredCoins: feature.coinCost * qty },
           { status: 402 }
         )
       }

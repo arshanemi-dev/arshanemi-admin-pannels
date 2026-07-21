@@ -136,10 +136,14 @@ export default function AdminWalletPage() {
   if (error) return <LoadError onRetry={load} />
   if (!users || !transactions) return <TableSkeleton />
 
+  // Unclamped — a debtor user (negative remaining, from the storage-billing
+  // cron's p_allow_negative) must still count as their true negative value
+  // here, or the aggregate KPI in WalletSummaryStats understates total
+  // platform exposure by counting every debtor as 0.
   const balances = users.map((u) => ({
     total: u.wallet_credits_total ?? 0,
     used: u.wallet_credits_used ?? 0,
-    remaining: Math.max(0, (u.wallet_credits_total ?? 0) - (u.wallet_credits_used ?? 0)),
+    remaining: (u.wallet_credits_total ?? 0) - (u.wallet_credits_used ?? 0),
   }))
 
   return (

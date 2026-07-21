@@ -39,31 +39,35 @@ export default function ToolUseClient({ tool }) {
   }, [tool.toolUrl])
 
   return (
-    // Relative width, not a viewport-escaping full-bleed hack — this page
-    // never wraps ToolUseClient in a max-w container, so w-screen (which
-    // includes the scrollbar's width on most browsers) only ever pushed the
-    // iframe past the real viewport edge and caused horizontal overflow.
-    <div className="relative w-full bg-white">
-      {(iframeLoading || !iframeSrc) && (
-        <div className="absolute inset-0 flex items-center justify-center bg-card min-h-[70vh] h-full">
-          <Loader2 className="w-6 h-6 text-accent animate-spin" />
-        </div>
-      )}
-      {/* iframeSrc stays null until buildIframeSrc() has decided whether to
-          attach SSO handoff params — the tool app must never load without
-          having had the chance to receive them. */}
-      {iframeSrc && (
-        <iframe
-          src={iframeSrc}
-          title={tool.title}
-          sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-          allow="clipboard-write"
-          referrerPolicy="no-referrer"
-          loading="lazy"
-          onLoad={() => setIframeLoading(false)}
-          className="block w-full h-max min-h-[70vh] h-full border-0"
-        />
-      )}
+    // Same centered content container as ToolsNavbar (max-w-7xl mx-auto +
+    // responsive px), not a viewport-escaping full-bleed hack — w-screen
+    // (which includes the scrollbar's width on most browsers) only ever
+    // pushed the iframe past the real viewport edge and caused horizontal
+    // overflow. The iframe itself stays w-full so it fills that container
+    // responsively at every breakpoint.
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative w-full bg-white rounded-2xl border border-divider overflow-hidden">
+        {(iframeLoading || !iframeSrc) && (
+          <div className="absolute inset-0 flex items-center justify-center bg-card min-h-[70vh] h-full">
+            <Loader2 className="w-6 h-6 text-accent animate-spin" />
+          </div>
+        )}
+        {/* iframeSrc stays null until buildIframeSrc() has decided whether to
+            attach SSO handoff params — the tool app must never load without
+            having had the chance to receive them. */}
+        {iframeSrc && (
+          <iframe
+            src={iframeSrc}
+            title={tool.title}
+            sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+            allow="clipboard-write"
+            referrerPolicy="no-referrer"
+            loading="lazy"
+            onLoad={() => setIframeLoading(false)}
+            className="block w-full h-max min-h-[70vh] h-full border-0"
+          />
+        )}
+      </div>
     </div>
   )
 }
