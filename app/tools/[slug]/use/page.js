@@ -1,8 +1,11 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { getTool } from '@/lib/tools'
+import { resolveToolAccess } from '@/lib/toolAccess'
 import ToolUseClient from '@/components/tools/ToolUseClient'
+import PremiumFeatureGate from '@/components/tools/PremiumFeatureGate'
+import AccessDeniedGate from '@/components/tools/AccessDeniedGate'
 
 export async function generateMetadata({ params }) {
   const { slug } = await params
@@ -13,12 +16,31 @@ export async function generateMetadata({ params }) {
 
 export default async function ToolUsePage({ params }) {
   const { slug } = await params
-  const tool = await getTool(slug)
-  if (!tool) notFound()
+  const access = await resolveToolAccess(slug)
+  if (access.kind === 'not_found') notFound()
+  if (access.kind === 'redirect') redirect(access.to)
+
+  if (access.kind === 'access_denied') {
+    return (
+      <div className="min-h-screen bg-background pt-24 pb-10">
+        <AccessDeniedGate tool={access.tool} />
+      </div>
+    )
+  }
+
+  if (access.kind === 'fee_required') {
+    return (
+      <div className="min-h-screen bg-background pt-24 pb-10">
+        <PremiumFeatureGate tool={access.tool} feature={access.feature} />
+      </div>
+    )
+  }
+
+  const { tool } = access
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-10">
-      
+
 
       {tool.toolUrl ? (
         <ToolUseClient tool={tool} />

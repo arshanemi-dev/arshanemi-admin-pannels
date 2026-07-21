@@ -1,16 +1,44 @@
 'use client'
-import { useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Eye, EyeOff, Loader2, Zap } from 'lucide-react'
-import { saveAuthTokens } from '@/lib/tokenStore'
+import { saveAuthTokens, isLoggedIn, getRefreshToken } from '@/lib/tokenStore'
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const next = searchParams.get('next') || '/'
   const [form, setForm] = useState({ identifier: '', password: '' })
   const [showPw, setShowPw] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  // Recovers a session whose 1-day httpOnly access cookie lapsed while the
+  // 7-day refresh token (localStorage) is still good — e.g. a server-side
+  // redirect landed here because the cookie was stale, not because the user
+  // actually signed out. Silently refreshes and bounces back to `next`
+  // instead of forcing real re-entry of credentials.
+  const [checkingSession, setCheckingSession] = useState(true)
+
+  useEffect(() => {
+    const refreshToken = getRefreshToken()
+    if (!isLoggedIn() || !refreshToken) {
+      setCheckingSession(false)
+      return
+    }
+    fetch('/api/auth/refresh', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    })
+      .then(async (res) => {
+        if (!res.ok) { setCheckingSession(false); return }
+        const data = await res.json()
+        saveAuthTokens({ accessToken: data.accessToken, refreshToken, expiresIn: data.expiresIn })
+        router.replace(next)
+      })
+      .catch(() => setCheckingSession(false))
+  }, [next, router])
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -40,15 +68,21 @@ export default function LoginPage() {
       // Razorpay's success handler could call /topup/verify). Doesn't block
       // the redirect either way — see lib/paymentReconciliation.js.
       fetch('/api/wallet/reconcile', { method: 'POST' }).catch(() => {})
-      // Land back on the public homepage — the navbar's profile menu is
-      // where a signed-in user goes on to reach /settings or /tools from here.
-      router.push('/')
+      router.push(next)
       router.refresh()
     } catch {
       setError('Network error — please try again')
     } finally {
       setLoading(false)
     }
+  }
+
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-6 h-6 text-accent animate-spin" />
+      </div>
+    )
   }
 
   return (
@@ -155,5 +189,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background" />}>
+      <LoginForm />
+    </Suspense>
   )
 }

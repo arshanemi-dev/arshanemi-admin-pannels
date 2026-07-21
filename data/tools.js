@@ -17,12 +17,6 @@ export const tools = [
     toolUrl: 'https://pdf-cropper.freelax.in/',
     requiresLogin: false,
     features: [
-      { id: 'pixel-precise-cropping', icon: 'Crop',       title: 'Pixel-Precise Cropping', desc: 'Drag a crop box or enter exact margins in mm/inches — every page is trimmed to the same precision every time.', apiIdentifier: 'crop-precise', coinCost: 1, fixFeePaise: 0, isActive: true },
-      { id: 'batch-processing', icon: 'Layers',     title: 'Batch Processing',       desc: 'Crop hundreds of pages across multiple PDFs in one pass instead of opening each file individually.', apiIdentifier: 'crop-batch', coinCost: 5, fixFeePaise: 0, isActive: true },
-      { id: 'live-preview', icon: 'Eye',        title: 'Live Preview',           desc: 'See the exact crop applied to every page before you export — no surprises, no re-dos.', apiIdentifier: 'crop-preview', coinCost: 1, fixFeePaise: 0, isActive: true },
-      { id: 'runs-in-your-browser', icon: 'Lock',       title: 'Runs in Your Browser',   desc: 'Files are processed locally — nothing is uploaded to a server, so sensitive documents never leave your device.', apiIdentifier: 'crop-local-process', coinCost: 1, fixFeePaise: 0, isActive: true },
-      { id: 'auto-detect-margins', icon: 'Grid',       title: 'Auto-Detect Margins',    desc: 'One click scans the page content and suggests the tightest possible crop automatically.', apiIdentifier: 'crop-autodetect', coinCost: 2, fixFeePaise: 0, isActive: true },
-      { id: 'instant-export', icon: 'Download',   title: 'Instant Export',         desc: 'Download your cropped PDF immediately — no waiting, no email links, no processing queue.', apiIdentifier: 'crop-export', coinCost: 1, fixFeePaise: 0, isActive: true },
       // "Premium" master-sort mode in the PDF Cropper app's Sort Options panel
       // (components/pdf-tool/SortOptions.jsx there) — gated by Fix Fee rather
       // than coinCost, since it's a one-time unlock, not a per-use charge.

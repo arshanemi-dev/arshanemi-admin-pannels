@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import Header from '@/components/layout/Header';
 import ToolsNavbar from '@/components/layout/ToolsNavbar';
 import Footer from '@/components/layout/Footer';
+import SessionManager from '@/components/admin/SessionManager';
 import WhatsAppFloat from '@/components/ui/WhatsAppFloat';
 import LeadPopup from '@/components/ui/LeadPopup';
 import SplashScreen from '@/components/ui/SplashScreen';
@@ -205,6 +206,7 @@ export default async function RootLayout({ children }) {
             children
           ) : (
             <>
+              <SessionManager loginPath="/login" />
               {isToolsSection ? (
                 <ToolsNavbar tools={liveTools} />
               ) : (
