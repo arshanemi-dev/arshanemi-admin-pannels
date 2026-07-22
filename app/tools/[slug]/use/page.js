@@ -22,13 +22,13 @@ export default async function ToolUsePage({ params }) {
 
   if (access.kind === 'access_denied') {
     return (
-      <div className="min-h-screen bg-background pt-24 pb-10">
+      <div className="h-[100vh] bg-background pt-24 pb-10">
         <AccessDeniedGate tool={access.tool} />
       </div>
     )
   }
 
-  if (access.kind === 'fee_required') {
+  if (access.kind === 'activation_required') {
     return (
       <div className="min-h-screen bg-background pt-24 pb-10">
         <PremiumFeatureGate tool={access.tool} feature={access.feature} />

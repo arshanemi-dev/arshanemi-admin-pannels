@@ -36,6 +36,6 @@ export const ADDITIONAL_ADMINS = [
     name: 'Satyam Baranwal',
     email: 'satyambaranwalme998413@gmail.com',
     password: 'India@123',
-    role: 'admin',
+    role: 'user',
   },
 ];

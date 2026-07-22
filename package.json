@@ -13,7 +13,8 @@
     "db:clean": "node --env-file=.env scripts/clean-db.mjs",
     "cron": "node --env-file=.env scripts/cron-cleanup.mjs",
     "cron:reconcile": "node --env-file=.env scripts/cron-reconcile-topups.mjs",
-    "cron:storage-billing": "node --env-file=.env scripts/cron-storage-billing.mjs"
+    "cron:storage-billing": "node --env-file=.env scripts/cron-storage-billing.mjs",
+    "cron:feature-renewals": "node --env-file=.env scripts/cron-feature-renewals.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",

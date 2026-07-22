@@ -1,26 +1,11 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { PageHeader } from '@/components/admin/PageHeader'
-import { CoinsUsageTable, CoinPlansTable } from '@/components/admin/plan'
+import { CoinsUsageTable, CoinPlansTable, FeatureActivationPanel } from '@/components/admin/plan'
 import { PromoBadge } from '@/components/admin/promo'
 import { TableSkeleton, LoadError } from '@/components/admin/Skeleton'
 import { coinPlansNote } from '@/data/coinPlans'
-
-// Groups tools' billable features into the shape CoinsUsageTable already
-// expects (productName → tool title, variants[] → priced features) — see
-// plan/my-payment-management.md §4/§6. Only tools with at least one active,
-// priced feature show up; marketing-only tools (coinCost 0 / isActive false)
-// don't clutter the rates table.
-function buildUsageRateGroups(tools) {
-  return tools
-    .map((tool) => {
-      const variants = (tool.features || [])
-        .filter((f) => f.isActive && f.coinCost > 0)
-        .map((f) => ({ name: f.title, fixFees: 0, coinCost: `${f.coinCost} Coin${f.coinCost === 1 ? '' : 's'}` }))
-      return variants.length ? { id: tool.slug, productName: tool.title, variants } : null
-    })
-    .filter(Boolean)
-}
+import { buildUsageRateGroups } from '@/lib/toolPricing'
 
 export default function PlanPage() {
   const [packages, setPackages] = useState(null)
@@ -55,6 +40,7 @@ export default function PlanPage() {
       ) : (
         <>
           <CoinPlansTable packages={packages} note={coinPlansNote} onPurchased={load} />
+          <FeatureActivationPanel tools={tools} onChanged={load} />
           <CoinsUsageTable data={buildUsageRateGroups(tools)} />
         </>
       )}

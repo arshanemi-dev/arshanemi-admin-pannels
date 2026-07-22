@@ -14,16 +14,18 @@ export const tools = [
     shortDesc: 'Batch crop, trim margins, and resize PDF pages with pixel precision — no software, no uploads.',
     category: 'embedded',
     badge: 'Free',
-    toolUrl: 'https://pdf-cropper.freelax.in/',
+    toolUrl: 'http://localhost:3002/',
     requiresLogin: false,
+    // Every real sort/generate mode in the app's Sort Options panel
+    // (components/pdf-tool/SortOptions.jsx there) now has a matching
+    // feature — all free (0 coins) except Master SKU Group Sort, so any of
+    // them becomes instantly price-editable via this catalog later with no
+    // code changes in the tool app (see app/pdf-tool/page.js's
+    // SORT_MODE_FEATURES map).
     features: [
-      // "Premium" master-sort mode in the PDF Cropper app's Sort Options panel
-      // (components/pdf-tool/SortOptions.jsx there) — one-time ₹100 Fix Fee
-      // unlock (10000 paise, using the Starter Pack's 1:1 coin↔rupee rate as
-      // the reference conversion for "100 coins"), then 10 coins per
-      // generation after that — the existing fee→coin waterfall in
-      // runBillingGate() already implements this exactly, no code changes.
-      { id: 'master-sku-group-sort', icon: 'Layers2', title: 'Master SKU Group Sort', desc: 'Sort and group shipping labels by a master SKU list across multiple orders — built for high-volume sellers managing several storefronts at once.', apiIdentifier: 'crop-master-sku-group', coinCost: 10, fixFeePaise: 10000, isActive: true },
+      { id: 'sort-sku-group', icon: 'ListOrdered', title: 'Sort by SKU', desc: '', apiIdentifier: 'crop-sku-group', coinCost: 0, fixFeeCoins: 0, isActive: true },
+      { id: 'master-pick-list', icon: 'ClipboardCheck', title: 'Master Pick List', desc: 'Generate a consolidated pick list across the master SKU grouping.', apiIdentifier: 'crop-master-pick-list', coinCost: 0, fixFeeCoins: 0, isActive: true },
+      
     ],
     hero: {
       headline: 'Crop Every Page. Perfectly. Every Time.',
@@ -61,18 +63,12 @@ export const tools = [
     shortDesc: 'AI-powered background removal for product photos and portraits — export transparent PNGs in seconds.',
     category: 'embedded',
     badge: 'AI-Powered',
-    toolUrl: 'https://bg-remover.freelax.in/',
+    toolUrl: 'http://localhost:3003/',
     requiresLogin: false,
-    // Features are keyed by server-side quality TIER, not by capability —
-    // matches components/bg-remover/TierSelector.jsx and BgRemoverTool.jsx's
-    // handleProcessImage/handleRemoveSelected in tools-3 (see
-    // plan/tools-pricing-cut-paln.md §7). The `normal` tier runs entirely
-    // client-side (Web Worker) and is never billed, so it has no feature row
-    // here — only medium/advanced/pro, the tiers that call a paid server API.
     features: [
-      { id: 'medium-quality-removal', icon: 'Server', title: 'Medium Quality Removal', desc: 'Self-hosted AI background removal with sharper edges than the free client-side mode.', apiIdentifier: 'bg-remove-medium', coinCost: 0, fixFeePaise: 0, isActive: true },
-      { id: 'advanced-quality-removal', icon: 'Sparkles', title: 'Advanced Quality Removal', desc: 'Professional-grade edge detection powered by poof.bg — built for tricky edges like hair and fur.', apiIdentifier: 'bg-remove-advanced', coinCost: 1, fixFeePaise: 0, isActive: true },
-      { id: 'pro-quality-removal', icon: 'Crown', title: 'Pro Quality Removal', desc: 'Studio-quality cutouts powered by Photoroom — the best-in-class tier for client-facing product photography.', apiIdentifier: 'bg-remove-pro', coinCost: 0, fixFeePaise: 0, isActive: true },
+      { id: 'medium-quality-removal', icon: 'Server', title: 'Medium Quality Removal', desc: 'Self-hosted AI background removal with sharper edges than the free client-side mode.', apiIdentifier: 'bg-remove-medium', coinCost: 0, fixFeeCoins: 0, isActive: true },
+      { id: 'advanced-quality-removal', icon: 'Sparkles', title: 'Advanced Quality Removal', desc: 'Professional-grade edge detection powered by poof.bg — built for tricky edges like hair and fur.', apiIdentifier: 'bg-remove-advanced', coinCost: 2, fixFeeCoins: 0, isActive: true },
+      { id: 'pro-quality-removal', icon: 'Crown', title: 'Pro Quality Removal', desc: 'Studio-quality cutouts powered by Photoroom — the best-in-class tier for client-facing product photography.', apiIdentifier: 'bg-remove-pro', coinCost: 3, fixFeeCoins: 0, isActive: true },
     ],
     hero: {
       headline: 'Remove Any Background in One Click',
@@ -109,30 +105,19 @@ export const tools = [
     shortDesc: 'Browse your uploaded files and folders, then copy shareable links — single or in bulk — with Excel and JSON export built in.',
     category: 'embedded',
     badge: 'Free',
-    toolUrl: 'https://link-generator.freelax.in/',
+    toolUrl: 'http://localhost:3001/',
     requiresLogin: false,
     // apiIdentifiers below must match what's wired into FileExplorer.jsx's
     // handleCopyUrls (single vs batch) and handleInlineCopyExcel — see
     // plan/tools-pricing-cut-paln.md §7. `link-copy` is a pre-existing
     // identifier, reused as-is so old usage history/grants stay meaningful.
     features: [
-      { id: 'browse-files', icon: 'FolderOpen', title: 'Browse Files', desc: 'Navigate your cloud-stored files and folders in a familiar two-pane explorer.', apiIdentifier: 'link-browse', coinCost: 0, fixFeePaise: 0, isActive: true },
-      // Charged once per batch via hooks/useUpload.js, quantity = number of
-      // files that actually finished uploading (not files attempted) — see
-      // runBillingGate's quantity param.
-      { id: 'image-upload', icon: 'Upload', title: 'File Upload', desc: 'Upload new files straight from your browser — 1 coin per file uploaded.', apiIdentifier: 'link-image-upload', coinCost: 1, fixFeePaise: 0, isActive: true },
-      { id: 'copy-file-url', icon: 'Copy', title: 'Copy File URL', desc: 'Select a single file and copy its shareable link to your clipboard in one click — no dashboards, no waiting.', apiIdentifier: 'link-copy', coinCost: 1, fixFeePaise: 0, isActive: true },
-      { id: 'batch-copy-urls', icon: 'Layers2', title: 'Batch Copy URLs', desc: 'Select dozens of files at once and copy every shareable link together, grouped and sorted the way you need them.', apiIdentifier: 'link-batch-copy', coinCost: 2, fixFeePaise: 0, isActive: true },
-      { id: 'export-links-excel', icon: 'Table2', title: 'Export Links to Excel', desc: 'Copy your link list as tab-separated rows, ready to paste straight into a spreadsheet with custom column grouping.', apiIdentifier: 'link-export-excel', coinCost: 1, fixFeePaise: 0, isActive: true },
-      { id: 'export-links-json', icon: 'Braces', title: 'Export Links to JSON', desc: 'Copy the same grouped link list as structured JSON for feeding into another tool or script.', apiIdentifier: 'link-export-json', coinCost: 1, fixFeePaise: 0, isActive: true },
-      { id: 'folder-organization', icon: 'FolderTree', title: 'Folder Organization', desc: 'Create, rename, and move folders to keep uploads organized before you ever need to share a link.', apiIdentifier: 'link-folder-organize', coinCost: 0, fixFeePaise: 0, isActive: true },
-      // Never called via runBillingGate — billed automatically once a month
-      // by scripts/cron-storage-billing.mjs off the running total reported
-      // via POST /api/wallet/storage/report. Exists here so the per-GB rate
-      // is admin-editable (Tools Catalog) and shows on the public pricing
-      // page. 1GB free per month, tracked separately per storage provider
-      // (Dropbox and Bunny.net each get their own free allowance).
-      { id: 'storage-per-gb', icon: 'HardDrive', title: 'Storage', desc: '50 coins per GB per month, with 1GB free — billed automatically, tracked separately for Dropbox and Bunny.net.', apiIdentifier: 'link-storage-gb-month', coinCost: 50, fixFeePaise: 0, isActive: true },
+    
+      { id: 'image-upload', icon: 'Upload', title: 'File Upload', desc: 'Upload new files straight from your browser — 1 coin per file uploaded.', apiIdentifier: 'link-image-upload', coinCost: 1, fixFeeCoins: 0, isActive: true },
+      // coinCost here is the per-GB rate scripts/cron-storage-billing.mjs
+      // reads — NOT fixFeeCoins (that's the unrelated monthly-activation-
+      // toggle mechanism). Storage is metered/cron-billed, never a toggle.
+      { id: 'storage-per-gb', icon: 'HardDrive', title: 'Storage', desc: '50 coins per GB per month, with 1GB free — billed automatically.', apiIdentifier: 'link-storage-gb-month', coinCost: 0, fixFeeCoins: 50, isActive: true },
     ],
     hero: {
       headline: 'Browse Your Files. Copy Any Link. Instantly.',
@@ -165,14 +150,12 @@ export const tools = [
 ];
 
 // Default per-role tools access, applied when a user_settings row is first
-// created for a user (at signup, or when seeding default accounts).
-// master_admin and admin get every current tool since they're only ever
-// created by an existing admin (and an admin needs tools of their own before
-// they can grant any to their team, per Admin → Settings). A plain 'user' —
-// created via self-signup or Admin → Users — starts with NO tools access at
-// all; an admin has to explicitly grant each one from Admin → Settings.
+// created for a user (at signup, Admin → Users, or when seeding default
+// accounts). Every default role — master_admin, admin, and plain 'user' —
+// starts with every current tool granted; an admin can still revoke
+// individual tools per-user afterwards from Admin → Settings.
 export const defaultToolsAccessByRole = {
   master_admin: tools.map((t) => t.slug),
   admin: tools.map((t) => t.slug),
-  user: [],
+  user: tools.map((t) => t.slug),
 };

@@ -53,7 +53,7 @@ export default function ToolForm({ initialForm, onSubmit, loading, submitLabel, 
       ...f,
       features: [
         ...(f.features || []),
-        { id: `feature-${Date.now()}`, icon: 'Star', title: '', desc: '', apiIdentifier: '', coinCost: 0, fixFeePaise: 0, isActive: false },
+        { id: `feature-${Date.now()}`, icon: 'Star', title: '', desc: '', apiIdentifier: '', coinCost: 0, fixFeeCoins: 0, isActive: false },
       ],
     }))
     setAdvancedOpen(true)
@@ -99,7 +99,7 @@ export default function ToolForm({ initialForm, onSubmit, loading, submitLabel, 
       features: (form.features || []).map((f) => ({
         ...f,
         coinCost: Math.max(0, +f.coinCost || 0),
-        fixFeePaise: Math.max(0, Math.round(+f.fixFeePaise || 0)),
+        fixFeeCoins: Math.max(0, Math.round(+f.fixFeeCoins || 0)),
         apiIdentifier: f.apiIdentifier?.trim() || null,
       })),
     })
@@ -171,7 +171,7 @@ export default function ToolForm({ initialForm, onSubmit, loading, submitLabel, 
           {advancedOpen && (
             <div className="border-t border-divider">
               <div className="flex items-center justify-between px-4 py-3 border-b border-divider">
-                <p className="text-xs text-subtle max-w-sm">Active features are billable — external tool apps deduct coins against them, and can also carry a one-time Fixed Fee.</p>
+                <p className="text-xs text-subtle max-w-sm">Active features are billable — external tool apps deduct coins against them, and can also require a recurring monthly Activation charge.</p>
                 <button
                   type="button"
                   onClick={addFeature}
@@ -239,12 +239,12 @@ export default function ToolForm({ initialForm, onSubmit, loading, submitLabel, 
                           />
                         </div>
                         <div className="flex-1">
-                          <label className="text-xs text-subtle">Fixed Fee (₹)</label>
+                          <label className="text-xs text-subtle">Activation (Coins/mo)</label>
                           <input
                             type="number"
                             min={0}
-                            value={feature.fixFeePaise ? feature.fixFeePaise / 100 : 0}
-                            onChange={(e) => updateFeature(index, 'fixFeePaise', Math.round((+e.target.value || 0) * 100))}
+                            value={feature.fixFeeCoins || 0}
+                            onChange={(e) => updateFeature(index, 'fixFeeCoins', Math.round(+e.target.value || 0))}
                             className="admin-input"
                           />
                         </div>

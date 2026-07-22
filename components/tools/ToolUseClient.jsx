@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect,useRef } from 'react'
 import { Loader2 } from 'lucide-react'
 import { isLoggedIn, getAccessToken, getRefreshToken, getStoredUser } from '@/lib/tokenStore'
 
@@ -34,6 +34,18 @@ export default function ToolUseClient({ tool }) {
   // the SSO params, so the tool app never loses the handoff to a race.
   const [iframeSrc, setIframeSrc] = useState(null)
 
+  const iframeRef = useRef(null);
+
+  const handleLoad = () => {
+    if (iframeRef.current) {
+      // Get height of inner content body
+      const contentHeight = iframeRef.current.contentWindow?.document.body.scrollHeight;
+      if (contentHeight) {
+        iframeRef.current.style.height = `${contentHeight}px`;
+      }
+    }
+  };
+
   useEffect(() => {
     setIframeSrc(buildIframeSrc(tool.toolUrl))
   }, [tool.toolUrl])
@@ -45,10 +57,10 @@ export default function ToolUseClient({ tool }) {
     // pushed the iframe past the real viewport edge and caused horizontal
     // overflow. The iframe itself stays w-full so it fills that container
     // responsively at every breakpoint.
-    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="relative  mx-auto px-4 sm:px-6 lg:px-8">
       <div className="relative w-full bg-white rounded-2xl border border-divider overflow-hidden">
         {(iframeLoading || !iframeSrc) && (
-          <div className="absolute inset-0 flex items-center justify-center bg-card min-h-[70vh] h-full">
+          <div className="absolute inset-0 flex items-center justify-center bg-card min-h-[90vh] h-full">
             <Loader2 className="w-6 h-6 text-accent animate-spin" />
           </div>
         )}
@@ -63,7 +75,7 @@ export default function ToolUseClient({ tool }) {
             allow="clipboard-write"
             referrerPolicy="no-referrer"
             loading="lazy"
-            onLoad={() => setIframeLoading(false)}
+            onLoad={() => {setIframeLoading(false);handleLoad()}}
             className="block w-full h-max min-h-[70vh] h-full border-0"
           />
         )}

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { revalidateTag, revalidatePath } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { getAdminFromRequest, getStaffFromRequest } from '@/lib/auth'
 import { getAllToolsFromDB, createTool } from '@/lib/db'
 
@@ -17,7 +17,6 @@ export async function POST(req) {
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const data = await req.json()
   const tool = await createTool(data)
-  revalidateTag('tools')
   revalidatePath('/', 'layout')
   revalidatePath('/tools')
   return NextResponse.json(tool, { status: 201 })

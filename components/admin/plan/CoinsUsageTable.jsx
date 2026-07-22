@@ -36,7 +36,13 @@ export default function CoinsUsageTable({ data }) {
                           {group.productName}
                         </td>
                       )}
-                      <td className="px-5 py-3.5 text-sm text-muted">{variant.name}</td>
+                      <td className="px-5 py-3.5 text-sm text-muted">
+                        
+                      <div className='font-bold'> {variant.name}</div>  
+                        {variant.desc && (
+                          <div className="text-xs text-muted-foreground mt-1">{variant.desc}</div>
+                        ) }
+                        </td>
                       <td className="px-5 py-3.5 text-sm text-muted">{variant.fixFees}</td>
                       <td className="px-5 py-3.5 text-sm text-muted">{variant.coinCost}</td>
                     </tr>

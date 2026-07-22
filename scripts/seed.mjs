@@ -103,33 +103,6 @@ async function seedCoinPackages(supabase, packages) {
   console.log(`  ✓ coin_packages (${rows.length} items)`)
 }
 
-// lib/tools.js's getAllTools() wraps the DB read in unstable_cache(['tools'],
-// { tags:['tools'], revalidate:3600 }) — only invalidated by an explicit
-// revalidateTag('tools') call (from the admin Tools Catalog's PUT route) or
-// natural 1hr expiry. seedTools() above writes straight to Supabase via the
-// REST client, entirely outside Next's request lifecycle, so nothing ever
-// calls revalidateTag — without this, a freshly reseeded tools table stays
-// invisible to the running app for up to an hour. Reuses the existing
-// generic app/api/revalidate/route.js rather than adding a new endpoint.
-async function revalidateCache(tags) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
-  try {
-    const res = await fetch(`${siteUrl}/api/revalidate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tags }),
-    })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    console.log(`  ✓ Revalidated cache tag(s): ${tags.join(', ')}`)
-  } catch (err) {
-    console.warn(
-      `  ⚠ Could not revalidate cache tag(s) [${tags.join(', ')}] at ${siteUrl}/api/revalidate — ` +
-      `is the Next.js server running there? Seeded data will still appear, just not until the ` +
-      `cache's own 1hr window expires. (${err.message})`
-    )
-  }
-}
-
 // ─── nanoid shim ─────────────────────────────────────────────────────────────
 
 async function nid() {
@@ -189,7 +162,6 @@ async function main() {
     await Promise.all(services.map(async (s) => ({ ...s, id: await nid() }))))
 
   await seedTools(supabase, tools)
-  await revalidateCache(['tools'])
 
   await seedList(supabase, 'industries',
     await Promise.all(industries.map(async (i) => ({ ...i, id: await nid() }))))

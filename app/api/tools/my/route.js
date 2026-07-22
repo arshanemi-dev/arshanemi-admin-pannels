@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getAuthPayload } from '@/lib/auth'
-import { getPaidFeatureFeeKeys } from '@/lib/db'
+import { getFeatureActivations } from '@/lib/db'
 import { getAllTools, getUserToolsAccess } from '@/lib/tools'
 
 // Any authenticated user (not admin-only) — returns only the tools this user
@@ -18,14 +18,18 @@ export async function GET(req) {
 
   const tools = allTools.filter((t) => access.includes(t.slug))
 
-  const paidKeys = await getPaidFeatureFeeKeys(payload.userId, tools.map((t) => t.slug))
+  const activations = await getFeatureActivations(payload.userId, tools.map((t) => t.slug))
   const enriched = tools.map((t) => ({
     ...t,
-    features: (t.features || []).map((f) => ({
-      ...f,
-      fixFeePaise: f.fixFeePaise ?? 0,
-      feePaid: !f.fixFeePaise || paidKeys.has(`${t.slug}::${f.apiIdentifier}`),
-    })),
+    features: (t.features || []).map((f) => {
+      const activation = activations.get(`${t.slug}::${f.apiIdentifier}`)
+      return {
+        ...f,
+        fixFeeCoins: f.fixFeeCoins ?? 0,
+        activationActive: !f.fixFeeCoins || !!activation?.isActive,
+        nextRenewalAt: activation?.nextRenewalAt ?? null,
+      }
+    }),
   }))
 
   return NextResponse.json(enriched, {

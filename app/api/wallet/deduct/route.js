@@ -1,16 +1,20 @@
 import { NextResponse } from 'next/server'
 import { getAuthPayload } from '@/lib/auth'
-import { getToolFeature } from '@/lib/tools'
-import { deductWalletCoins, hasUserPaidFeatureFee } from '@/lib/db'
+import { getToolFeature, getUserToolsAccess } from '@/lib/tools'
+import { deductWalletCoins, getFeatureActivations } from '@/lib/db'
 
 // The contract external tool apps (PDF Cropper, BG Remover, etc. — separate
 // subdomains) integrate against. They authenticate with the same Bearer JWT
-// the user already holds — see plan/tools-pricing-cut-paln.md §7.
+// the user already holds.
 //
-// This is the one authoritative enforcement point for both the Fix-Fee gate
-// and the coin-cost gate — the client-side check in each tool app's
-// runBillingGate() is UX only, this route is truth (see the plan's security
-// note in §0).
+// This is the ONLY enforcement point the tool apps talk to — access grant,
+// recurring Activation (feature.fixFeeCoins), and coin-cost are all decided
+// here. Tool apps never activate/deactivate, never decide a coin amount,
+// never pre-check anything — they fire this one call with a
+// {toolSlug, featureApiIdentifier, quantity} and display whatever `error`
+// comes back. Activating/deactivating a recurring feature happens only from
+// the admin panel's own /settings/plan (FeatureActivationPanel) — see
+// app/api/wallet/feature/{activate,deactivate}/route.js.
 export async function POST(req) {
   const payload = await getAuthPayload(req)
   if (!payload) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -24,21 +28,35 @@ export async function POST(req) {
     return NextResponse.json({ error: 'quantity must be a positive integer' }, { status: 400 })
   }
 
-  const { tool, feature } = await getToolFeature(toolSlug, featureApiIdentifier)
-  if (!tool) return NextResponse.json({ error: 'Tool not found' }, { status: 404 })
-  if (!feature || !feature.isActive) {
-    return NextResponse.json({ error: 'Feature not found or not active' }, { status: 404 })
+  // Access grant — has this user even been given this tool? The tool app
+  // never decides this itself.
+  const access = await getUserToolsAccess(payload.userId, payload.role)
+  if (!access.includes(toolSlug)) {
+    return NextResponse.json({ error: 'access_denied' }, { status: 403 })
   }
 
-  if (feature.fixFeePaise > 0) {
-    const paid = await hasUserPaidFeatureFee(payload.userId, toolSlug, featureApiIdentifier)
-    if (!paid) return NextResponse.json({ error: 'fee_required', fixFeePaise: feature.fixFeePaise }, { status: 402 })
+  const { tool, feature } = await getToolFeature(toolSlug, featureApiIdentifier)
+  if (!tool || !feature || !feature.isActive) {
+    return NextResponse.json({ error: 'feature_unavailable' }, { status: 404 })
+  }
+
+  if (feature.fixFeeCoins > 0) {
+    const activations = await getFeatureActivations(payload.userId, [toolSlug])
+    const active = activations.get(`${toolSlug}::${featureApiIdentifier}`)?.isActive
+    if (!active) return NextResponse.json({ error: 'activation_required', fixFeeCoins: feature.fixFeeCoins }, { status: 402 })
+  }
+
+  const amount = feature.coinCost * qty
+  if (amount <= 0) {
+    // Free feature — nothing to deduct, no usage-history row needed. The
+    // tool app fired this call unconditionally; it never pre-checked coinCost.
+    return NextResponse.json({ ok: true, coinsCost: 0, remainingCoins: null, duplicate: false })
   }
 
   try {
     const result = await deductWalletCoins({
       userId: payload.userId,
-      amount: feature.coinCost * qty,
+      amount,
       toolId: tool.id,
       toolSlug,
       featureId: feature.id ?? null,
@@ -51,7 +69,7 @@ export async function POST(req) {
     if (!result.ok) {
       if (result.error === 'insufficient_coins') {
         return NextResponse.json(
-          { error: 'insufficient_coins', remainingCoins: result.remaining, requiredCoins: feature.coinCost * qty },
+          { error: 'insufficient_coins', remainingCoins: result.remaining, requiredCoins: amount },
           { status: 402 }
         )
       }

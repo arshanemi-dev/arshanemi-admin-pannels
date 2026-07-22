@@ -58,7 +58,17 @@ export async function proxy(req) {
   // 'admin-token'. Structural access to /settings is granted to any logged-in
   // role here — the layout and API routes below decide what each role can
   // actually see/do, same defense-in-depth pattern already used elsewhere.
-  const token = req.cookies.get('admin-token')?.value || req.cookies.get('arshanemi-token')?.value
+  //
+  // Bearer header checked first, same priority as lib/auth.js's
+  // getAuthPayload() — server-to-server callers (e.g. the tools dashboard's
+  // connect-mode proxy in tools/arshanemi-tools-dashboard/lib/connect.js)
+  // have no cookie jar for this origin and can only ever send a bearer
+  // token; without this fallback every /api/admin/* call from a proxying
+  // caller 401s here before the route handler even runs, no matter how
+  // valid the token is.
+  const authHeader = req.headers.get('Authorization')
+  const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
+  const token = bearerToken || req.cookies.get('admin-token')?.value || req.cookies.get('arshanemi-token')?.value
   if (!token) {
     if (pathname.startsWith('/api/')) {
       const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

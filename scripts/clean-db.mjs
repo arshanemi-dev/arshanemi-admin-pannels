@@ -23,9 +23,13 @@ function getSupabase() {
 }
 
 // Child tables first, so FK references (ON DELETE CASCADE/SET NULL) never
-// block a parent delete — see scripts/schema.sql + wallet_system_migration.sql
-// for the actual constraints this order respects.
+// block a parent delete — see scripts/schema.sql, wallet_system_migration.sql,
+// feature_activation_migration.sql, and storage_billing_migration.sql for the
+// actual constraints this order respects.
 const TABLES_IN_DELETE_ORDER = [
+  'feature_activations',
+  'storage_usage_events',
+  'user_storage_usage',
   'tools_usage_history',
   'wallet_topups',
   'user_otp',
@@ -38,15 +42,28 @@ const TABLES_IN_DELETE_ORDER = [
   'layout_settings',
 ]
 
+// feature_activations and user_storage_usage have no `id` column at all —
+// they're keyed by a composite PRIMARY KEY (see
+// feature_activation_migration.sql / storage_billing_migration.sql), so the
+// default `id`-based filter below would 400 on them. user_id is NOT NULL on
+// both and safely matches every row instead.
+const DELETE_FILTER_COLUMN = {
+  feature_activations: 'user_id',
+  user_storage_usage: 'user_id',
+}
+
 function confirm(question) {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
   return new Promise((resolve) => rl.question(question, (answer) => { rl.close(); resolve(answer) }))
 }
 
 async function wipeTable(supabase, table) {
-  // Every table here has a NOT NULL `id` primary key, so this filter safely
-  // matches all rows — Supabase's REST API rejects an unfiltered delete.
-  const { error, count } = await supabase.from(table).delete({ count: 'exact' }).not('id', 'is', null)
+  // Most tables here have a NOT NULL `id` primary key, so filtering on that
+  // safely matches all rows — Supabase's REST API rejects an unfiltered
+  // delete. A few composite-PK tables have no `id` column; DELETE_FILTER_COLUMN
+  // names a NOT NULL column to filter on instead.
+  const column = DELETE_FILTER_COLUMN[table] || 'id'
+  const { error, count } = await supabase.from(table).delete({ count: 'exact' }).not(column, 'is', null)
   if (error) throw new Error(`Failed to clean ${table}: ${error.message}`)
   console.log(`  ✓ ${table} (${count ?? 0} rows deleted)`)
 }

@@ -125,7 +125,7 @@ export default function ToolsAccessPage() {
     <div className="flex flex-col gap-6 pb-24">
       <PageHeader
         title="Tools Access"
-        description="Control which tools each registered user can access. New users start with no tools until granted here."
+        description="Control which tools each registered user can access. New users start with every tool granted by default — revoke individual tools here as needed."
       />
 
       {viewerRole === 'admin' && (
