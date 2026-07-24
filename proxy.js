@@ -68,6 +68,26 @@ export async function proxy(req) {
   // valid the token is.
   const authHeader = req.headers.get('Authorization')
   const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
+
+  // Standalone tool apps (e.g. tools/arshanemi-tools-1's files-expiry proxy,
+  // NEXT_PUBLIC_IS_CONNECT=true) authenticate with a long-lived shared secret
+  // instead of an admin JWT — they have no admin browser session to hold one.
+  // Scoped to files-expiry only; every other /api/admin/* path below this
+  // still requires a real master_admin JWT. Mirrors getAdminOrServiceFromRequest
+  // in lib/auth.js, which the files-expiry routes themselves also check —
+  // this is the earlier gate that call never reaches without this bypass.
+  if (
+    pathname.startsWith('/api/admin/files-expiry') &&
+    bearerToken &&
+    process.env.ADMIN_API_TOKEN &&
+    bearerToken === process.env.ADMIN_API_TOKEN
+  ) {
+    const res = NextResponse.next()
+    res.headers.set('x-pathname', pathname)
+    setCorsHeaders(res, origin)
+    return res
+  }
+
   const token = bearerToken || req.cookies.get('admin-token')?.value || req.cookies.get('arshanemi-token')?.value
   if (!token) {
     if (pathname.startsWith('/api/')) {

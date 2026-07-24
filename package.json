@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "stop": "powershell -ExecutionPolicy Bypass -File scripts/kill-dev.ps1",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

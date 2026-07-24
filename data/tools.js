@@ -18,14 +18,14 @@ export const tools = [
     requiresLogin: false,
     // Every real sort/generate mode in the app's Sort Options panel
     // (components/pdf-tool/SortOptions.jsx there) now has a matching
-    // feature — all free (0 coins) except Master SKU Group Sort, so any of
-    // them becomes instantly price-editable via this catalog later with no
-    // code changes in the tool app (see app/pdf-tool/page.js's
-    // SORT_MODE_FEATURES map).
+    // feature — all free (0 coins), so any of them becomes instantly
+    // price-editable via this catalog later with no code changes in the
+    // tool app (see app/pdf-tool/page.js's SORT_MODE_FEATURES map).
     features: [
       { id: 'sort-sku-group', icon: 'ListOrdered', title: 'Sort by SKU', desc: '', apiIdentifier: 'crop-sku-group', coinCost: 0, fixFeeCoins: 0, isActive: true },
       { id: 'master-pick-list', icon: 'ClipboardCheck', title: 'Master Pick List', desc: 'Generate a consolidated pick list across the master SKU grouping.', apiIdentifier: 'crop-master-pick-list', coinCost: 0, fixFeeCoins: 0, isActive: true },
-      
+      { id: 'master-sku-group', icon: 'FolderTree', title: 'Master SKU Group Sort', desc: 'Sort and group pages by their mapped Master SKU.', apiIdentifier: 'crop-master-sku-group', coinCost: 0, fixFeeCoins: 0, isActive: true },
+
     ],
     hero: {
       headline: 'Crop Every Page. Perfectly. Every Time.',
@@ -106,7 +106,7 @@ export const tools = [
     category: 'embedded',
     badge: 'Free',
     toolUrl: 'http://localhost:3001/',
-    requiresLogin: false,
+    requiresLogin: true,
     // apiIdentifiers below must match what's wired into FileExplorer.jsx's
     // handleCopyUrls (single vs batch) and handleInlineCopyExcel — see
     // plan/tools-pricing-cut-paln.md §7. `link-copy` is a pre-existing

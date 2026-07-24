@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
-import { getAdminFromRequest } from '@/lib/auth'
+import { getAdminOrServiceFromRequest } from '@/lib/auth'
 import { editManyFilesExpiryDate } from '@/lib/db'
 
 export async function PATCH(req) {
-  const admin = await getAdminFromRequest(req)
+  const admin = await getAdminOrServiceFromRequest(req)
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { ids, expiryAt } = await req.json()

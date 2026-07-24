@@ -1,12 +1,8 @@
 import './globals.css';
 import Script from 'next/script';
 import { headers } from 'next/headers';
-import Header from '@/components/layout/Header';
-import ToolsNavbar from '@/components/layout/ToolsNavbar';
+import SiteChrome from '@/components/layout/SiteChrome';
 import Footer from '@/components/layout/Footer';
-import SessionManager from '@/components/admin/SessionManager';
-import WhatsAppFloat from '@/components/ui/WhatsAppFloat';
-import LeadPopup from '@/components/ui/LeadPopup';
 import SplashScreen from '@/components/ui/SplashScreen';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { COMPANY_EMAIL, COMPANY_PHONE_PRIMARY, COMPANY_PHONE_SECONDARY, COMPANY_NAME } from '@/data/company';
@@ -160,16 +156,10 @@ const websiteSchema = {
   inLanguage: 'en-IN',
 };
 
-const AUTH_ONLY_PATHS = ['/login', '/signup', '/forgot-password', '/reset-password']
-
 export default async function RootLayout({ children }) {
   const headersList = await headers()
   const pathname = headersList.get('x-pathname') || ''
   const isAdmin = pathname.startsWith('/settings')
-  const isToolsSection = pathname.startsWith('/tools')
-  // Auth screens (/login, /signup, ...) render their own full-bleed branded
-  // layout — the site Header/Footer would just duplicate/clash with that.
-  const hideChrome = isAdmin || AUTH_ONLY_PATHS.includes(pathname)
 
   const [company, navigation, liveTools, savedTheme] = await Promise.all([
     getCachedSingleton('company').catch(() => ({})),
@@ -202,27 +192,20 @@ export default async function RootLayout({ children }) {
         <Script id="theme-init" strategy="beforeInteractive">{`(function(){var d=document.documentElement;try{var raw=localStorage.getItem('arshanemi-theme-config');if(raw){var obj=JSON.parse(raw),data=obj.data,ts=obj.ts;if(Date.now()-ts<600000&&data&&data.mode){var mode=data.mode,colors=data[mode]||{},t=data.typography,br=data.borderRadius;d.setAttribute('data-theme',mode);for(var k in colors)d.style.setProperty('--color-'+k,colors[k]);function rgb(h){return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)].join(',')}if(colors['accent'])d.style.setProperty('--color-accent-rgb',rgb(colors['accent']));if(colors['accent-light'])d.style.setProperty('--color-accent-light-rgb',rgb(colors['accent-light']));if(colors['accent-vivid'])d.style.setProperty('--color-accent-vivid-rgb',rgb(colors['accent-vivid']));if(colors['cyan'])d.style.setProperty('--color-cyan-rgb',rgb(colors['cyan']));if(t){if(t.fontFamily)d.style.setProperty('--font-sans',t.fontFamily+',ui-sans-serif,system-ui,sans-serif');if(t.scale!=null)d.style.setProperty('--si-font-scale',t.scale);}if(br)for(var k2 in br){if(k2!=='preset')d.style.setProperty(k2==='base'?'--radius':'--radius-'+k2,br[k2]);}return;}}}catch(e){}d.setAttribute('data-theme','dark');})()`}</Script>
         <ThemeProvider>
           <SplashScreen />
-          {hideChrome ? (
-            children
-          ) : (
-            <>
-              <SessionManager loginPath="/login" redirectOnExpiry={false} />
-              {isToolsSection ? (
-                <ToolsNavbar tools={liveTools} />
-              ) : (
-                <Header tools={liveTools} />
-              )}
-              <main className="flex-1">{children}</main>
+          <SiteChrome
+            tools={liveTools}
+            company={company}
+            footer={
               <Footer
                 socialLinks={navigation?.socialLinks}
                 email={company?.email}
                 phonePrimary={company?.phonePrimary}
                 phoneSecondary={company?.phoneSecondary}
               />
-              <WhatsAppFloat whatsapp={company?.whatsapp} />
-              <LeadPopup />
-            </>
-          )}
+            }
+          >
+            {children}
+          </SiteChrome>
         </ThemeProvider>
       </body>
     </html>

@@ -24,14 +24,16 @@ function getSupabase() {
 
 // Child tables first, so FK references (ON DELETE CASCADE/SET NULL) never
 // block a parent delete — see scripts/schema.sql, wallet_system_migration.sql,
-// feature_activation_migration.sql, and storage_billing_migration.sql for the
-// actual constraints this order respects.
+// feature_activation_migration.sql, storage_billing_migration.sql, and
+// sku_mapping_migration.sql for the actual constraints this order respects.
 const TABLES_IN_DELETE_ORDER = [
   'feature_activations',
   'storage_usage_events',
   'user_storage_usage',
   'tools_usage_history',
   'wallet_topups',
+  'sku_mappings',
+  'sku_masters',
   'user_otp',
   'user_settings',
   'users',
