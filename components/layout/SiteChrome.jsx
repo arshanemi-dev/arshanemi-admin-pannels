@@ -1,7 +1,6 @@
 'use client'
 import { usePathname } from 'next/navigation'
 import Header from './Header'
-import ToolsNavbar from './ToolsNavbar'
 import SessionManager from '@/components/admin/SessionManager'
 import WhatsAppFloat from '@/components/ui/WhatsAppFloat'
 import LeadPopup from '@/components/ui/LeadPopup'
@@ -21,7 +20,6 @@ const AUTH_ONLY_PATHS = ['/login', '/signup', '/forgot-password', '/reset-passwo
 export default function SiteChrome({ children, tools, company, footer }) {
   const pathname = usePathname() || ''
   const isAdmin = pathname.startsWith('/settings')
-  const isToolsSection = pathname.startsWith('/tools')
   const hideChrome = isAdmin || AUTH_ONLY_PATHS.includes(pathname)
 
   if (hideChrome) return children
@@ -29,11 +27,7 @@ export default function SiteChrome({ children, tools, company, footer }) {
   return (
     <>
       <SessionManager loginPath="/login" redirectOnExpiry={false} />
-      {isToolsSection ? (
-        <ToolsNavbar tools={tools} />
-      ) : (
-        <Header tools={tools} />
-      )}
+      <Header tools={tools} />
       <main className="flex-1">{children}</main>
       {footer}
       <WhatsAppFloat whatsapp={company?.whatsapp} />

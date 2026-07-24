@@ -4,7 +4,6 @@ import { ArrowLeft } from 'lucide-react'
 import { getTool } from '@/lib/tools'
 import { resolveToolAccess } from '@/lib/toolAccess'
 import ToolUseClient from '@/components/tools/ToolUseClient'
-import PremiumFeatureGate from '@/components/tools/PremiumFeatureGate'
 import AccessDeniedGate from '@/components/tools/AccessDeniedGate'
 
 export async function generateMetadata({ params }) {
@@ -24,14 +23,6 @@ export default async function ToolUsePage({ params }) {
     return (
       <div className="h-[100vh] bg-background pt-24 pb-10">
         <AccessDeniedGate tool={access.tool} />
-      </div>
-    )
-  }
-
-  if (access.kind === 'activation_required') {
-    return (
-      <div className="min-h-screen bg-background pt-24 pb-10">
-        <PremiumFeatureGate tool={access.tool} feature={access.feature} />
       </div>
     )
   }

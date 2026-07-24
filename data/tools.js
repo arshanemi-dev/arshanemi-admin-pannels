@@ -23,9 +23,8 @@ export const tools = [
     // tool app (see app/pdf-tool/page.js's SORT_MODE_FEATURES map).
     features: [
       { id: 'sort-sku-group', icon: 'ListOrdered', title: 'Sort by SKU', desc: '', apiIdentifier: 'crop-sku-group', coinCost: 0, fixFeeCoins: 0, isActive: true },
-      { id: 'master-pick-list', icon: 'ClipboardCheck', title: 'Master Pick List', desc: 'Generate a consolidated pick list across the master SKU grouping.', apiIdentifier: 'crop-master-pick-list', coinCost: 0, fixFeeCoins: 0, isActive: true },
-      { id: 'master-sku-group', icon: 'FolderTree', title: 'Master SKU Group Sort', desc: 'Sort and group pages by their mapped Master SKU.', apiIdentifier: 'crop-master-sku-group', coinCost: 0, fixFeeCoins: 0, isActive: true },
-
+      { id: 'master-pick-list', icon: 'ClipboardCheck', title: 'Master Pick List', desc: 'Generate a consolidated pick list across the master SKU grouping.', apiIdentifier: 'crop-master-pick-list', coinCost: 2, fixFeeCoins: 0, isActive: true },
+      { id: 'master-sku-group', icon: 'FolderTree', title: 'Master SKU Group Sort', desc: 'Sort and group pages by their mapped Master SKU.', apiIdentifier: 'crop-master-sku-group', coinCost: 1, fixFeeCoins: 1, isActive: true },
     ],
     hero: {
       headline: 'Crop Every Page. Perfectly. Every Time.',
