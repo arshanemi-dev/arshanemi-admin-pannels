@@ -30,7 +30,7 @@ export default async function ToolUsePage({ params }) {
   const { tool } = access
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-10">
+    <div className=" bg-background pt-24">
 
 
       {tool.toolUrl ? (

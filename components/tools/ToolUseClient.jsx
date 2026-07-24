@@ -80,7 +80,7 @@ export default function ToolUseClient({ tool }) {
     setIframeLoading(false);
     handleLoad();
   }}
-  className="block w-full h-max min-h-[70vh] h-full border-0"
+  className="block w-full h-max min-h-[85vh] h-full border-0"
 />
         )}
       </div>
