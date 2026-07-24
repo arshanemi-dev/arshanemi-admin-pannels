@@ -1,10 +1,11 @@
 import { getAllCoinPackages } from '@/lib/db'
 import { getAllTools, buildUsageRateGroups } from '@/lib/tools'
 import { ToastProvider } from '@/components/admin/Toast'
-import { CoinsUsageTable, CoinPlansTable } from '@/components/admin/plan'
+import { CoinsUsageTable } from '@/components/admin/plan'
 import { PromoBadge } from '@/components/admin/promo'
 import SectionHeading from '@/components/ui/SectionHeading'
 import { coinPlansNote } from '@/data/coinPlans'
+import PlanInteractive from './PlanInteractive'
 
 export const metadata = {
   title: 'Pricing',
@@ -41,7 +42,7 @@ export default async function PublicPlanPage() {
 
         <ToastProvider>
           <PromoBadge />
-          <CoinPlansTable packages={packages} note={coinPlansNote} />
+          <PlanInteractive initialPackages={packages} coinPlansNote={coinPlansNote} />
           <CoinsUsageTable data={buildUsageRateGroups(tools)} />
         </ToastProvider>
       </div>

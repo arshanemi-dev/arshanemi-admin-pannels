@@ -68,16 +68,20 @@ export default function ToolUseClient({ tool }) {
             attach SSO handoff params — the tool app must never load without
             having had the chance to receive them. */}
         {iframeSrc && (
-          <iframe
-            src={iframeSrc}
-            title={tool.title}
-            sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-            allow="clipboard-write"
-            referrerPolicy="no-referrer"
-            loading="lazy"
-            onLoad={() => {setIframeLoading(false);handleLoad()}}
-            className="block w-full h-max min-h-[70vh] h-full border-0"
-          />
+        <iframe
+  src={iframeSrc}
+  title={tool.title}
+  /* Added allow-downloads and allow-modals below */
+  sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-modals"
+  allow="clipboard-write"
+  referrerPolicy="no-referrer"
+  loading="lazy"
+  onLoad={() => {
+    setIframeLoading(false);
+    handleLoad();
+  }}
+  className="block w-full h-max min-h-[70vh] h-full border-0"
+/>
         )}
       </div>
     </div>

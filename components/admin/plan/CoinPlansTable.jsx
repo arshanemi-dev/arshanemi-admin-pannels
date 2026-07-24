@@ -21,7 +21,7 @@ function formatValidity(days) {
 // When the promo badge (components/admin/promo) is active, discountable
 // rows show the original price struck through next to the discounted one.
 // Rendered both at /settings/plan (always logged in) and the public /plan
-// page (may be signed out) — a signed-out click goes to /signup instead of
+// page (may be signed out) — a signed-out click goes to /login instead of
 // attempting checkout, per direct instruction.
 export default function CoinPlansTable({ packages, note, onPurchased }) {
   const router = useRouter()
@@ -38,7 +38,7 @@ export default function CoinPlansTable({ packages, note, onPurchased }) {
       return
     }
     if (!isLoggedIn()) {
-      router.push('/signup')
+      router.push('/login')
       return
     }
     if (typeof window === 'undefined' || !window.Razorpay) {

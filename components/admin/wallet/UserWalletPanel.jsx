@@ -4,15 +4,6 @@ import DataTable from '@/components/admin/DataTable'
 import WalletBalanceCard from './WalletBalanceCard'
 import { TableSkeleton, LoadError } from '@/components/admin/Skeleton'
 
-const TYPE_FILTER = {
-  key: 'type',
-  label: 'All Types',
-  options: [
-    { value: 'topup', label: 'Top-up' },
-    { value: 'usage', label: 'Usage' },
-  ],
-}
-
 const STATUS_FILTER = {
   key: 'status',
   label: 'All Status',
@@ -30,7 +21,7 @@ const STATUS_STYLES = {
 }
 
 const columns = [
-  { key: 'type', label: 'Type', sortable: true, render: (v) => (v === 'topup' ? 'Top-up' : 'Usage') },
+  { key: 'type', label: 'Type', sortable: true, render: () => 'Top-up' },
   { key: 'description', label: 'Description' },
   {
     key: 'priceAmount', label: 'Amount', sortable: true,
@@ -54,10 +45,6 @@ const columns = [
   },
 ]
 
-function prettifySlug(slug) {
-  return (slug || '').replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
-}
-
 function statusFor(topupStatus) {
   if (topupStatus === 'paid') return 'success'
   if (topupStatus === 'created') return 'pending'
@@ -65,8 +52,9 @@ function statusFor(topupStatus) {
 }
 
 // "Wallet" tab on the Profile page — real balance from /api/auth/me (passed
-// in as `profile`) plus real own-transaction history from
-// /api/wallet/history/usage + /api/wallet/history/topups, merged client-side.
+// in as `profile`) plus the user's own top-up (₹) history from
+// /api/wallet/history/topups. Coin-usage rows are intentionally left out —
+// this tab only shows real-money transactions.
 export default function UserWalletPanel({ profile }) {
   const total = profile.walletCreditsTotal ?? 0
   const used = profile.walletCreditsUsed ?? 0
@@ -79,22 +67,10 @@ export default function UserWalletPanel({ profile }) {
     setError(false)
     setTransactions(null)
     try {
-      const [usageRes, topupsRes] = await Promise.all([
-        fetch('/api/wallet/history/usage?limit=200'),
-        fetch('/api/wallet/history/topups?limit=200'),
-      ])
-      if (!usageRes.ok || !topupsRes.ok) throw new Error()
-      const [usage, topups] = await Promise.all([usageRes.json(), topupsRes.json()])
+      const topupsRes = await fetch('/api/wallet/history/topups?limit=200')
+      if (!topupsRes.ok) throw new Error()
+      const topups = await topupsRes.json()
 
-      const usageRows = usage.map((u) => ({
-        id: u.id,
-        type: 'usage',
-        description: `${prettifySlug(u.toolSlug)} — ${u.featureTitle || u.featureApiIdentifier}`,
-        priceAmount: null,
-        coins: -u.coinsCost,
-        status: 'success',
-        date: u.createdAt,
-      }))
       const topupRows = topups.map((t) => ({
         id: t.id,
         type: 'topup',
@@ -105,7 +81,7 @@ export default function UserWalletPanel({ profile }) {
         date: t.createdAt,
       }))
 
-      setTransactions([...usageRows, ...topupRows].sort((a, b) => new Date(b.date) - new Date(a.date)))
+      setTransactions(topupRows.sort((a, b) => new Date(b.date) - new Date(a.date)))
     } catch {
       setError(true)
     }
@@ -147,7 +123,7 @@ export default function UserWalletPanel({ profile }) {
           title="Transaction History"
           columns={columns}
           data={transactions}
-          filters={[TYPE_FILTER, STATUS_FILTER]}
+          filters={[STATUS_FILTER]}
           dateKey="date"
           pageSize={5}
           emptyText="No transactions yet."

@@ -14,20 +14,30 @@ import { getRefreshToken, saveAuthTokens, clearAuthTokens, isTokenExpired } from
 //   2. Proactive — a periodic check against the expiresAt mirror kept in
 //      localStorage (tokenStore.js) so most requests never even hit a 401.
 // If the refresh token itself is invalid/expired, both paths fall through to
-// forceLogout(): clears the httpOnly cookie(s) server-side, clears the
-// localStorage mirror, and hard-redirects to the current section's login page.
+// forceLogout(): clears the httpOnly cookie(s) server-side and the
+// localStorage mirror. Whether that also hard-redirects depends on
+// redirectOnExpiry (see below) — /settings still redirects (it's a fully
+// gated admin area, session expiry there should always bounce to
+// /settings/login); the public site does not, per direct instruction — no
+// page there should ever auto-redirect to login just because some
+// background/optional API call 401'd for a guest who never had a session to
+// begin with. The public site's own intentional login redirects (the
+// /tools/[slug]/use access gate, the "Add Coins" button) are separate,
+// explicit code paths that don't go through this interceptor at all.
 //
-// currentLoginPath is read at call-time (not baked into the fetch patch at
-// install-time) because the interceptor itself is installed only once per
-// tab (see `patched` below) — a user who visits /settings then a public
-// /tools page in the same session re-mounts SessionManager with a different
-// loginPath, and the shared interceptor needs to redirect to whichever
-// section's login page applies to where the user currently is.
+// currentLoginPath/currentRedirectOnExpiry are read at call-time (not baked
+// into the fetch patch at install-time) because the interceptor itself is
+// installed only once per tab (see `patched` below) — a user who visits
+// /settings then a public /tools page in the same session re-mounts
+// SessionManager with different props, and the shared interceptor needs to
+// behave according to whichever section's login page applies to where the
+// user currently is.
 
 let patched = false
 let realFetch = null
 let refreshInFlight = null
 let currentLoginPath = '/settings/login'
+let currentRedirectOnExpiry = true
 
 async function tryRefresh() {
   const refreshToken = getRefreshToken()
@@ -55,7 +65,7 @@ async function tryRefresh() {
 async function forceLogout() {
   clearAuthTokens()
   try { await realFetch('/api/auth/logout', { method: 'POST' }) } catch { /* cookie may already be gone */ }
-  window.location.href = currentLoginPath
+  if (currentRedirectOnExpiry) window.location.href = currentLoginPath
 }
 
 function installFetchInterceptor() {
@@ -80,9 +90,10 @@ function installFetchInterceptor() {
   }
 }
 
-export default function SessionManager({ loginPath = '/settings/login' }) {
+export default function SessionManager({ loginPath = '/settings/login', redirectOnExpiry = true }) {
   useEffect(() => {
     currentLoginPath = loginPath
+    currentRedirectOnExpiry = redirectOnExpiry
     installFetchInterceptor()
 
     const interval = setInterval(async () => {
@@ -93,7 +104,7 @@ export default function SessionManager({ loginPath = '/settings/login' }) {
     }, 60_000)
 
     return () => clearInterval(interval)
-  }, [loginPath])
+  }, [loginPath, redirectOnExpiry])
 
   return null
 }

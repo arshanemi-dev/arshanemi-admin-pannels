@@ -14,7 +14,7 @@ export const metadata = {
 // /settings/profile inside the full admin shell.
 export default async function PublicProfilePage() {
   const user = await getUserFromCookies()
-  if (!user) redirect('/login')
+  if (!user) redirect('/')
 
   return (
     <div className="min-h-screen bg-background pt-[120px] pb-20">

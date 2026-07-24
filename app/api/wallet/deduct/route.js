@@ -23,6 +23,7 @@ export async function POST(req) {
   if (!toolSlug || !featureApiIdentifier) {
     return NextResponse.json({ error: 'toolSlug and featureApiIdentifier are required' }, { status: 400 })
   }
+
   const qty = quantity == null ? 1 : Number(quantity)
   if (!Number.isInteger(qty) || qty < 1) {
     return NextResponse.json({ error: 'quantity must be a positive integer' }, { status: 400 })
@@ -88,7 +89,7 @@ export async function POST(req) {
       coinsCost: result.coinsCost,
       remainingCoins: result.remaining,
       duplicate: result.duplicate,
-    })
+    });
   } catch (err) {
     console.error('Wallet deduct error:', err)
     return NextResponse.json({ error: 'Unexpected error' }, { status: 500 })

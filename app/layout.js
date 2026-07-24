@@ -206,7 +206,7 @@ export default async function RootLayout({ children }) {
             children
           ) : (
             <>
-              <SessionManager loginPath="/login" />
+              <SessionManager loginPath="/login" redirectOnExpiry={false} />
               {isToolsSection ? (
                 <ToolsNavbar tools={liveTools} />
               ) : (
